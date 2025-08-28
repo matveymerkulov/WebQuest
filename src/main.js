@@ -25,14 +25,14 @@ String.prototype.добавить = String.prototype.concat
 String.prototype.часть = String.prototype.substring
 
 
-export const значения = (...объ) => [].concat(...Object.values(объ))
+export const значения = (...объ) => [].concat(...Object.values(...объ))
 export const этоМассив = (объ) => Array.isArray(объ)
 
 
 export function вМассив(объ) {
     if(объ === undefined) return []
-    if(этоМассив(объ.объекты)) return объ
-    return [объ.объекты]
+    if(этоМассив(объ)) return объ
+    return [объ]
 }
 
 export function вСтроку(строка, объ) {
@@ -134,46 +134,68 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    обновить()
+    update()
 })
 
 
 
-const консоль = document.getElementById("консоль")
-const изображение = document.getElementById("изображение")
-const описание = document.getElementById("описание")
+const consoleElement = document.getElementById("console")
+const imageElement = document.getElementById("image")
+const descriptionElement = document.getElementById("description")
 
-function парситьТекст(текст) {
-    let начало = 0, ссылка = нет, новыйТекст = ""
-    for(let индекс = 0; индекс < текст.length; индекс++) {
-        const символ = текст.символ(индекс)
-        if(символ === "*") {
-            if(ссылка) {
-                новыйТекст = новыйТекст.добавить(`<a>${текст.часть(начало, индекс)}</a>`)
+function parseText(text) {
+    let begin = 0, link = false, newText = ""
+    for(let index = 0; index < text.length; index++) {
+        const symbol = text.charAt(index)
+        if(symbol === "*") {
+            if(link) {
+                newText = newText.concat('<span class="link">' + text.substring(begin, index) + '</span>')
             } else {
-                новыйТекст = новыйТекст.добавить(текст.часть(начало, индекс))
+                newText = newText.concat(text.substring(begin, index))
             }
-            начало = индекс + 1
-            ссылка = !ссылка
-        } else if(символ === "\n") {
-            новыйТекст = новыйТекст.добавить(текст.часть(начало, индекс), "<p>")
-            начало = индекс + 1
+            begin = index + 1
+            link = !link
+        } else if(symbol === "\n") {
+            newText = newText.concat(text.substring(begin, index), "<p>")
+            begin = index + 1
         }
     }
-    новыйТекст = новыйТекст.добавить(текст.часть(начало))
-    return новыйТекст
+    newText = newText.concat(text.substring(begin))
+    return newText
 }
 
-function обновить() {
+
+
+function update() {
+    const лок = персонаж.игрок.локация
+
+    descriptionElement.innerHTML = parseText(вСтроку(лок.описание, лок))
+    const imageFile = вСтроку(лок.изображение, лок)
+    imageElement.hidden = imageFile === ""
+    imageElement.src = imageFile
+
+    for(const element of document.getElementsByClassName("link")) {
+        element.addEventListener("click", event => {
+            выполнитьКоманду(event.target.innerHTML)
+        })
+    }
+}
+
+
+
+function выполнитьКоманду(текст) {
     const игрок = персонаж.игрок
     const лок = игрок.локация
 
-    описание.innerHTML = парситьТекст(вСтроку(лок.описание, лок))
-    const файлИзображения = вСтроку(лок.изображение, лок)
-    изображение.hidden = файлИзображения === ""
-    изображение.src = файлИзображения
-
     for(let команда of лок.команды) {
 
+    }
+
+    for(let выход of лок.выходы()) {
+        if(выход[0] === текст) {
+            игрок.локация = выход[1]
+            update()
+            return
+        }
     }
 }

@@ -2,14 +2,15 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>View Everything</title>
+    <title>Ферма</title>
     <script type="module" src="main.js"></script>
+    <link rel="stylesheet" href="main.css">
 </head>
-<body style="width: 100%; height: 100%; margin: 0; display: flex; flex-direction: row;">
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <img id="изображение" style="width: 100%; height: 100%;" src="" alt="">
-        <div id="консоль" style="display: flex; flex-direction: column; align-items: center; justify-content: center;"></div>
+<body>
+    <div id="left_column">
+        <img id="image" src="" alt="">
+        <div id="console"></div>
     </div>
-    <div id="описание" style="display: flex; flex-direction: column; align-items: center; justify-content: center;"></div>
+    <div id="description" style="flex: 1; text-align: justify"></div>
 </body>
 </html>
