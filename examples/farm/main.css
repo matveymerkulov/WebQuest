@@ -1,6 +1,7 @@
 body {
-    --gap: 10px;
+    --gap: 4px;
     --padding: 8px;
+    --radius: 12px;
     width: auto;
     height: auto;
     margin: 0;
@@ -18,6 +19,16 @@ body {
     text-decoration: underline;
 }
 
+#description, #left_column {
+    width: 50%;
+    height: auto;
+}
+
+#description, #console {
+    padding: var(--padding);
+    border: 1px solid black;
+}
+
 #left_column {
     display: flex;
     flex-direction: column;
@@ -26,33 +37,18 @@ body {
     gap: var(--gap);
 }
 
-#description, #console {
-    padding: var(--padding);
-}
-
-#description, #console {
-    border: 1px solid black;
-}
-
 #description {
-    border-top-left-radius: var(--padding);
-    border-bottom-left-radius: var(--padding);
-    width: calc(50%);
-    height: auto;
-}
-
-#left_column {
-    width: calc(50% );
-    height: auto;
+    border-top-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
 }
 
 #image {
-    border-top-right-radius: var(--padding);
+    border-top-right-radius: var(--radius);
     width: 100%;
 }
 
 #console {
-    border-bottom-right-radius: var(--padding);
+    border-bottom-right-radius: var(--radius);
     width: calc(100% - var(--padding) * 2 - 2px);
     flex-grow: 1;
 }

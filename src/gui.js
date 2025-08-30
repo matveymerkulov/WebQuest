@@ -1,9 +1,9 @@
 // noinspection NonAsciiCharacters
 
-import {выполнитьКоманду, персонаж} from "./main.js"
+import {выполнитьКоманду, Падеж, персонаж, просклонять} from "./main.js"
 import {вСтроку} from "./functions.js"
 
-function parseText(text) {
+function парситьТекст(text) {
     let begin = 0, link = false, newText = ""
     for(let index = 0; index < text.length; index++) {
         const symbol = text.charAt(index)
@@ -33,7 +33,16 @@ const descriptionElement = document.getElementById("description")
 export function update() {
     const лок = персонаж.игрок.локация
 
-    descriptionElement.innerHTML = parseText(вСтроку(лок.описание, лок))
+    let текст = ""
+
+    for(let объ of лок.объекты) {
+        текст += `${текст === "" ? "" : ", "}<span class="link">${просклонять(объ.название, Падеж.винительный)}</span>`
+    }
+
+    if(текст !== "") текст = "<p>Вы видите " + текст
+
+    descriptionElement.innerHTML = парситьТекст(вСтроку(лок.описание, лок)) + текст
+
     const imageFile = вСтроку(лок.изображение, лок)
     if(imageElement) {
         if(imageFile === "") {
@@ -53,7 +62,7 @@ export function update() {
 
 export function написать(текст) {
     if(consoleElement.innerHTML.length > 0) consoleElement.innerHTML += "<p>"
-    consoleElement.innerHTML += parseText()
+    consoleElement.innerHTML += парситьТекст()
 }
 
 export function конец(текст) {
