@@ -1,7 +1,8 @@
 // noinspection NonAsciiCharacters
 
-import {да, локации, локацию, локация, написать, нет, объект, предмет} from "../../src/main.js"
+import {да, локации, локацию, локация, нет, объект, предмет} from "../../src/main.js"
 import {игрок} from "./main.js"
+import {написать} from "../../src/gui.js"
 
 объект.дверь = {
     открыта: нет,

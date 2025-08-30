@@ -1,9 +1,10 @@
 // noinspection NonAsciiCharacters
 
-import {конец, предмет, локация, персонаж, задатьДействияПеред, задатьОписаниеПоУмолчанию} from "../../src/main.js"
+import {предмет, локация, персонаж, задатьДействияПеред, задатьОписаниеПоУмолчанию} from "../../src/main.js"
 import "./items.js"
 import "./objects.js"
 import "./locations.js"
+import {конец} from "../../src/gui.js"
 
 export const игрок = {}
 персонаж.игрок = игрок

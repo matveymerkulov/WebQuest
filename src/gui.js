@@ -35,12 +35,27 @@ export function update() {
 
     descriptionElement.innerHTML = parseText(вСтроку(лок.описание, лок))
     const imageFile = вСтроку(лок.изображение, лок)
-    imageElement.hidden = imageFile === ""
-    imageElement.src = imageFile
+    if(imageElement) {
+        if(imageFile === "") {
+            imageElement.hidden = true
+        } else {
+            imageElement.hidden = false
+            imageElement.src = "images/" + imageFile
+        }
+    }
 
     for(const element of document.getElementsByClassName("link")) {
         element.addEventListener("click", event => {
             выполнитьКоманду(event.target.innerHTML)
         })
     }
+}
+
+export function написать(текст) {
+    if(consoleElement.innerHTML.length > 0) consoleElement.innerHTML += "<p>"
+    consoleElement.innerHTML += parseText()
+}
+
+export function конец(текст) {
+
 }
