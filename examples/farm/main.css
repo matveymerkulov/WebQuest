@@ -9,6 +9,7 @@ body {
     flex-direction: row;
     gap: var(--gap);
     padding: var(--gap);
+    overflow: hidden;
 }
 
 .link {
@@ -64,8 +65,20 @@ body {
     position: absolute;
     display: flex;
     flex-direction: column;
+    background-color: lightblue;
+    border: 1px solid darkblue;
+    border-radius: 4px;
+    padding: var(--padding);
 }
 
-.menuitem {
+.menu_item {
 
+}
+
+.menu_item_link {
+
+}
+
+.menu_item_link:hover {
+    background-color: lightyellow;
 }

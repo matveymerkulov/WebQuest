@@ -1,27 +1,42 @@
 // noinspection NonAsciiCharacters
 
 import {выполнитьКоманду, обновитьКоманды, Падеж, персонаж, просклонять} from "./main.js"
-import {вСтроку} from "./functions.js"
+import {вСтроку, этоМассив} from "./functions.js"
+import {инициализация} from "./init.js"
 
-function парситьТекст(text) {
-    let begin = 0, link = false, newText = ""
-    for(let index = 0; index < text.length; index++) {
-        const symbol = text.charAt(index)
-        if(symbol === "*") {
-            if(link) {
-                newText = newText.concat('<span class="link">' + text.substring(begin, index) + '</span>')
+let x, y
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    инициализация()
+
+    document.body.addEventListener("mousemove", event => {
+        x = event.clientX
+        y = event.clientY
+    })
+})
+
+
+
+function парситьТекст(текст) {
+    let начало = 0, ссылка = false, новыйТекст = ""
+    for(let индекс = 0; индекс < текст.length; индекс++) {
+        const символ = текст.charAt(индекс)
+        if(символ === "*") {
+            if(ссылка) {
+                новыйТекст = новыйТекст.добавить('<span class="link">' + текст.часть(начало, индекс) + '</span>')
             } else {
-                newText = newText.concat(text.substring(begin, index))
+                новыйТекст = новыйТекст.добавить(текст.часть(начало, индекс))
             }
-            begin = index + 1
-            link = !link
-        } else if(symbol === "\n") {
-            newText = newText.concat(text.substring(begin, index), "<p>")
-            begin = index + 1
+            начало = индекс + 1
+            ссылка = !ссылка
+        } else if(символ === "\n") {
+            новыйТекст = новыйТекст.добавить(текст.часть(начало, индекс), "<p>")
+            начало = индекс + 1
         }
     }
-    newText = newText.concat(text.substring(begin))
-    return newText
+    новыйТекст = новыйТекст.добавить(текст.часть(начало))
+    return новыйТекст
 }
 
 
@@ -30,7 +45,7 @@ const consoleElement = document.getElementById("console")
 const imageElement = document.getElementById("image")
 const descriptionElement = document.getElementById("description")
 
-export function update() {
+export function обновить() {
     const лок = персонаж.игрок.локация
 
     let текст = ""
@@ -61,6 +76,45 @@ export function update() {
     }
 
     обновитьКоманды()
+}
+
+
+const menuContainer = document.getElementById("menus")
+
+export function показатьМеню(menuNode) {
+    const layer = document.createElement("div")
+    layer.className = "layer"
+    layer.addEventListener("click", event => {
+        menuContainer.removeChild(document.body.lastChild)
+        menuContainer.removeChild(document.body.lastChild)
+    })
+
+    const menu = document.createElement("div")
+    menu.className = "menu"
+    menu.style.left = x + "px"
+    menu.style.top = y + "px"
+    for(const [key, value] of Object.entries(menuNode)) {
+        const div = document.createElement("div")
+        div.className = "menu_item"
+        div.innerHTML = key
+        div.menuNode = value
+        div.addEventListener("click", event => {
+            const menuNode = event.target.menuNode
+            if(Array.isArray(menuNode)) {
+                menuNode[0].выполнение(menuNode[1])
+                скрытьМеню()
+            } else {
+                показатьМеню(menuNode)
+            }
+        })
+        menu.appendChild(div)
+    }
+    menuContainer.appendChild(layer)
+    menuContainer.appendChild(menu)
+}
+
+function скрытьМеню() {
+    menuContainer.textContent = ""
 }
 
 export function написать(текст) {
