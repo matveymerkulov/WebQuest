@@ -1,6 +1,6 @@
 // noinspection NonAsciiCharacters
 
-import {выполнитьКоманду, Падеж, персонаж, просклонять} from "./main.js"
+import {выполнитьКоманду, обновитьКоманды, Падеж, персонаж, просклонять} from "./main.js"
 import {вСтроку} from "./functions.js"
 
 function парситьТекст(text) {
@@ -36,6 +36,7 @@ export function update() {
     let текст = ""
 
     for(let объ of лок.объекты) {
+        if(объ.скрыт) continue
         текст += `${текст === "" ? "" : ", "}<span class="link">${просклонять(объ.название, Падеж.винительный)}</span>`
     }
 
@@ -58,11 +59,13 @@ export function update() {
             выполнитьКоманду(event.target.innerHTML)
         })
     }
+
+    обновитьКоманды()
 }
 
 export function написать(текст) {
     if(consoleElement.innerHTML.length > 0) consoleElement.innerHTML += "<p>"
-    consoleElement.innerHTML += парситьТекст()
+    consoleElement.innerHTML += парситьТекст(текст)
 }
 
 export function конец(текст) {
