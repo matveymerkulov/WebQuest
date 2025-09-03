@@ -1,6 +1,6 @@
 // noinspection NonAsciiCharacters
 
-import {локация, неЗадан, объект, предмет} from "./main.js"
+import {да, локация, неЗадан, нет, объект, предмет} from "./main.js"
 
 Object.defineProperty(Array.prototype, "размер", {
     get: function myProperty() {
@@ -38,6 +38,9 @@ export function ключи(...объекты) {
     return массив
 }
 export function значения(...объекты) {
+    if(объекты.размер === 1) {
+        return Object.values(объекты[0])
+    }
     const массив = []
     for(const объ of объекты) {
         for(const значение of Object.values(объ)) {
@@ -77,4 +80,19 @@ export function вСтроку(объ, параметр = неЗадан) {
 export function вЗначение(объ, параметр = неЗадан) {
     if(этоФункция(объ)) return объ(параметр)
     return объ
+}
+
+
+export function скрыт(объ) {
+    for(const параметр of ["скрыт", "скрыта", "скрыто", "скрыты"]) {
+        if(вЗначение(объ[параметр], объ) === да) return да
+    }
+    return нет
+}
+
+export function открыт(объ) {
+    for(const параметр of ["открыт", "открыта", "открыто", "открыты"]) {
+        if(вЗначение(объ[параметр], объ) === нет) return нет
+    }
+    return да
 }

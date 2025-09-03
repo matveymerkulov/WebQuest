@@ -1,7 +1,7 @@
 // noinspection NonAsciiCharacters
 
-import {выполнитьКоманду, обновитьКоманды, Падеж, персонаж, просклонять, просклонятьНазвание} from "./main.js"
-import {вЗначение, вСтроку, этоМассив} from "./functions.js"
+import {выполнитьКоманду, обновитьКоманды, объект, Падеж, персонаж, просклонять, просклонятьНазвание} from "./main.js"
+import {вЗначение, вСтроку, открыт, скрыт, этоМассив} from "./functions.js"
 import {инициализация} from "./init.js"
 import {игрок} from "../examples/farm/main.js"
 
@@ -46,15 +46,24 @@ const consoleElement = document.getElementById("console")
 const imageElement = document.getElementById("image")
 const descriptionElement = document.getElementById("description")
 
+function текстОбъектов(объ) {
+    let объекты = ""
+    for(let вложенныйОбъект of объ.объекты) {
+        if(скрыт(вложенныйОбъект)) continue
+        объекты += `, <span class="link">${просклонятьНазвание(вложенныйОбъект, Падеж.винительный)}</span>`
+        if(!открыт(вложенныйОбъект)) continue
+        объекты += текстОбъектов(вложенныйОбъект)
+    }
+    return объекты
+}
+
 export function обновить() {
+    обновитьКоманды()
+
     const лок = персонаж.игрок.локация
 
-    let объекты = ""
-    for(let объ of лок.объекты) {
-        if(вЗначение(объ.скрыт)) continue
-        объекты += `${объекты === "" ? "" : ", "}<span class="link">${просклонятьНазвание(объ, Падеж.винительный)}</span>`
-    }
-    if(объекты !== "") объекты = "<p>Вы видите " + объекты
+    let объекты = текстОбъектов(лок)
+    if(объекты !== "") объекты = "<p>Вы видите " + объекты.часть(2)
 
     let инвентарь = ""
     for(let объ of игрок.инвентарь) {
@@ -79,8 +88,6 @@ export function обновить() {
             выполнитьКоманду(event.target.innerHTML)
         })
     }
-
-    обновитьКоманды()
 }
 
 
@@ -140,5 +147,6 @@ export function написать(текст) {
 }
 
 export function конец(текст) {
-
+    alert(текст)
+    window.location.reload();
 }
