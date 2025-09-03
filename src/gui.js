@@ -1,8 +1,9 @@
 // noinspection NonAsciiCharacters
 
-import {выполнитьКоманду, обновитьКоманды, Падеж, персонаж, просклонять} from "./main.js"
+import {выполнитьКоманду, обновитьКоманды, Падеж, персонаж, просклонять, просклонятьНазвание} from "./main.js"
 import {вСтроку, этоМассив} from "./functions.js"
 import {инициализация} from "./init.js"
+import {игрок} from "../examples/farm/main.js"
 
 let x, y
 
@@ -48,16 +49,20 @@ const descriptionElement = document.getElementById("description")
 export function обновить() {
     const лок = персонаж.игрок.локация
 
-    let текст = ""
-
+    let объекты = ""
     for(let объ of лок.объекты) {
         if(объ.скрыт) continue
-        текст += `${текст === "" ? "" : ", "}<span class="link">${просклонять(объ.название, Падеж.винительный)}</span>`
+        объекты += `${объекты === "" ? "" : ", "}<span class="link">${просклонятьНазвание(объ, Падеж.винительный)}</span>`
     }
+    if(объекты !== "") объекты = "<p>Вы видите " + объекты
 
-    if(текст !== "") текст = "<p>Вы видите " + текст
+    let инвентарь = ""
+    for(let объ of игрок.инвентарь) {
+        инвентарь += `${инвентарь === "" ? "" : ", "}<span class="link">${просклонятьНазвание(объ)}</span>`
+    }
+    if(инвентарь !== "") инвентарь = "<p>У вас с собой " + инвентарь
 
-    descriptionElement.innerHTML = парситьТекст(вСтроку(лок.описание, лок)) + текст
+    descriptionElement.innerHTML = парситьТекст(вСтроку(лок.описание, лок)) + объекты + инвентарь
 
     const imageFile = вСтроку(лок.изображение, лок)
     if(imageElement) {
@@ -97,12 +102,13 @@ export function показатьМеню(menuNode) {
         const div = document.createElement("div")
         div.className = "menu_item"
         div.innerHTML = key
-        div.menuNode = value
+        div["menuNode"] = value
         div.addEventListener("click", event => {
-            const menuNode = event.target.menuNode
+            const menuNode = event.target["menuNode"]
             if(Array.isArray(menuNode)) {
                 menuNode[0].выполнение(menuNode[1])
                 скрытьМеню()
+                обновить()
             } else {
                 показатьМеню(menuNode)
             }

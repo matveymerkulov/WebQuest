@@ -10,7 +10,7 @@ Object.defineProperty(Array.prototype, "размер", {
 Array.prototype.содержит = Array.prototype.содержат = Array.prototype.includes
 
 Array.prototype.добавить = Array.prototype.push
-Array.prototype.удалить = function(...элемент) {
+Array.prototype.удалить = function(элемент) {
     const индекс = this.indexOf(элемент, 0);
     if (индекс > -1) {
         this.splice(индекс, 1);
