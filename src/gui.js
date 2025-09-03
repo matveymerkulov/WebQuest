@@ -1,7 +1,7 @@
 // noinspection NonAsciiCharacters
 
 import {выполнитьКоманду, обновитьКоманды, Падеж, персонаж, просклонять, просклонятьНазвание} from "./main.js"
-import {вСтроку, этоМассив} from "./functions.js"
+import {вЗначение, вСтроку, этоМассив} from "./functions.js"
 import {инициализация} from "./init.js"
 import {игрок} from "../examples/farm/main.js"
 
@@ -51,7 +51,7 @@ export function обновить() {
 
     let объекты = ""
     for(let объ of лок.объекты) {
-        if(объ.скрыт) continue
+        if(вЗначение(объ.скрыт)) continue
         объекты += `${объекты === "" ? "" : ", "}<span class="link">${просклонятьНазвание(объ, Падеж.винительный)}</span>`
     }
     if(объекты !== "") объекты = "<p>Вы видите " + объекты
@@ -105,8 +105,15 @@ export function показатьМеню(menuNode) {
         div["menuNode"] = value
         div.addEventListener("click", event => {
             const menuNode = event.target["menuNode"]
+
             if(Array.isArray(menuNode)) {
-                menuNode[0].выполнение(menuNode[1])
+                const command = menuNode[0].выполнение
+                const obj = menuNode[1]
+                if(typeof command === "string") {
+                    написать(command)
+                } else {
+                    command(obj)
+                }
                 скрытьМеню()
                 обновить()
             } else {
@@ -121,6 +128,10 @@ export function показатьМеню(menuNode) {
 
 function скрытьМеню() {
     menuContainer.textContent = ""
+}
+
+export function очиститьКонсоль() {
+    consoleElement.textContent = ""
 }
 
 export function написать(текст) {

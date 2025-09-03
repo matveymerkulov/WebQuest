@@ -28,9 +28,33 @@ String.prototype.часть = String.prototype.substring
 String.prototype.разбить = String.prototype.split
 
 
-export const ключи = (...объ) => [].concat(...Object.keys(...объ))
-export const значения = (...объ) => [].concat(...Object.values(...объ))
-export const пары = (...объ) => [].concat(...Object.entries(...объ))
+export function ключи(...объекты) {
+    const массив = []
+    for(const объ of объекты) {
+        for(const значение of Object.keys(объ)) {
+            массив.добавить(значение)
+        }
+    }
+    return массив
+}
+export function значения(...объекты) {
+    const массив = []
+    for(const объ of объекты) {
+        for(const значение of Object.values(объ)) {
+            массив.добавить(значение)
+        }
+    }
+    return массив
+}
+export function пары(...объекты) {
+    const массив = []
+    for(const объ of объекты) {
+        for(const значение of Object.entries(объ)) {
+            массив.добавить(значение)
+        }
+    }
+    return массив
+}
 
 export const этоМассив = (объ) => Array.isArray(объ)
 export const этоСтрока = (объ) => typeof объ === "string"
@@ -44,8 +68,13 @@ export function вМассив(объ, параметр = неЗадан) {
     return [объ]
 }
 
-export function вСтроку(объ, параметр) {
+export function вСтроку(объ, параметр = неЗадан) {
     if(этоСтрока(объ)) return объ
     if(этоФункция(объ)) return объ(параметр)
     return ""
+}
+
+export function вЗначение(объ, параметр = неЗадан) {
+    if(этоФункция(объ)) return объ(параметр)
+    return объ
 }
