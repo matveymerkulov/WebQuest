@@ -1,7 +1,7 @@
 // noinspection NonAsciiCharacters
 
 import {выполнитьКоманду, обновитьКоманды, объект, Падеж, персонаж, просклонять, просклонятьНазвание} from "./main.js"
-import {вЗначение, вСтроку, открыт, скрыт, этоМассив} from "./functions.js"
+import {вЗначение, вСтроку, закрыт, скрыт, этоМассив} from "./functions.js"
 import {инициализация} from "./init.js"
 import {игрок} from "../examples/farm/main.js"
 
@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
         x = event.clientX
         y = event.clientY
     })
+
+    document.body.onresize = function() {
+        обновить()
+    }
 })
 
 
@@ -43,6 +47,7 @@ function парситьТекст(текст) {
 
 
 const consoleElement = document.getElementById("console")
+const imageDiv = document.getElementById("image_div")
 const imageElement = document.getElementById("image")
 const descriptionElement = document.getElementById("description")
 
@@ -51,7 +56,7 @@ function текстОбъектов(объ) {
     for(let вложенныйОбъект of объ.объекты) {
         if(скрыт(вложенныйОбъект)) continue
         объекты += `, <span class="link">${просклонятьНазвание(вложенныйОбъект, Падеж.винительный)}</span>`
-        if(!открыт(вложенныйОбъект)) continue
+        if(закрыт(вложенныйОбъект)) continue
         объекты += текстОбъектов(вложенныйОбъект)
     }
     return объекты
@@ -74,13 +79,18 @@ export function обновить() {
     descriptionElement.innerHTML = парситьТекст(вСтроку(лок.описание, лок)) + объекты + инвентарь
 
     const imageFile = вСтроку(лок.изображение, лок)
-    if(imageElement) {
-        if(imageFile === "") {
-            imageElement.hidden = true
-        } else {
-            imageElement.hidden = false
-            imageElement.src = "images/" + imageFile
+    if(imageFile === "") {
+        imageElement.hidden = true
+    } else {
+        imageElement.hidden = false
+        imageElement.onload = function() {
+            const scale = Math.min(imageDiv.offsetWidth / imageElement.naturalWidth
+                , 0.5 * document.body.offsetHeight / imageElement.naturalHeight)
+            imageElement.style.width = (scale * imageElement.naturalWidth) + "px"
+            imageElement.style.height = (scale * imageElement.naturalHeight) + "px"
+            imageDiv.style.backgroundImage = `url("${imageElement.src}")`
         }
+        imageElement.src = "images/" + imageFile
     }
 
     for(const element of document.getElementsByClassName("link")) {
