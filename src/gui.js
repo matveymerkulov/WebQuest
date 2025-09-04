@@ -7,18 +7,35 @@ import {игрок} from "../examples/farm/main.js"
 
 let x, y
 
+let consoleElement, imageDiv, imageElement, descriptionElement, maxImageHeight
+
+
+function applyOrientation() {
+    const portrait = document.body.offsetHeight > document.body.offsetWidth
+    const postfix = portrait ? "_p" : "_l"
+    consoleElement = document.getElementById("console" + postfix)
+    imageDiv = document.getElementById("image_div" + postfix)
+    imageElement = document.getElementById("image" + postfix)
+    descriptionElement = document.getElementById("description" + postfix)
+    document.getElementById("landscape").style.visibility = portrait ? "hidden" : "visible"
+    document.getElementById("portrait").style.visibility = !portrait ? "hidden" : "visible"
+    maxImageHeight = portrait ? 0.3 : 0.5
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
-    инициализация()
-
     document.body.addEventListener("mousemove", event => {
         x = event.clientX
         y = event.clientY
     })
 
     document.body.onresize = function() {
+        applyOrientation()
         обновить()
     }
+
+    applyOrientation()
+    инициализация()
 })
 
 
@@ -45,11 +62,6 @@ function парситьТекст(текст) {
 }
 
 
-
-const consoleElement = document.getElementById("console")
-const imageDiv = document.getElementById("image_div")
-const imageElement = document.getElementById("image")
-const descriptionElement = document.getElementById("description")
 
 function текстОбъектов(объ) {
     let объекты = ""
@@ -85,7 +97,7 @@ export function обновить() {
         imageElement.hidden = false
         imageElement.onload = function() {
             const scale = Math.min(imageDiv.offsetWidth / imageElement.naturalWidth
-                , 0.5 * document.body.offsetHeight / imageElement.naturalHeight)
+                , maxImageHeight * document.body.offsetHeight / imageElement.naturalHeight)
             imageElement.style.width = (scale * imageElement.naturalWidth) + "px"
             imageElement.style.height = (scale * imageElement.naturalHeight) + "px"
             imageDiv.style.backgroundImage = `url("${imageElement.src}")`
@@ -107,8 +119,8 @@ export function показатьМеню(menuNode) {
     const layer = document.createElement("div")
     layer.className = "layer"
     layer.addEventListener("click", event => {
-        menuContainer.removeChild(document.body.lastChild)
-        menuContainer.removeChild(document.body.lastChild)
+        menuContainer.removeChild(menuContainer.lastChild)
+        menuContainer.removeChild(menuContainer.lastChild)
     })
 
     const menu = document.createElement("div")
