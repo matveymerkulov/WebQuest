@@ -123,6 +123,18 @@ export function обновить() {
 
 const menuContainer = document.getElementById("menus")
 
+export function выполнитьПунктМеню(menuNode) {
+    const command = menuNode[0].выполнение
+    const obj = menuNode[1]
+    if(typeof command === "string") {
+        написать(command)
+    } else {
+        command(obj)
+    }
+    скрытьМеню()
+    обновить()
+}
+
 export function показатьМеню(menuNode) {
     const layer = document.createElement("div")
     layer.className = "layer"
@@ -140,17 +152,8 @@ export function показатьМеню(menuNode) {
         div["menuNode"] = value
         div.addEventListener("click", event => {
             const menuNode = event.target["menuNode"]
-
             if(Array.isArray(menuNode)) {
-                const command = menuNode[0].выполнение
-                const obj = menuNode[1]
-                if(typeof command === "string") {
-                    написать(command)
-                } else {
-                    command(obj)
-                }
-                скрытьМеню()
-                обновить()
+                выполнитьПунктМеню(menuNode)
             } else {
                 показатьМеню(menuNode)
             }
@@ -183,7 +186,6 @@ export function написать(текст) {
     consoleElement.innerHTML += парситьТекст(текст)
 }
 
-export function конец(текст) {
-    alert(текст)
+export function сброс() {
     window.location.reload();
 }

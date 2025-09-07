@@ -1,8 +1,8 @@
 // noinspection NonAsciiCharacters
 
-import {вЗначение, вМассив, вСтроку, значения} from "./functions.js"
-import {написать, обновить, очиститьКонсоль, показатьМеню} from "./gui.js"
-import {локация, неЗадан, неЗадана, объект, Падеж, персонаж, предмет, просклонять} from "./main.js"
+import {вМассив, значения} from "./functions.js"
+import {написать, обновить, очиститьКонсоль} from "./gui.js"
+import {локация, неЗадана, объект, персонаж, предмет} from "./main.js"
 
 export function инициализация() {
     for(let контейнер of значения(локация, объект, предмет)) {

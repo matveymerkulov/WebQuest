@@ -1,6 +1,6 @@
 // noinspection NonAsciiCharacters
 
-import {обновить, очиститьКонсоль, показатьМеню} from "./gui.js"
+import {выполнитьПунктМеню, обновить, очиститьКонсоль, показатьМеню} from "./gui.js"
 import {вМассив, вСтроку, значения, закрыт, пары, скрыт, этоМассив, этоСтрока, этоФункция} from "./functions.js"
 
 export const да = true, нет = false
@@ -101,6 +101,10 @@ export function выполнитьКоманду(текст) {
 
     for(const [пункт, узел] of Object.entries(меню)) {
         if(текст === пункт) {
+            if(этоМассив(узел)) {
+                выполнитьПунктМеню(узел)
+                return
+            }
             показатьМеню(узел)
             return
         }
