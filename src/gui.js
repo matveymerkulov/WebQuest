@@ -5,23 +5,26 @@ import {вЗначение, вСтроку, закрыт, скрыт, этоМа
 import {инициализация} from "./init.js"
 import {игрок} from "../examples/farm/main.js"
 
-let x, y
-
-let consoleElement, imageDiv, imageElement, descriptionElement, maxImageHeight
-
+let portrait
+const mainElement = document.getElementById("main")
+const descriptionElement = document.getElementById("description")
+const columnElement = document.getElementById("column")
+const imageDiv1 = document.getElementById("image_div_1")
+const imageDiv3 = document.getElementById("image_div_3")
+const imageElement = new Image()
+const consoleElement = document.getElementById("console")
 
 function applyOrientation() {
-    const portrait = document.body.offsetHeight > document.body.offsetWidth
-    const postfix = portrait ? "_p" : "_l"
-    consoleElement = document.getElementById("console" + postfix)
-    imageDiv = document.getElementById("image_div" + postfix)
-    imageElement = document.getElementById("image" + postfix)
-    descriptionElement = document.getElementById("description" + postfix)
-    document.getElementById("landscape").style.visibility = portrait ? "hidden" : "visible"
-    document.getElementById("portrait").style.visibility = !portrait ? "hidden" : "visible"
-    maxImageHeight = portrait ? 0.3 : 0.5
+    portrait = document.body.offsetWidth / document.body.offsetHeight < 1
+    if(portrait) {
+        columnElement.insertBefore(descriptionElement, consoleElement)
+    } else {
+        mainElement.insertBefore(descriptionElement, columnElement)
+    }
 }
 
+
+let x, y
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("mousemove", event => {
@@ -37,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
     applyOrientation()
     инициализация()
 })
-
 
 
 function парситьТекст(текст) {
@@ -74,6 +76,7 @@ function текстОбъектов(объ) {
     return объекты
 }
 
+
 export function обновить() {
     обновитьКоманды()
 
@@ -96,14 +99,19 @@ export function обновить() {
     } else {
         imageElement.hidden = false
         imageElement.onload = function() {
-            const scale = Math.min(imageDiv.offsetWidth / imageElement.naturalWidth
-                , maxImageHeight * document.body.offsetHeight / imageElement.naturalHeight)
-            imageElement.style.width = (scale * imageElement.naturalWidth) + "px"
-            imageElement.style.height = (scale * imageElement.naturalHeight) + "px"
-            imageDiv.style.backgroundImage = `url("${imageElement.src}")`
+            const maxWidth = portrait ? document.body.offsetWidth - 32
+                : 0.5 * (document.body.offsetWidth - 48)
+            const maxHeight = portrait ? 0.3 * (document.body.offsetHeight - 48)
+                : 0.5 * (document.body.offsetHeight - 32)
+            const scale = Math.min(maxWidth / imageElement.naturalWidth
+                , maxHeight / imageElement.naturalHeight)
+            imageDiv1.style.height = (scale * imageElement.naturalHeight) + "px"
         }
         imageElement.src = "images/" + imageFile
+        imageDiv1.style.backgroundImage = `url("${imageElement.src}")`
+        imageDiv3.style.backgroundImage = `url("${imageElement.src}")`
     }
+
 
     for(const element of document.getElementsByClassName("link")) {
         element.addEventListener("click", event => {
@@ -125,8 +133,6 @@ export function показатьМеню(menuNode) {
 
     const menu = document.createElement("div")
     menu.className = "menu"
-    menu.style.left = x + "px"
-    menu.style.top = y + "px"
     for(const [key, value] of Object.entries(menuNode)) {
         const div = document.createElement("div")
         div.className = "menu_item"
@@ -151,8 +157,17 @@ export function показатьМеню(menuNode) {
         })
         menu.appendChild(div)
     }
+
+    menu.style.visibility = "hidden"
+    menu.style.left = "0px"
+    menu.style.top = "0px"
+
     menuContainer.appendChild(layer)
     menuContainer.appendChild(menu)
+
+    menu.style.left = Math.max(8, Math.min(x, window.innerWidth - menu.offsetWidth - 8)) + "px"
+    menu.style.top = Math.max(8, Math.min(y + 6, window.innerHeight - menu.offsetHeight - 8)) + "px"
+    menu.style.visibility = "visible"
 }
 
 function скрытьМеню() {
