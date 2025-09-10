@@ -1,6 +1,6 @@
 // noinspection NonAsciiCharacters
 
-import {да, локация, неЗадан, нет, объект, предмет} from "./main.js"
+import {да, неЗадан, нет} from "./main.js"
 
 Object.defineProperty(Array.prototype, "размер", {
     get: function myProperty() {

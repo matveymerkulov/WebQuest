@@ -1,9 +1,8 @@
 // noinspection NonAsciiCharacters
 
-import {выполнитьКоманду, обновитьКоманды, объект, Падеж, персонаж, просклонять, просклонятьНазвание} from "./main.js"
+import {выполнитьКоманду, обновитьКоманды, Падеж, просклонять, просклонятьНазвание} from "./main.js"
 import {вЗначение, вСтроку, закрыт, скрыт, этоМассив} from "./functions.js"
-import {инициализация} from "./init.js"
-import {игрок} from "../examples/farm/main.js"
+import {игрок, инициализация} from "./init.js"
 
 let portrait
 const mainElement = document.getElementById("main")
@@ -89,7 +88,7 @@ function текстИнфоПерсонажа(массив, префикс, па
 export function обновить() {
     обновитьКоманды()
 
-    const лок = персонаж.игрок.локация
+    const лок = игрок.локация
     let текст = текстОбъектов(лок)
     if(текст !== "") текст = "<p>Вы видите " + текст.часть(2)
 

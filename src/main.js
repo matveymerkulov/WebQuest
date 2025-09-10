@@ -1,15 +1,11 @@
 // noinspection NonAsciiCharacters
 
 import {выполнитьПунктМеню, обновить, очиститьКонсоль, показатьМеню} from "./gui.js"
-import {вМассив, вСтроку, значения, закрыт, пары, скрыт, этоМассив, этоСтрока, этоФункция} from "./functions.js"
+import {вМассив, вСтроку, закрыт, скрыт, этоМассив, этоФункция} from "./functions.js"
+import {игрок} from "./init.js"
 
 export const да = true, нет = false
 export const неЗадан = undefined, неЗадана = undefined, неЗадано = undefined, неЗаданы = undefined
-
-export const локация = {}, локацию = локация, локации = локация
-export const предмет = {}
-export const объект = {}
-export const персонаж = {}
 
 export const Падеж = Object.freeze({
     именительный: 0,
@@ -21,11 +17,6 @@ export const Падеж = Object.freeze({
 })
 
 
-
-let описаниеПоУмолчанию = ""
-export function задатьОписаниеПоУмолчанию(текст) {
-    описаниеПоУмолчанию = текст
-}
 
 let действияПеред = () => {}
 export function задатьДействияПеред(функция) {
@@ -84,7 +75,6 @@ function обработатьКоманды(объ, префикс = "") {
 export function обновитьКоманды() {
     действияПеред()
 
-    const игрок = персонаж.игрок
     const лок = игрок.локация
 
     меню = {}
@@ -99,7 +89,6 @@ export function обновитьКоманды() {
 }
 
 export function выполнитьКоманду(текст) {
-    const игрок = персонаж.игрок
     const лок = игрок.локация
 
     for(const [пункт, узел] of Object.entries(меню)) {
