@@ -4,7 +4,7 @@ import {задатьДействияПеред} from "../../src/main.js"
 import "./items.js"
 import "./objects.js"
 import "./locations.js"
-import {игрок, Персонаж} from "../../src/init.js"
+import {игрок} from "../../src/person.js"
 import {алмаз, плед, факел} from "./items.js"
 import {конец, начало} from "./locations.js"
 

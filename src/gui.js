@@ -2,7 +2,7 @@
 
 import {выполнитьКоманду, обновитьКоманды, Падеж, просклонять, просклонятьНазвание} from "./main.js"
 import {вЗначение, вСтроку, закрыт, скрыт, этоМассив} from "./functions.js"
-import {игрок, инициализация} from "./init.js"
+import {игрок, инициализация} from "./person.js"
 
 let portrait
 const mainElement = document.getElementById("main")

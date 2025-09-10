@@ -3,9 +3,10 @@
 import {да, нет} from "../../src/main.js"
 import {светло} from "./main.js"
 import {написать} from "../../src/gui.js"
-import {игрок, Объект} from "../../src/init.js"
+import {игрок} from "../../src/person.js"
 import {погреб, порог, прихожая, сад, уВорот} from "./locations.js"
 import {ключ, лопата, шкатулка} from "./items.js"
+import {Объект} from "../../src/object.js"
 
 export const дверь = Object.assign(new Объект("дверь"), {
     закрыта: да,

@@ -2,8 +2,10 @@
 
 import {да, нет} from "../../src/main.js"
 import {написать} from "../../src/gui.js"
-import {игрок, Одежда, Предмет} from "../../src/init.js"
+import {игрок} from "../../src/person.js"
 import {конюшня, чердак} from "./locations.js"
+import {Предмет} from "../../src/item.js"
+import {Одежда} from "../../src/cloth.js"
 
 export const факел = Object.assign(new Предмет("факел"), {
     зажжён: нет,

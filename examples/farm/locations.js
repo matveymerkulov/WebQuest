@@ -3,9 +3,10 @@
 import {да, нет} from "../../src/main.js"
 import {светло} from "./main.js"
 import {написать, сброс} from "../../src/gui.js"
-import {игрок, Локация} from "../../src/init.js"
+import {игрок} from "../../src/person.js"
 import {ключ, лопата, плед, факел, шкатулка} from "./items.js"
 import {буфет, ворота, дверь, сейф, яма} from "./objects.js"
+import {Локация} from "../../src/location.js"
 
 
 export const начало = Object.assign(new Локация("начало"), {
@@ -175,7 +176,7 @@ export const столовая = Object.assign(new Локация("столова
 
 export const кухня = Object.assign(new Локация("кухня"), {
     изображение: "kitchen.jpg",
-    описание: "Кухня сверкает белизной и чистотой. В воздухе определенно чувствуется запах чего-то приятного."
+    описание: "Кухня сверкает чистотой. В воздухе определенно чувствуется запах чего-то приятного."
         + " Можно идти *в прихожую*, *в столовую* или *в сад*.",
     выходы: [
         ["в прихожую", "прихожая"],
@@ -188,7 +189,7 @@ export const кухня = Object.assign(new Локация("кухня"), {
 export const погреб = Object.assign(new Локация("погреб"), {
     объекты: "сейф",
     изображение: () => {
-        if(светло()) {
+        if(светло(погреб)) {
             if (!сейф.закрыт) {
                 if(сейф.содержит(шкатулка)) {
                     return "stable_basement_lit_safe_opened_casket.jpg"
