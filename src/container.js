@@ -1,32 +1,30 @@
-// noinspection NonAsciiCharacters
+import {error, toArray} from "./functions.js"
+import {BaseObject, allObjects} from "./base.js"
 
-import {вМассив} from "./functions.js"
+export class Container extends BaseObject {
+    objects = []
 
-import {БазовыйОбъект, всеОбъекты} from "./base.js"
-
-export class Контейнер extends БазовыйОбъект {
-    объекты = []
-
-    инициализировать() {
-        super.инициализировать()
-        const массив = []
-        for(let названиеОбъекта of вМассив(this.объекты)) {
-            const объ = всеОбъекты.get(названиеОбъекта)
-            объ.контейнер = this
-            массив.добавить(объ)
+    init() {
+        super.init()
+        const array = []
+        for(let objectName of toArray(this.objects)) {
+            const object = allObjects.get(objectName)
+            if(!object) error(`Объект "${objectName}" не найден!`)
+            object.container = this
+            array.push(object)
         }
-        this.объекты = массив
+        this.objects = array
     }
 
-    добавить(...объ) {
-        this.объекты.добавить(...объ)
+    contains(object) {
+        return this.objects.includes(object)
     }
 
-    удалить(...объ) {
-        this.объекты.удалить(...объ)
+    add(...object) {
+        this.objects.push(...object)
     }
 
-    содержит(объ) {
-        return this.объекты.содержат(объ)
+    remove(...object) {
+        this.objects.remove(...object)
     }
 }

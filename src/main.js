@@ -1,116 +1,115 @@
 // noinspection NonAsciiCharacters
 
-import {выполнитьПунктМеню, обновить, очиститьКонсоль, показатьМеню} from "./gui.js"
-import {вМассив, вСтроку, закрыт, скрыт, этоМассив, этоФункция} from "./functions.js"
-import {игрок} from "./person.js"
+import {executeMenuItem, update, clearConsole, showMenu} from "./gui.js"
+import {toArray, toString, isArray, isFunction, error, isHidden, isClosed} from "./functions.js"
+import {player} from "./person.js"
 
-export const да = true, нет = false
-export const неЗадан = undefined, неЗадана = undefined, неЗадано = undefined, неЗаданы = undefined
+export const yes = true, no = false
 
-export const Падеж = Object.freeze({
-    именительный: 0,
-    родительный: 1,
-    дательный: 2,
-    винительный: 3,
-    творительный: 4,
-    предложный: 5
+export const Pad = Object.freeze({
+    imen: 0,
+    rod: 1,
+    dat: 2,
+    vin: 3,
+    tvor: 4,
+    pred: 5
 })
 
 
 
-let действияПеред = () => {}
-export function задатьДействияПеред(функция) {
-    действияПеред = функция
+let actionsBefore = () => {}
+export function setActionsBefore(func) {
+    actionsBefore = func
 }
 
 
 
-export function просклонятьНазвание(объ, падеж = Падеж.именительный) {
-    return просклонять(этоФункция(объ.название) ? объ.название(объ) : объ.название, падеж)
+export function declineName(object, pad = Pad.imen) {
+    return просклонять(isFunction(object.name) ? object.name(object) : object.name, pad)
 }
 
-export function просклонять(текст, падеж = Падеж.именительный) {
-    if(!этоМассив(текст)) return текст
-    if(текст.размер === 2) return текст[падеж === Падеж.винительный ? 1 : 0]
-    return текст[падеж] ?? текст[0]
+export function просклонять(text, pad = Pad.imen) {
+    if(!isArray(text)) return text
+    if(text.length === 2) return text[pad === Pad.vin ? 1 : 0]
+    return text[pad] ?? text[0]
 }
 
 
 
-let меню
+let menu
 
-function обработатьКоманду(команда, параметр, префикс = "") {
-    if(команда.условие && !команда.условие(параметр)) return
-    const узлы = (префикс + вСтроку(команда.текст)).разбить("/")
-    let уровень = меню
-    for(let и = 0; и < узлы.размер; и++) {
-        const узел = узлы[и]
-        if(и === узлы.размер - 1) {
-            if(уровень[узел] !== неЗадан) {
-                console.error(`В меню уже есть команда "${команда}"`)
+function обработатьКоманду(command, parameter, префикс = "") {
+    if(command.condition && !command.condition(parameter)) return
+    const nodes = (префикс + toString(command.text)).split("/")
+    let level = menu
+    for(let i = 0; i < nodes.length; i++) {
+        const node = nodes[i]
+        if(i === nodes.length - 1) {
+            if(level[node] !== undefined) {
+                error(`В меню уже есть команда "${command}"`)
             }
-            уровень[узел] = [команда, параметр]
+            level[node] = [command, parameter]
         } else {
-            if(уровень[узел] === неЗадан) {
-                уровень[узел] = {}
+            if(level[node] === undefined) {
+                level[node] = {}
             }
-            уровень = уровень[узел]
+            level = level[node]
         }
     }
 }
 
-function обработатьКоманды(объ, префикс = "") {
-    if(скрыт(объ)) return
+function operateCommands(object, префикс = "") {
+    if(isHidden(object)) return
 
-    for(let команда of вМассив(объ.команды)) {
-        обработатьКоманду(команда, объ, префикс)
+    for(let command of toArray(object.commands)) {
+        обработатьКоманду(command, object, префикс)
     }
 
-    if(закрыт(объ)) return
+    if(isClosed(object)) return
 
-    for(let вложенныйОбъект of объ.объекты) {
-        обработатьКоманды(вложенныйОбъект, просклонятьНазвание(вложенныйОбъект, Падеж.винительный) + "/")
-    }
-}
-
-
-
-export function обновитьКоманды() {
-    действияПеред()
-
-    const лок = игрок.локация
-
-    меню = {}
-    обработатьКоманды(лок)
-
-    for(let объ of игрок.инвентарь) {
-        обработатьКоманды(объ, просклонятьНазвание(объ) + "/")
-    }
-    for(let объ of игрок.одежда) {
-        обработатьКоманды(объ, просклонятьНазвание(объ, Падеж.винительный) + "/")
+    for(let childObject of object.objects) {
+        operateCommands(childObject, declineName(childObject, Pad.vin) + "/")
     }
 }
 
-export function выполнитьКоманду(текст) {
-    const лок = игрок.локация
 
-    for(const [пункт, узел] of Object.entries(меню)) {
-        if(текст === пункт) {
-            if(этоМассив(узел)) {
-                выполнитьПунктМеню(узел)
+
+export function updateCommands() {
+    actionsBefore()
+
+    const location = player.location
+
+    menu = {}
+    operateCommands(location)
+
+    for(let object of player.inventory) {
+        operateCommands(object, declineName(object) + "/")
+    }
+    for(let object of player.clothes) {
+        operateCommands(object, declineName(object, Pad.vin) + "/")
+    }
+}
+
+export function executeCommand(text) {
+    const location = player.location
+
+    for(const [пункт, узел] of Object.entries(menu)) {
+        if(text === пункт) {
+            if(isArray(узел)) {
+                executeMenuItem(узел)
                 return
             }
-            показатьМеню(узел)
+            showMenu(узел)
             return
         }
     }
 
-    for(const выход of лок.выходы ?? []) {
-        const командаВыхода = выход[0]
-        if(командаВыхода === текст) {
-            игрок.локация = выход[1]
-            очиститьКонсоль()
-            обновить()
+    for(const выход of location.exits ?? []) {
+        const exitCommand = выход[0]
+        if(exitCommand === text) {
+            player.location = выход[1]
+            clearConsole()
+            update()
             return
         }
     }

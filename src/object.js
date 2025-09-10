@@ -1,11 +1,11 @@
 // noinspection NonAsciiCharacters
 
-import {Контейнер} from "./container.js"
+import {Container} from "./container.js"
 
-export class Объект extends Контейнер {
-    команды = []
+export class Obj extends Container {
+    commands = []
 
-    инициализировать() {
-        super.инициализировать()
+    init() {
+        super.init()
     }
 }

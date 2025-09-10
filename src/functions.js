@@ -1,98 +1,42 @@
-// noinspection NonAsciiCharacters
+export const isArray = (object) => Array.isArray(object)
+export const isString = (object) => typeof object === "string"
+export const isFunction = (object) => typeof object === "function"
 
-import {да, неЗадан, нет} from "./main.js"
 
-Object.defineProperty(Array.prototype, "размер", {
-    get: function myProperty() {
-        return this.length
-    }
-})
-Array.prototype.содержит = Array.prototype.содержат = Array.prototype.includes
-
-Array.prototype.добавить = Array.prototype.push
-Array.prototype.удалить = function(элемент) {
-    const индекс = this.indexOf(элемент, 0);
-    if (индекс > -1) {
-        this.splice(индекс, 1);
-    }
+export function toArray(object, parent = undefined) {
+    if(object === undefined) return []
+    if(isArray(object)) return object
+    if(isFunction(object)) return object.call(parent)
+    return [object]
 }
 
-Object.defineProperty(String.prototype, "длина", {
-    get: function myProperty() {
-        return this.length
-    }
-})
-String.prototype.символ = String.prototype.charAt
-String.prototype.добавить = String.prototype.concat
-String.prototype.часть = String.prototype.substring
-String.prototype.разбить = String.prototype.split
-
-
-export function ключи(...объекты) {
-    const массив = []
-    for(const объ of объекты) {
-        for(const значение of Object.keys(объ)) {
-            массив.добавить(значение)
-        }
-    }
-    return массив
-}
-export function значения(...объекты) {
-    if(объекты.размер === 1) {
-        return Object.values(объекты[0])
-    }
-    const массив = []
-    for(const объ of объекты) {
-        for(const значение of Object.values(объ)) {
-            массив.добавить(значение)
-        }
-    }
-    return массив
-}
-export function пары(...объекты) {
-    const массив = []
-    for(const объ of объекты) {
-        for(const значение of Object.entries(объ)) {
-            массив.добавить(значение)
-        }
-    }
-    return массив
-}
-
-export const этоМассив = (объ) => Array.isArray(объ)
-export const этоСтрока = (объ) => typeof объ === "string"
-export const этоФункция = (объ) => typeof объ === "function"
-
-
-export function вМассив(объ, параметр = неЗадан) {
-    if(объ === неЗадан) return []
-    if(этоМассив(объ)) return объ
-    if(этоФункция(объ)) return объ(параметр)
-    return [объ]
-}
-
-export function вСтроку(объ, параметр = неЗадан) {
-    if(этоСтрока(объ)) return объ
-    if(этоФункция(объ)) return объ(параметр)
+export function toString(object, parent = undefined) {
+    if(isString(object)) return object
+    if(isFunction(object)) return object.call(parent)
     return ""
 }
 
-export function вЗначение(объ, параметр = неЗадан) {
-    if(этоФункция(объ)) return объ(параметр)
-    return объ
+export function toValue(object, parent = undefined) {
+    if(isFunction(object)) return object.call(parent)
+    return object
 }
 
 
-export function скрыт(объ) {
-    for(const параметр of ["скрыт", "скрыта", "скрыто", "скрыты"]) {
-        if(вЗначение(объ[параметр], объ) === да) return да
-    }
-    return нет
+export function isHidden(object) {
+    return toValue(object.isHidden, object)
 }
 
-export function закрыт(объ) {
-    for(const параметр of ["закрыт", "закрыта", "закрыто", "закрыты"]) {
-        if(вЗначение(объ[параметр], объ) === да) return да
+export function isClosed(object) {
+    return toValue(object.isClosed, object)
+}
+
+export function removeFromArray(array, element) {
+    const index = array.indexOf(element, 0);
+    if (index > -1) {
+        array.splice(index, 1);
     }
-    return нет
+}
+
+export function error(text) {
+    console.error(text)
 }

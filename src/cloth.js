@@ -1,22 +1,20 @@
-// noinspection NonAsciiCharacters
+import {Item} from "./item.js"
+import {player} from "./person.js"
 
-import {Предмет} from "./item.js"
-import {игрок} from "./person.js"
-
-export class Одежда extends Предмет {
-    инициализировать() {
-        super.инициализировать()
-        this.команды.добавить({
-            текст: "надеть",
-            условие: (одежда) => !игрок.одетВ(одежда),
-            выполнение: (одежда) => {
-                игрок.положить(одежда)
-                игрок.надеть(одежда)
+export class Cloth extends Item {
+    init() {
+        super.init()
+        this.commands.push({
+            text: "надеть",
+            condition: () => !player.wears(this),
+            execution: () => {
+                player.drop(this)
+                player.wear(this)
             }
         }, {
-            текст: "снять",
-            условие: (одежда) => игрок.одетВ(одежда),
-            выполнение: (одежда) => игрок.снять(одежда)
+            text: "снять",
+            condition: () => player.wears(this),
+            execution: () => player.putOff(this)
         })
     }
 }

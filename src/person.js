@@ -1,80 +1,70 @@
-// noinspection NonAsciiCharacters
+import {write, update, clearConsole} from "./gui.js"
+import {Obj} from "./object.js"
+import {allObjects} from "./base.js"
+import {removeFromArray} from "./functions.js"
 
-import {написать, обновить, очиститьКонсоль} from "./gui.js"
-import {Объект} from "./object.js"
-import {всеОбъекты} from "./base.js"
 
-
-function добавитьВМассив(перс, массив, предм) {
-    if(массив.содержит(предм)) return
-    if(предм.контейнер) предм.контейнер.объекты.удалить(предм)
-    перс.локация.объекты.удалить(предм)
-    массив.добавить(предм)
+function addToPersonArray(person, array, item) {
+    if(array.includes(item)) return
+    if(item.container) removeFromArray(item.container.objects, item)
+    removeFromArray(person.location.objects, item)
+    array.push(item)
 }
 
-function удалитьИзМассива(перс, массив, предм) {
-    if(!массив.содержит(предм)) return
-    массив.удалить(предм)
-    перс.локация.объекты.добавить(предм)
+function removeFromPersonArray(person, array, item) {
+    if(!array.includes(item)) return
+    removeFromArray(array, item)
+    person.location.objects.push(item)
 }
 
-export class Персонаж extends Объект {
-    инвентарь = []
-    максимумПредметовВИнвентаре
-    одежда = []
-    локация
+export class Person extends Obj {
+    inventory = []
+    maxItems
+    clothes = []
+    location
 
-    переместитьВ(лок) {
-        this.локация = лок
-        очиститьКонсоль()
+    moveTo(location) {
+        this.location = location
+        clearConsole()
     }
 
-    находитсяВ(лок) {
-        return this.локация === лок
+    isIn(location) {
+        return this.location === location
     }
 
-    имеет(предм) {
-        return this.инвентарь.содержит(предм)
+    has(item) {
+        return this.inventory.includes(item)
     }
 
-    взять(предм){
-        const макс = this.максимумПредметовВИнвентаре
-        if(макс >= 0 && this.инвентарь.размер >= макс) {
-            написать("Вы не можете нести больше предметов.")
+    взять(item){
+        const макс = this.maxItems
+        if(макс >= 0 && this.inventory.length >= макс) {
+            write("Вы не можете нести больше предметов.")
             return
         }
-        добавитьВМассив(this, this.инвентарь, предм)
+        addToPersonArray(this, this.inventory, item)
     }
 
-    положить(предм) {
-        удалитьИзМассива(this, this.инвентарь, предм)
+    drop(item) {
+        removeFromPersonArray(this, this.inventory, item)
     }
 
-    одетВ(предм) {
-        return this.одежда.содержит(предм)
+    wears(item) {
+        return this.clothes.includes(item)
     }
 
-    надеть(предм){
-        добавитьВМассив(this, this.одежда, предм)
+    wear(item){
+        addToPersonArray(this, this.clothes, item)
     }
 
-    снять(предм) {
-        удалитьИзМассива(this, this.одежда, предм)
+    putOff(item) {
+        removeFromPersonArray(this, this.clothes, item)
     }
 
-    уничтожить(предм) {
-        this.инвентарь.удалить(предм)
-        this.одежда.удалить(предм)
+    destroy(item) {
+        removeFromArray(this.inventory, item)
+        removeFromArray(this.clothes, item)
     }
 }
 
-export const игрок = new Персонаж("игрок")
-
-
-export function инициализация() {
-    for(const объ of всеОбъекты.values()) {
-        объ.инициализировать()
-    }
-
-    обновить()
-}
+export const player = new Person("игрок")

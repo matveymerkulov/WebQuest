@@ -1,8 +1,7 @@
-// noinspection NonAsciiCharacters
-
-import {выполнитьКоманду, обновитьКоманды, Падеж, просклонять, просклонятьНазвание} from "./main.js"
-import {вЗначение, вСтроку, закрыт, скрыт, этоМассив} from "./functions.js"
-import {игрок, инициализация} from "./person.js"
+import {executeCommand, updateCommands, Pad, declineName} from "./main.js"
+import {isClosed, isHidden, toString} from "./functions.js"
+import {player} from "./person.js"
+import {allObjects} from "./base.js"
 
 let portrait
 const mainElement = document.getElementById("main")
@@ -33,72 +32,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.onresize = function() {
         applyOrientation()
-        обновить()
+        update()
     }
 
     applyOrientation()
-    инициализация()
+
+    for(const object of allObjects.values()) {
+        object.init()
+    }
+
+    update()
 })
 
 
-function парситьТекст(текст) {
-    let начало = 0, ссылка = false, новыйТекст = ""
-    for(let индекс = 0; индекс < текст.length; индекс++) {
-        const символ = текст.charAt(индекс)
-        if(символ === "*") {
-            if(ссылка) {
-                новыйТекст = новыйТекст.добавить('<span class="link">' + текст.часть(начало, индекс) + '</span>')
+function parseText(text) {
+    let begin = 0, link = false, newText = ""
+    for(let index = 0; index < text.length; index++) {
+        const symbol = text.charAt(index)
+        if(symbol === "*") {
+            if(link) {
+                newText = newText.concat('<span class="link">' + text.substring(begin, index) + '</span>')
             } else {
-                новыйТекст = новыйТекст.добавить(текст.часть(начало, индекс))
+                newText = newText.concat(text.substring(begin, index))
             }
-            начало = индекс + 1
-            ссылка = !ссылка
-        } else if(символ === "\n") {
-            новыйТекст = новыйТекст.добавить(текст.часть(начало, индекс), "<p>")
-            начало = индекс + 1
+            begin = index + 1
+            link = !link
+        } else if(symbol === "\n") {
+            newText = newText.concat(text.substring(begin, index), "<p>")
+            begin = index + 1
         }
     }
-    новыйТекст = новыйТекст.добавить(текст.часть(начало))
-    return новыйТекст
+    newText = newText.concat(text.substring(begin))
+    return newText
 }
 
 
 
-function текстОбъектов(объ) {
-    let текст = ""
-    for(let вложенныйОбъект of объ.объекты) {
-        if(скрыт(вложенныйОбъект)) continue
-        текст += `, <span class="link">${просклонятьНазвание(вложенныйОбъект, Падеж.винительный)}</span>`
-        if(закрыт(вложенныйОбъект)) continue
-        текст += текстОбъектов(вложенныйОбъект)
+function objectsText(object) {
+    let text = ""
+    for(let childObject of object.objects) {
+        if(isHidden(childObject)) continue
+        text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>`
+        if(isClosed(childObject)) continue
+        text += objectsText(childObject)
     }
-    return текст
+    return text
 }
 
 
-function текстИнфоПерсонажа(массив, префикс, падеж = Падеж.именительный) {
-    let текст = ""
-    for(let объ of массив) {
-        текст += `${текст === "" ? "" : ", "}<span class="link">${просклонятьНазвание(объ, падеж)}</span>`
+function personInfoText(array, prefix, pad = Pad.imen) {
+    let text = ""
+    for(let object of array) {
+        text += `${text === "" ? "" : ", "}<span class="link">${declineName(object, pad)}</span>`
     }
-    return текст === "" ? "" : префикс + текст
+    return text === "" ? "" : prefix + text
 }
 
 
-export function обновить() {
-    обновитьКоманды()
+export function update() {
+    updateCommands()
 
-    const лок = игрок.локация
-    let текст = текстОбъектов(лок)
-    if(текст !== "") текст = "<p>Вы видите " + текст.часть(2)
+    const loc = player.location
+    let text = objectsText(loc)
+    if(text !== "") text = "<p>Вы видите " + text.substring(2)
 
     descriptionElement.innerHTML =
-        парситьТекст(вСтроку(лок.описание, лок))
-        + текст
-        + текстИнфоПерсонажа(игрок.инвентарь, "<p>У вас с собой ")
-        + текстИнфоПерсонажа(игрок.одежда, "<p>На вас надет ", Падеж.винительный)
+        parseText(toString(loc.description, loc))
+        + text
+        + personInfoText(player.inventory, "<p>У вас с собой ")
+        + personInfoText(player.clothes, "<p>На вас надет ", Pad.vin)
 
-    const imageFile = вСтроку(лок.изображение, лок)
+    const imageFile = toString(loc.image, loc)
     if(imageFile === "") {
         imageElement.hidden = true
     } else {
@@ -120,7 +124,7 @@ export function обновить() {
 
     for(const element of document.getElementsByClassName("link")) {
         element.addEventListener("click", event => {
-            выполнитьКоманду(event.target.innerHTML)
+            executeCommand(event.target.innerHTML)
         })
     }
 }
@@ -128,22 +132,22 @@ export function обновить() {
 
 const menuContainer = document.getElementById("menus")
 
-export function выполнитьПунктМеню(menuNode) {
-    const command = menuNode[0].выполнение
-    const obj = menuNode[1]
+export function executeMenuItem(menuNode) {
+    const command = menuNode[0].execution
+    const object = menuNode[1]
     if(typeof command === "string") {
-        написать(command)
+        write(command)
     } else {
-        command(obj)
+        command(object)
     }
-    скрытьМеню()
-    обновить()
+    hideMenu()
+    update()
 }
 
-export function показатьМеню(menuNode) {
+export function showMenu(menuNode) {
     const layer = document.createElement("div")
     layer.className = "layer"
-    layer.addEventListener("click", event => {
+    layer.addEventListener("click", () => {
         menuContainer.removeChild(menuContainer.lastChild)
         menuContainer.removeChild(menuContainer.lastChild)
     })
@@ -158,15 +162,15 @@ export function показатьМеню(menuNode) {
         div.addEventListener("click", event => {
             const menuNode = event.target["menuNode"]
             if(Array.isArray(menuNode)) {
-                выполнитьПунктМеню(menuNode)
+                executeMenuItem(menuNode)
             } else {
-                показатьМеню(menuNode)
+                showMenu(menuNode)
             }
         })
         menu.appendChild(div)
     }
 
-    menu.style.visibility = "hidden"
+    menu.style.visibility = "isHidden"
     menu.style.left = "0px"
     menu.style.top = "0px"
 
@@ -178,20 +182,20 @@ export function показатьМеню(menuNode) {
     menu.style.visibility = "visible"
 }
 
-function скрытьМеню() {
+function hideMenu() {
     menuContainer.textContent = ""
 }
 
-export function очиститьКонсоль() {
+export function clearConsole() {
     consoleElement.textContent = ""
 }
 
-export function написать(текст) {
+export function write(text) {
     if(consoleElement.innerHTML.length > 0) consoleElement.innerHTML += "<p>"
-    consoleElement.innerHTML += парситьТекст(текст)
+    consoleElement.innerHTML += parseText(text)
     consoleElement.scrollTop = consoleElement.scrollHeight;
 }
 
-export function сброс() {
+export function reset() {
     window.location.reload();
 }

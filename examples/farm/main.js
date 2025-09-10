@@ -1,40 +1,42 @@
-// noinspection NonAsciiCharacters
-
-import {задатьДействияПеред} from "../../src/main.js"
+import {no, setActionsBefore, yes} from "../../src/main.js"
 import "./items.js"
 import "./objects.js"
 import "./locations.js"
-import {игрок} from "../../src/person.js"
-import {алмаз, плед, факел} from "./items.js"
-import {конец, начало} from "./locations.js"
+import {player} from "../../src/person.js"
+import {emerald, key, plaid, shovel, torch} from "./items.js"
+import {end, begin, stable, basement} from "./locations.js"
+import {safe} from "./objects.js"
 
 
-задатьДействияПеред(() => {
-    if(игрок.имеет(алмаз)) {
-        конец.плед = игрок.одетВ(плед)
-        игрок.инвентарь = []
-        игрок.одежда = []
-        игрок.переместитьВ(конец)
+setActionsBefore(() => {
+    if(player.has(emerald)) {
+        end.plaid = player.wears(plaid)
+        player.inventory = []
+        player.clothes = []
+        player.moveTo(end)
     }
 })
 
-export function светло(локация) {
-    return факел.зажжён && (игрок.имеет(факел) || локация.содержит(факел))
+export function light(location) {
+    return torch.lit && (player.has(torch) || location.contains(torch))
 }
 
-игрок.максимумПредметовВИнвентаре = 2
-игрок.локация = начало
+player.maxItems = 2
+player.location = begin
 
-/*игрок.локация = локация.конюшня
-локация.конюшня.объекты = ["алмаз", "плед", "факел"]*/
+/*player.location = stable
+stable.objects = ["алмаз", "плед", "факел"]*/
 
-/*игрок.локация = локация.чердак
-игрок.инвентарь = [предмет.шкатулка]*/
+/*игрок.location = location.чердак
+игрок.inventory = [шкатулка]*/
 
-/*игрок.локация = локация.сад
-игрок.инвентарь = [предмет.лопата]*/
+/*игрок.location = location.сад
+игрок.inventory = [лопата]*/
 
-/*игрок.локация = локация.погреб
-локация.погреб.объекты = ["сейф", "факел", "ключ"]
-предмет.факел.зажжён = да
-объект.сейф.открыт = да*/
+/*player.location = stable
+stable.objects = ["факел", "ключ"]
+torch.lit = yes
+safe.isClosed = no*/
+
+/*player.location = basement
+player.inventory = [torch, key]*/

@@ -1,12 +1,10 @@
-// noinspection NonAsciiCharacters
+export const allObjects = new Map()
 
-export const всеОбъекты = new Map()
-
-export class БазовыйОбъект {
-    constructor(имя) {
-        всеОбъекты.set(имя, this)
+export class BaseObject {
+    constructor(name) {
+        allObjects.set(name, this)
     }
 
-    инициализировать() {
+    init() {
     }
 }

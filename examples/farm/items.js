@@ -1,86 +1,84 @@
-// noinspection NonAsciiCharacters
+import {yes, no} from "../../src/main.js"
+import {write} from "../../src/gui.js"
+import {player} from "../../src/person.js"
+import {stable, attic} from "./locations.js"
+import {Item} from "../../src/item.js"
+import {Cloth} from "../../src/cloth.js"
 
-import {да, нет} from "../../src/main.js"
-import {написать} from "../../src/gui.js"
-import {игрок} from "../../src/person.js"
-import {конюшня, чердак} from "./locations.js"
-import {Предмет} from "../../src/item.js"
-import {Одежда} from "../../src/cloth.js"
+export const torch = Object.assign(new Item("факел"), {
+    lit: no,
 
-export const факел = Object.assign(new Предмет("факел"), {
-    зажжён: нет,
-
-    название: () => `${факел.зажжён ? "горящий" : ""}  факел`,
-    описание: "Небольшой факел, совершенно обыкновенный на вид.",
-    команды: [
+    name: () => `${torch.lit ? "горящий" : ""}  факел`,
+    description: "Небольшой факел, совершенно обыкновенный на вид.",
+    commands: [
         {
-            текст: "погасить",
-            условие: () => факел.зажжён,
-            выполнение: () => {
-                факел.зажжён = нет
-                написать("OК, он сразу же погас.")
+            text: "погасить",
+            condition: () => torch.lit,
+            execution: () => {
+                torch.lit = no
+                write("OК, он сразу же погас.")
             }
         }, {
-            текст: "зажечь",
-            условие: () => !факел.зажжён,
-            выполнение: () => {
-                факел.зажжён = да
-                написать("OK, теперь факел горит.")
+            text: "зажечь",
+            condition: () => !torch.lit,
+            execution: () => {
+                torch.lit = yes
+                write("OK, теперь факел горит.")
             }
         }
     ]
 })
 
 
-export const щепки = Object.assign(new Предмет("щепки"), {
-    название: "деревянные щепки"
+export const chips = Object.assign(new Item("щепки"), {
+    name: "деревянные щепки"
 })
 
 
-export const алмаз = Object.assign(new Предмет("алмаз"), {
-    название: "алмаз",
-    описание: "Что за подозрения! Он настоящий. Скорей бери его и покончим с этим делом!"
+export const emerald = Object.assign(new Item("алмаз"), {
+    name: "алмаз",
+    description: "Что за подозрения! Он настоящий. Скорей бери его и покончим с этим делом!"
 })
 
 
-export const плед = Object.assign(new Одежда("плед"), {
-    название: "шерстяной плед",
-    описание: "Красивый плед, выглядит как из французской шерсти.",
+export const plaid = Object.assign(new Cloth("плед"), {
+    name: "шерстяной плед",
+    description: "Красивый плед, выглядит как из французской шерсти.",
 })
 
 
-export const шкатулка = Object.assign(new Предмет("шкатулка"), {
-    название: ["деревянная шкатулка", "деревянную шкатулку"],
-    команды: [
+export const box = Object.assign(new Item("шкатулка"), {
+    name: ["деревянная шкатулка", "деревянную шкатулку"],
+    commands: [
         {
-            текст: "осмотреть",
-            выполнение: "Она достаточно прочна."
+            text: "осмотреть",
+            execution: "Она достаточно прочна."
         }, {
-            текст: "открыть",
-            выполнение: "Несмотря ни на какие усилия, открыть ее не удаётся!"
+            text: "открыть",
+            execution: "Несмотря ни на какие усилия, открыть ее не удаётся!"
         }, {
-            текст: "отпереть/бронзовым ключом",
-            условие: () => игрок.имеет(ключ),
-            выполнение: "Ключ к шкатулке нe подходит."
+            text: "отпереть/бронзовым ключом",
+            condition: () => player.has(key),
+            execution: "Ключ к шкатулке нe подходит."
         }, {
-            текст: "швырнуть вниз",
-            условие: () => игрок.находитсяВ(чердак),
-            выполнение: () => {
-                написать("Вот это бросок!!! От удара шкатулка разбилась. Что-то из нее выпало и"
+            text: "швырнуть вниз",
+            condition: () => player.isIn(attic),
+            execution: () => {
+                write("Вот это бросок!!! От удара шкатулка разбилась. Что-то из нее выпало и"
                     + ", блеснув, покатилось по полу конюшни.")
-                игрок.уничтожить(шкатулка)
-                конюшня.добавить(щепки, алмаз)
+                player.destroy(box)
+                stable.add(chips, emerald)
             }
         }
     ]
 })
 
 
-export const ключ = Object.assign(new Предмет("ключ"), {
-    название: "бронзовый ключ",
+export const key = Object.assign(new Item("ключ"), {
+    name: "бронзовый ключ",
 })
 
 
-export const лопата = Object.assign(new Предмет("лопата"), {
-    название: ["короткая лопата", "короткую лопату"],
+export const shovel = Object.assign(new Item("лопата"), {
+    name: ["короткая лопата", "короткую лопату"],
 })

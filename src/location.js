@@ -1,18 +1,20 @@
 // noinspection NonAsciiCharacters
 
-import {Контейнер} from "./container.js"
-import {вМассив} from "./functions.js"
-import {всеОбъекты} from "./base.js"
+import {Container} from "./container.js"
+import {error, toArray} from "./functions.js"
+import {allObjects} from "./base.js"
 
-export class Локация extends Контейнер {
-    инициализировать() {
-        super.инициализировать()
-        this.команды = вМассив(this.команды)
+export class Location extends Container {
+    init() {
+        super.init()
+        this.commands = toArray(this.commands)
 
-        const массив = []
-        for(let выход of вМассив(this.выходы)) {
-            массив.добавить([выход[0], всеОбъекты.get(выход[1])])
+        const array = []
+        for(let exit of toArray(this.exits)) {
+            const location = allObjects.get(exit[1])
+            if(!location) error(`Локация "${exit[1]}" не найдена!`)
+            array.push([exit[0], location])
         }
-        this.выходы = массив
+        this.exits = array
     }
 }
