@@ -3,6 +3,7 @@
 import {Container} from "./container.js"
 import {error, toArray} from "./functions.js"
 import {allObjects} from "./base.js"
+import {loc} from "./localization.js"
 
 export class Location extends Container {
     init() {
@@ -12,7 +13,7 @@ export class Location extends Container {
         const array = []
         for(let exit of toArray(this.exits)) {
             const location = allObjects.get(exit[1])
-            if(!location) error(`Локация "${exit[1]}" не найдена!`)
+            if(!location) error(loc("location") + exit[1] + loc("isNotFoundW"))
             array.push([exit[0], location])
         }
         this.exits = array

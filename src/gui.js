@@ -2,6 +2,7 @@ import {executeCommand, updateCommands, Pad, declineName, movePlayerTo} from "./
 import {isClosed, isHidden, toString} from "./functions.js"
 import {player} from "./person.js"
 import {allObjects} from "./base.js"
+import {currentLocaleIndex, loc, tran} from "./localization.js"
 
 let portrait
 const mainElement = document.getElementById("main")
@@ -46,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function parseText(text) {
-    let begin = 0, link = false, newText = ""
+    let begin = 0, link = false, newText = "", locale = 0
+    text = tran(text)
     for(let index = 0; index < text.length; index++) {
         const symbol = text.charAt(index)
         if(symbol === "*") {
@@ -67,6 +69,8 @@ function parseText(text) {
         } else if(symbol === "\n") {
             newText = newText.concat(text.substring(begin, index), "<p>")
             begin = index + 1
+        } else if(symbol === "~") {
+            locale++
         }
     }
     newText = newText.concat(text.substring(begin))
@@ -99,17 +103,18 @@ function personInfoText(array, prefix, pad = Pad.imen) {
 export function update() {
     updateCommands()
 
-    const loc = player.location
-    let text = objectsText(loc)
-    if(text !== "") text = "<p>Вы видите " + text.substring(2)
+    const location = player.location
+    let text = objectsText(location)
+    if(text !== "") text = "<p>" + loc("youSee") + text.substring(2)
 
     descriptionElement.innerHTML =
-        parseText(toString(loc.description, loc))
-        + text
-        + personInfoText(player.inventory, "<p>У вас с собой ")
-        + personInfoText(player.clothes, "<p>На вас надет ", Pad.vin)
+        parseText(
+            tran(toString(location.description, location))) +
+            text +
+            personInfoText(player.inventory, "<p>" + loc("youHave")) +
+            personInfoText(player.clothes, "<p>" + loc("youWear"), Pad.vin)
 
-    const imageFile = toString(loc.image, loc)
+    const imageFile = toString(location.image, location)
     if(imageFile === "") {
         imageElement.hidden = true
     } else {

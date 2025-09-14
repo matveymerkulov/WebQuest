@@ -4,6 +4,7 @@ import {executeMenuItem, update, clearConsole, showMenu} from "./gui.js"
 import {toArray, toString, isArray, isFunction, error, isHidden, isClosed} from "./functions.js"
 import {player} from "./person.js"
 import {allObjects} from "./base.js"
+import {loc, tran} from "./localization.js"
 
 export const yes = true, no = false
 
@@ -26,28 +27,28 @@ export function setActionsBefore(func) {
 
 
 export function declineName(object, pad = Pad.imen) {
-    return просклонять(isFunction(object.name) ? object.name(object) : object.name, pad)
+    return decline(isFunction(object.name) ? object.name(object) : object.name, pad)
 }
 
-export function просклонять(text, pad = Pad.imen) {
-    if(!isArray(text)) return text
-    if(text.length === 2) return text[pad === Pad.vin ? 1 : 0]
-    return text[pad] ?? text[0]
+export function decline(text, pad = Pad.imen) {
+    if(!isArray(text)) return tran(text)
+    if(text.length === 2) return tran(text[pad === Pad.vin ? 1 : 0])
+    return tran(text[pad] ?? text[0])
 }
 
 
 
 let menu
 
-function обработатьКоманду(command, parameter, префикс = "") {
+function operateCommand(command, parameter, prefix = "") {
     if(command.condition && !command.condition(parameter)) return
-    const nodes = (префикс + toString(command.text)).split("/")
+    const nodes = (prefix + tran(toString(command.text))).split("/")
     let level = menu
     for(let i = 0; i < nodes.length; i++) {
         const node = nodes[i]
         if(i === nodes.length - 1) {
             if(level[node] !== undefined) {
-                error(`В меню уже есть команда "${command}"`)
+                error(loc("commandExists") + command)
             }
             level[node] = [command, parameter]
         } else {
@@ -59,11 +60,11 @@ function обработатьКоманду(command, parameter, префикс =
     }
 }
 
-function operateCommands(object, префикс = "") {
+function operateCommands(object, prefix = "") {
     if(isHidden(object)) return
 
     for(let command of toArray(object.commands)) {
-        обработатьКоманду(command, object, префикс)
+        operateCommand(command, object, prefix)
     }
 
     if(isClosed(object)) return
@@ -92,15 +93,13 @@ export function updateCommands() {
 }
 
 export function executeCommand(text) {
-    const location = player.location
-
-    for(const [пункт, узел] of Object.entries(menu)) {
-        if(text === пункт) {
-            if(isArray(узел)) {
-                executeMenuItem(узел)
+    for(const [item, node] of Object.entries(menu)) {
+        if(text === item) {
+            if(isArray(node)) {
+                executeMenuItem(node)
                 return
             }
-            showMenu(узел)
+            showMenu(node)
             return
         }
     }
@@ -111,4 +110,3 @@ export function movePlayerTo(exit) {
     clearConsole()
     update()
 }
-

@@ -1,4 +1,4 @@
-import {no, setActionsBefore, yes} from "../../src/main.js"
+import{no, setActionsBefore, yes} from "../../src/main.js"
 import "./items.js"
 import "./objects.js"
 import "./locations.js"
@@ -6,6 +6,7 @@ import {player} from "../../src/person.js"
 import {emerald, key, plaid, shovel, torch} from "./items.js"
 import {end, begin, stable, basement} from "./locations.js"
 import {safe} from "./objects.js"
+import {getEnglishSystemLocale, getRussianSystemLocale, setLocale} from "../../src/localization.js"
 
 
 setActionsBefore(() => {
@@ -20,6 +21,9 @@ setActionsBefore(() => {
 export function light(location) {
     return torch.lit && (player.has(torch) || location.contains(torch))
 }
+
+setLocale("Русский", getRussianSystemLocale())
+setLocale("English", getEnglishSystemLocale(), true)
 
 player.maxItems = 2
 player.location = begin
