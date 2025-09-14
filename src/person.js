@@ -53,7 +53,7 @@ export class Person extends Obj {
         return this.clothes.includes(item)
     }
 
-    wear(item){
+    putOn(item){
         addToPersonArray(this, this.clothes, item)
     }
 

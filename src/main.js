@@ -3,6 +3,7 @@
 import {executeMenuItem, update, clearConsole, showMenu} from "./gui.js"
 import {toArray, toString, isArray, isFunction, error, isHidden, isClosed} from "./functions.js"
 import {player} from "./person.js"
+import {allObjects} from "./base.js"
 
 export const yes = true, no = false
 
@@ -103,14 +104,11 @@ export function executeCommand(text) {
             return
         }
     }
-
-    for(const выход of location.exits ?? []) {
-        const exitCommand = выход[0]
-        if(exitCommand === text) {
-            player.location = выход[1]
-            clearConsole()
-            update()
-            return
-        }
-    }
 }
+
+export function movePlayerTo(exit) {
+    player.location = allObjects.get(exit)
+    clearConsole()
+    update()
+}
+

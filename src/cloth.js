@@ -9,7 +9,7 @@ export class Cloth extends Item {
             condition: () => !player.wears(this),
             execution: () => {
                 player.drop(this)
-                player.wear(this)
+                player.putOn(this)
             }
         }, {
             text: "снять",

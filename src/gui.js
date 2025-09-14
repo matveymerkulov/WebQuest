@@ -1,4 +1,4 @@
-import {executeCommand, updateCommands, Pad, declineName} from "./main.js"
+import {executeCommand, updateCommands, Pad, declineName, movePlayerTo} from "./main.js"
 import {isClosed, isHidden, toString} from "./functions.js"
 import {player} from "./person.js"
 import {allObjects} from "./base.js"
@@ -51,7 +51,14 @@ function parseText(text) {
         const symbol = text.charAt(index)
         if(symbol === "*") {
             if(link) {
-                newText = newText.concat('<span class="link">' + text.substring(begin, index) + '</span>')
+                const part = text.substring(begin, index).split("=")
+                let exit = ""
+                if(part.length > 1) {
+                    exit = part[1]
+                    if(exit === "") exit = part[0]
+                    exit = ` exit="${exit}"`
+                }
+                newText = newText.concat(`<span class="link"${exit}>${part[0]}</span>`)
             } else {
                 newText = newText.concat(text.substring(begin, index))
             }
@@ -124,6 +131,10 @@ export function update() {
 
     for(const element of document.getElementsByClassName("link")) {
         element.addEventListener("click", event => {
+            if(event.target.hasAttribute("exit")) {
+                movePlayerTo(event.target.getAttribute("exit"))
+                return
+            }
             executeCommand(event.target.innerHTML)
         })
     }
