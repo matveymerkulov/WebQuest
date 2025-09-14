@@ -2,7 +2,7 @@ import {error} from "./functions.js"
 
 export function getRussianSystemLocale() {
     return {
-        commandExists: "В меню уже есть команда ",
+        commandExists: 'В меню уже есть команда "',
         object: 'Объект "',
         isNotFound: '" не найден!',
         youHave: "У вас с собой ",
@@ -21,7 +21,7 @@ export function getRussianSystemLocale() {
 
 export function getEnglishSystemLocale() {
     return {
-        commandExists: "Menu already has command ",
+        commandExists: 'Menu already has command "',
         object: 'Object "',
         isNotFound: '" not found!',
         youHave: "You have ",
@@ -59,7 +59,6 @@ export function loc(string) {
 }
 
 export function tran(text) {
-    if(text.indexOf("~") < 0) return text
-    const parts = text.split("~");
+    const parts = text.split("~")
     return parts[parts.length <= currentLocaleIndex ? 0 : currentLocaleIndex]
 }

@@ -14,14 +14,14 @@ export const door = Object.assign(new Obj("дверь"), {
     isClosed: yes,
 
     name: () => (door.isClosed ? ["закрытая дверь~closed door", "закрытую дверь~closed door"]
-        : ["открытая дверь~opened door", "открытую дверь~opened door"]),
+        : ["открытая дверь~open door", "открытую дверь~open door"]),
     commands: [
         {
             text: "осмотреть~inspect",
             execution: () => write(tran("Дверь сделана из добротного дерева и в данный момент " +
                 "~The door is made of good quality wood and is currently ")+
                 tran(door.isClosed ? "закрыта, но не заперта~closed but not locked" :
-                    "остается широко открытой~widely open") + ".")
+                    "остается широко открытой~wide open") + ".")
         }, {
             text: "войти~enter",
             condition: () => !door.isClosed && player.isIn(entrance),
@@ -53,34 +53,34 @@ export const door = Object.assign(new Obj("дверь"), {
 })
 
 
-export const buffet = Object.assign(new Obj("буфет"), {
+export const cupboard = Object.assign(new Obj("буфет"), {
     isClosed: yes,
     wasOpen: no,
 
-    name: () => (buffet.isClosed ? "закрытый буфет~closed buffet" : "открытый буфет~opened buffet"),
+    name: () => (cupboard.isClosed ? "закрытый буфет~closed cupboard" : "открытый буфет~opened cupboard"),
     commands: [
         {
             text: "открыть~open",
-            condition: () => buffet.isClosed,
+            condition: () => cupboard.isClosed,
             execution: () => {
-                buffet.isClosed = no
+                cupboard.isClosed = no
                 write("ОК, вы открыли буфет.")
-                if(!buffet.wasOpen) {
+                if(!cupboard.wasOpen) {
                     write('Вы слышите тихий голос, доносящийся из глубины буфета:' +
                         '"Швырни шкатулку c чердака и увидишь, что будет!".' +
                         '~You hear a quiet voice coming from the depths of the cupboard: ' +
                         '"Throw the box from the attic and see what happens!"')
-                    buffet.wasOpen = yes
+                    cupboard.wasOpen = yes
                 } else {
                     write("Но что такое? Все тихо!~But what's going on? Everything is quiet!")
                 }
             }
         }, {
             text: "закрыть~close",
-            condition: () => !buffet.isClosed,
+            condition: () => !cupboard.isClosed,
             execution: () => {
-                buffet.isClosed = yes
-                write("ОК, теперь буфет закрыт.")
+                cupboard.isClosed = yes
+                write("ОК, теперь буфет закрыт.~OK, now the cupboard is closed.")
             }
         }
     ],
@@ -96,14 +96,14 @@ export const safe = Object.assign(new Obj("сейф"), {
     name: () => (safe.isClosed ? "закрытый сейф~closed safe" : "открытый сейф~opened safe"),
     commands: [
         {
-            text: "отпереть~unlock/бронзовым ключом~with bronze key",
+            text: "отпереть~unlock/бронзовым ключом~with the bronze key",
             condition: () => player.has(key) && safe.isLocked,
             execution: () => {
                 write("ОК, вы отперли сейф ключом.~OK, you have unlocked the safe with the key.")
                 safe.isLocked = no
             }
         }, {
-            text: "запереть~lock/ключом~with bronze key",
+            text: "запереть~lock/бронзовым ключом~with bronze key",
             condition: () => player.has(key) && !safe.isLocked,
             execution: () => {
                 if(safe.isClosed) {
@@ -119,10 +119,10 @@ export const safe = Object.assign(new Obj("сейф"), {
             condition: () => safe.isClosed,
             execution: () => {
                 if(safe.isLocked) {
-                    write("Не открывается! Заперт на ключ.~Doesn't open! Locked.")
+                    write("Не открывается! Заперт на ключ.~It won't open! It's locked.")
                 } else if(safe.contains(box)) {
                     write("Сейф открывается, и внутри вы видите деревянную шкатулку." +
-                        "~The safe opens and inside you see a wooden box.")
+                        "~The safe opens and inside you see a wooden casket.")
                     safe.isClosed = no
                 } else {
                     write("ОК, вы открыли сейф.~OK, you have opened the safe.")
@@ -154,7 +154,7 @@ export const safe = Object.assign(new Obj("сейф"), {
 export const gates = Object.assign(new Obj("ворота"), {
     isClosed: yes,
 
-    name: () => (gates.isClosed ? "закрытые ворота~closed gates" : "открытые ворота~opened gates"),
+    name: () => (gates.isClosed ? "закрытые ворота~closed gates" : "открытые ворота~open gates"),
     commands: [
         {
             text: "войти~enter",
@@ -171,23 +171,27 @@ export const gates = Object.assign(new Obj("ворота"), {
         }, {
             text: "осмотреть~inspect",
             execution: () => {
-                write(tran("Bopoтa сделаны из неважного дерева и в данный момент " +
-                    "~Gates are made from waste wood and are currently ") +
-                    tran(gates.isClosed ? "закрыты изнутри на засов~locked from the inside with a bolt" :
-                    "остаются открытыми~remain open") + ".")
+                write(
+                    tran("Bopoтa сделаны из неважного дерева и в данный момент " +
+                        "~The gates are made of low-quality wood and are currently ") +
+                    tran(gates.isClosed
+                        ? "закрыты изнутри на засов~locked from the inside with a bolt"
+                        : "остаются открытыми~standing open"
+                    ) + "."
+                )
             }
         }, {
             text: "открыть~open",
             condition: () => gates.isClosed && player.isIn(garden),
             execution: () => {
-                write("ОК, вы открыли ворота, отодвинув засов.~OK, you opened the gate by sliding the bolt.")
+                write("ОК, вы открыли ворота, отодвинув засов.~OK, you opened the gates by sliding the bolt.")
                 gates.isClosed = no
             }
         }, {
             text: "закрыть~close",
             condition: () => !gates.isClosed && player.isIn(garden),
             execution: () => {
-                write("ОК, вы закрыли ворота на засов.~OK, you locked the gate with a bolt.")
+                write("ОК, вы закрыли ворота на засов.~OK, you bolted the gates.")
                 gates.isClosed = yes
             }
         }
@@ -204,7 +208,7 @@ export const hole = Object.assign(new Obj("яма"), {
         {
             text: "осмотреть~inspect",
             execution: "Это довольно глубокая яма, и если туда свалиться, то...!" +
-                "~This is a pretty deep hole, and if you fall in, then...!"
+                "~This is a pretty deep hole—if you fall in, then...!"
         }, {
             text: "закопать~fill/лопатой~with shovel",
             condition: () => player.has(shovel),

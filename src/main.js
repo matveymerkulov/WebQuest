@@ -42,13 +42,13 @@ let menu
 
 function operateCommand(command, parameter, prefix = "") {
     if(command.condition && !command.condition(parameter)) return
-    const nodes = (prefix + tran(toString(command.text))).split("/")
+    const nodes = (prefix + toString(command.text)).split("/")
     let level = menu
     for(let i = 0; i < nodes.length; i++) {
-        const node = nodes[i]
+        const node = tran(nodes[i])
         if(i === nodes.length - 1) {
             if(level[node] !== undefined) {
-                error(loc("commandExists") + command)
+                error(loc("commandExists") + nodes + '".')
             }
             level[node] = [command, parameter]
         } else {

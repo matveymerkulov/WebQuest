@@ -35,35 +35,35 @@ export const chips = Object.assign(new Item("щепки"), {
 })
 
 
-export const emerald = Object.assign(new Item("алмаз"), {
-    name: "алмаз~emerald",
+export const diamond = Object.assign(new Item("алмаз"), {
+    name: "алмаз~diamond",
     description: "Что за подозрения?! Он настоящий. Скорей бери его и покончим с этим делом!" +
-        "~What kind of suspicions?! He's real. Hurry up and take him and let's finish this business!"
+        "~What are you suspicious of?! It's real. Hurry up and take it, and let's finish this!"
 })
 
 
-export const plaid = Object.assign(new Cloth("плед"), {
+export const blanket = Object.assign(new Cloth("плед"), {
     name: "шерстяной плед~woolen blanket",
     description: "Красивый плед, выглядит как из французской шерсти." +
-        "~Beautiful blanket, looks like it's made of French wool.",
+        "~A beautiful blanket; it looks like it's made of French wool.",
 })
 
 
 export const box = Object.assign(new Item("шкатулка"), {
-    name: ["деревянная шкатулка~wooden casket", "деревянную шкатулку~wooden casket"],
+    name: ["деревянная шкатулка~wooden box", "деревянную шкатулку~wooden box"],
     commands: [
         {
             text: "осмотреть~inspect",
-            execution: "Она достаточно прочна."
+            execution: "Она достаточно прочна.~It's quite sturdy."
         }, {
             text: "открыть~open",
             execution: "Несмотря ни на какие усилия, открыть ее не удаётся!~Despite all efforts, it cannot be opened!"
         }, {
-            text: "отпереть~unlock/бронзовым ключом~with bronze key",
+            text: "отпереть~unlock/бронзовым ключом~with the bronze key",
             condition: () => player.has(key),
             execution: "Ключ к шкатулке нe подходит.~The key doesn't fit the box."
         }, {
-            text: "швырнуть вниз",
+            text: "швырнуть вниз~throw down",
             condition: () => player.isIn(attic),
             execution: () => {
                 write("Вот это бросок!!! От удара шкатулка разбилась. Что-то из нее выпало и" +
@@ -71,7 +71,7 @@ export const box = Object.assign(new Item("шкатулка"), {
                     "~What a throw!!! The box shattered from the impact. Something fell out of it and, flashing, " +
                     "rolled across the stable floor.")
                 player.destroy(box)
-                stable.add(chips, emerald)
+                stable.add(chips, diamond)
             }
         }
     ]

@@ -3,15 +3,15 @@ import "./items.js"
 import "./objects.js"
 import "./locations.js"
 import {player} from "../../src/person.js"
-import {emerald, key, plaid, shovel, torch} from "./items.js"
+import {diamond, key, blanket, shovel, torch} from "./items.js"
 import {end, begin, stable, basement} from "./locations.js"
 import {safe} from "./objects.js"
 import {getEnglishSystemLocale, getRussianSystemLocale, setLocale} from "../../src/localization.js"
 
 
 setActionsBefore(() => {
-    if(player.has(emerald)) {
-        end.plaid = player.wears(plaid)
+    if(player.has(diamond)) {
+        end.plaid = player.wears(blanket)
         player.inventory = []
         player.clothes = []
         player.moveTo(end)

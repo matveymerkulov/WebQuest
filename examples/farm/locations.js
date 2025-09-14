@@ -2,8 +2,8 @@ import {yes, no} from "../../src/main.js"
 import {light} from "./main.js"
 import {write, reset} from "../../src/gui.js"
 import {player} from "../../src/person.js"
-import {key, shovel, plaid, torch, box} from "./items.js"
-import {buffet, gates, door, safe, hole} from "./objects.js"
+import {key, shovel, blanket, torch, box} from "./items.js"
+import {cupboard, gates, door, safe, hole} from "./objects.js"
 import {Location} from "../../src/location.js"
 
 export const begin = Object.assign(new Location("начало"), {
@@ -43,7 +43,7 @@ export const barn = Object.assign(new Location("амбар"), {
     image: () => "barn_inside" + (barn.contains(shovel) ? "_shovel" : "") + ".jpg",
     description: "Вы находитесь в чистом и аккуратном амбаре. Фермер, которому он принадлежит, по-видимому" +
         " любит свое дело. Можно *идти на юг=двор*.~You are in a clean and tidy barn. The farmer who owns it," +
-        "apparently loves his business. You can *go south=двор*.",
+        "apparently loves his work. You can *go south=двор*.",
 })
 
 
@@ -71,8 +71,8 @@ export const attic = Object.assign(new Location("чердак"), {
     image: "stable_attic.jpg",
     description: "Забравшись по *лестнице=конюшня* вверх, вы попали как бы на открытый чердак. " +
         "Скорее его можно описать, как большое хранилище над комнатой." +
-        "~Climbing up the *stairs=конюшня*, you find yourself in an open attic. " +
-        "It can be described more as a large storage above the room. ",
+        "~Climbing up the *stairs=конюшня*, you find yourself in an open attic — " +
+        "more like a large storage space above the room.",
 })
 
 
@@ -96,7 +96,7 @@ export const field = Object.assign(new Location("поле"), {
             text: "яма~hole/закопать лопатой~fill with a shovel",
             condition: () => field.holeIsDug && player.has(shovel),
             execution: () => {
-                write("OK, вы закопали яму в поле.~OK, you dug a hole in the field.")
+                write("OK, вы закопали яму в поле.~OK, you filled in the hole in the field.")
                 field.holeIsDug = no
             }
         }, {
@@ -106,7 +106,7 @@ export const field = Object.assign(new Location("поле"), {
                     write("Здесь *яма*, будьте ocтopoжны!~There is a *hole* here, be careful!")
                 } else {
                     write("Чувствуeтcя заботливый уход, нo недавний дождь оставил раскисшую почву!" +
-                        "~It feels like it's being cared for, but the recent rain has left the soil soggy!")
+                        "~It feels well tended, but the recent rain has left the soil soggy!")
                 }
             }
         }
@@ -127,11 +127,11 @@ export const entrance = Object.assign(new Location("порог"), {
 
 export const hallway = Object.assign(new Location("прихожая"), {
     objects: ["дверь", "буфет"],
-    image: () => "hallway_buffet_" + (buffet.isClosed ? "closed" : "opened") +
+    image: () => "hallway_cupboard_" + (cupboard.isClosed ? "closed" : "opened") +
         "_door_" + (door.isClosed ? "closed" : "opened") + ".jpg",
     description: () => "Перед вами небольшая прихожая. В углу стоит буфет и больше ничего здесь нет. " +
         "На востоке - *кухня=*, на севере - *гостиная=*." +
-        "~In front of you is a small hallway. In the corner there is a buffet and nothing else here. " +
+        "~In front of you is a small hallway. In the corner there is a cupboard and nothing else here. " +
         "To the east is the *kitchen=кухня*, to the north is the *living room=гостиная*.",
 })
 
@@ -141,14 +141,14 @@ export const livingRoom = Object.assign(new Location("гостиная"), {
     image: () => "living_room" + (livingRoom.contains(torch) ? "_torch" : "") + ".jpg",
     description: "Уютная гостиная крестьянского дома. Вы чувствуете на себе чей-то взгляд." +
         " Двери ведут в *столовую=столовая* и в *прихожую=прихожая*." +
-        "~A cozy living room of a peasant house. You feel someone's eyes on you." +
+        "~A cozy farmhouse living room. You feel someone's eyes on you." +
         " The doors lead to the *dining room=столовая* and the *hallway=прихожая*.",
 })
 
 
 export const diningRoom = Object.assign(new Location("столовая"), {
     objects: "плед",
-    image: () => "dining_room" + (diningRoom.contains(plaid) ? "_plaid" : "") + ".jpg",
+    image: () => "dining_room" + (diningRoom.contains(blanket) ? "_plaid" : "") + ".jpg",
     description: "Кажется, что этой столовой комнатой давно никто не пользовался. Наверное, здесь никто не живет." +
         " Отсюда можно пройти *на кухню=кухня* и *в гостиную=гостиная*." +
         "~It looks like this dining room hasn't been used for a long time. Probably no one lives here. " +
@@ -160,7 +160,7 @@ export const kitchen = Object.assign(new Location("кухня"), {
     image: "kitchen.jpg",
     description: "Кухня сверкает чистотой. В воздухе определенно чувствуется запах чего-то приятного. " +
         "Можно идти *в прихожую=прихожая*, *в столовую=столовая* или *в сад=сад*." +
-        "~The kitchen sparkles white and clean. There's definitely a pleasant smell in the air. " +
+        "~The kitchen gleams with cleanliness. There's definitely a pleasant smell in the air. " +
         "You can go to the *hallway=прихожая*, the *dining room=столовая*, or the *garden=сад*.",
 })
 
@@ -171,7 +171,7 @@ export const basement = Object.assign(new Location("погреб"), {
         if(light(basement)) {
             if (!safe.isClosed) {
                 if(safe.contains(box)) {
-                    return "stable_basement_lit_safe_opened_casket.jpg"
+                    return "stable_basement_lit_safe_opened_box.jpg"
                 }
                 return "stable_basement_lit_safe_opened.jpg"
             }
@@ -183,7 +183,7 @@ export const basement = Object.assign(new Location("погреб"), {
     description: () => light(basement) ? "В отличие от большинства обычных погребов, этот явно не " +
         "используется для хранения всяких запасов. А в углу можно разглядеть большой старомодный сейф со встроенным " +
         "в него бронзовым замком. Можно взобраться обратно *по лестнице=конюшня*." +
-        "~Unlike most regular cellars, this one is clearly not used for storing supplies. And in the corner you can " +
+        "~Unlike most ordinary cellars, this one is clearly not used for storing supplies. And in the corner you can " +
         "see a large old-fashioned safe with a bronze lock built into it. You can climb back up *the stairs=конюшня*." :
         "Здесь темно и ничего не видно! Только на *лестницу=конюшня* падает немного света." +
         "~It's dark here and you can't see anything! Only a little light falls on the *stairs=конюшня*.",
@@ -193,7 +193,7 @@ export const basement = Object.assign(new Location("погреб"), {
 export const deadEnd = Object.assign(new Location("тупик"), {
     image: "dead_end.jpg",
     description: "Это тупик. Можно было сюда вообще не приходить. Вернемся *назад=дорога*?" +
-        "~This is a dead end. It was possible not to come here at all. Let's go *back=дорога*?",
+        "~This is a dead end. You didn't need to come here at all. Shall we go *back=дорога*?",
 })
 
 
@@ -222,7 +222,7 @@ export const garden = Object.assign(new Location("сад"), {
         "Можно *войти в дом=кухня*." +
         "~This is a rather deserted *garden*, which looks more like a lawn with a few flower " +
         "beds. " + (hole.isHidden ? "It would be quite beautiful here if it weren't for the colorless trampled " +
-        "*spot* in front of the gate leading to the west." : "") + "You see the gate leading to the west. " +
+        "*spot* in front of the gate leading to the west." : "") + "You see the gate leading west. " +
         "You can *enter the house=кухня*.",
     commands: [
         {
