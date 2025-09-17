@@ -1,5 +1,3 @@
-// noinspection NonAsciiCharacters
-
 import {Obj} from "./object.js"
 import {player} from "./person.js"
 import {loc} from "./localization.js"
@@ -12,7 +10,7 @@ export class Item extends Obj {
             condition: () => !player.has(this),
             execution: () => {
                 player.putOff(this)
-                player.взять(this)
+                player.take(this)
             }
         }, {
             text: () => loc("drop"),

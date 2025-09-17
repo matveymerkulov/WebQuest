@@ -4,12 +4,13 @@ import {player} from "../../src/person.js"
 import {stable, attic} from "./locations.js"
 import {Item} from "../../src/item.js"
 import {Cloth} from "../../src/cloth.js"
+import {combine} from "../../src/functions.js"
 
-export const torch = Object.assign(new Item("факел"), {
+export const torch = combine(new Item("факел"), {
     lit: no,
 
     name: () => `${torch.lit ? "горящий " : ""}факел~${torch.lit ? "burning " : ""}torch`,
-    description: "Небольшой факел, совершенно обыкновенный на вид.~A small torch, completely ordinary in appearance.",
+    inspect: "Небольшой факел, совершенно обыкновенный на вид.~A small torch, completely ordinary in appearance.",
     commands: [
         {
             text: "погасить~extinguish",
@@ -30,26 +31,26 @@ export const torch = Object.assign(new Item("факел"), {
 })
 
 
-export const chips = Object.assign(new Item("щепки"), {
+export const chips = combine(new Item("щепки"), {
     name: "деревянные щепки~wood chips"
 })
 
 
-export const diamond = Object.assign(new Item("алмаз"), {
+export const diamond = combine(new Item("алмаз"), {
     name: "алмаз~diamond",
-    description: "Что за подозрения?! Он настоящий. Скорей бери его и покончим с этим делом!" +
+    inspect: "Что за подозрения?! Он настоящий. Скорей бери его и покончим с этим делом!" +
         "~What are you suspicious of?! It's real. Hurry up and take it, and let's finish this!"
 })
 
 
-export const blanket = Object.assign(new Cloth("плед"), {
+export const blanket = combine(new Cloth("плед"), {
     name: "шерстяной плед~woolen blanket",
-    description: "Красивый плед, выглядит как из французской шерсти." +
+    inspect: "Красивый плед, выглядит как из французской шерсти." +
         "~A beautiful blanket; it looks like it's made of French wool.",
 })
 
 
-export const box = Object.assign(new Item("шкатулка"), {
+export const box = combine(new Item("шкатулка"), {
     name: ["деревянная шкатулка~wooden box", "деревянную шкатулку~wooden box"],
     commands: [
         {
@@ -78,11 +79,11 @@ export const box = Object.assign(new Item("шкатулка"), {
 })
 
 
-export const key = Object.assign(new Item("ключ"), {
+export const key = combine(new Item("ключ"), {
     name: "бронзовый ключ~bronze key",
 })
 
 
-export const shovel = Object.assign(new Item("лопата"), {
+export const shovel = combine(new Item("лопата"), {
     name: ["короткая лопата~short shovel", "короткую лопату~short shovel"],
 })

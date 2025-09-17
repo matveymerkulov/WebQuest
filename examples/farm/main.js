@@ -4,7 +4,7 @@ import "./objects.js"
 import "./locations.js"
 import {player} from "../../src/person.js"
 import {diamond, key, blanket, shovel, torch} from "./items.js"
-import {end, begin, stable, basement} from "./locations.js"
+import {end, begin, stable, basement, field, garden} from "./locations.js"
 import {safe} from "./objects.js"
 import {getEnglishSystemLocale, getRussianSystemLocale, setLocale} from "../../src/localization.js"
 
@@ -22,11 +22,14 @@ export function light(location) {
     return torch.lit && (player.has(torch) || location.contains(torch))
 }
 
-setLocale("Русский", getRussianSystemLocale())
-setLocale("English", getEnglishSystemLocale(), true)
+setLocale("Русский", getRussianSystemLocale(), true)
+setLocale("English", getEnglishSystemLocale())
 
 player.maxItems = 2
 player.location = begin
+
+/*player.location = garden
+player.inventory = [shovel]*/
 
 /*player.location = stable
 stable.objects = ["алмаз", "плед", "факел"]*/

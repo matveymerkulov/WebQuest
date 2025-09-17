@@ -7,8 +7,9 @@ import {key, shovel, box} from "./items.js"
 import {Obj} from "../../src/object.js"
 import {Passage} from "../../src/passage.js"
 import {tran} from "../../src/localization.js"
+import {combine} from "../../src/functions.js"
 
-export const door = Object.assign(new Obj("дверь"), {
+export const door = combine(new Obj("дверь"), {
     location0: "порог",
     location1: "прихожая",
     isClosed: yes,
@@ -53,11 +54,12 @@ export const door = Object.assign(new Obj("дверь"), {
 })
 
 
-export const cupboard = Object.assign(new Obj("буфет"), {
+export const cupboard = combine(new Obj("буфет"), {
     isClosed: yes,
     wasOpen: no,
 
     name: () => (cupboard.isClosed ? "закрытый буфет~closed cupboard" : "открытый буфет~opened cupboard"),
+    description: " В углу стоит {object}.~ In the corner there is a {object}.",
     commands: [
         {
             text: "открыть~open",
@@ -87,12 +89,14 @@ export const cupboard = Object.assign(new Obj("буфет"), {
 })
 
 
-export const safe = Object.assign(new Obj("сейф"), {
+export const safe = combine(new Obj("сейф"), {
     isClosed: yes,
     isLocked: yes,
     isHidden: () => !light(basement),
 
     objects: "шкатулка",
+    description: "А в углу можно разглядеть большой старомодный {object} со встроенным в него бронзовым замком." +
+        "~And in the corner you can see a large old-fashioned {object} with a bronze lock built into it. ",
     name: () => (safe.isClosed ? "закрытый сейф~closed safe" : "открытый сейф~opened safe"),
     commands: [
         {
@@ -151,10 +155,11 @@ export const safe = Object.assign(new Obj("сейф"), {
 })
 
 
-export const gates = Object.assign(new Obj("ворота"), {
+export const gates = combine(new Obj("ворота"), {
     isClosed: yes,
 
     name: () => (gates.isClosed ? "закрытые ворота~closed gates" : "открытые ворота~open gates"),
+    description: "Вы видите {object}, ведущие на запад.~You see {object} leading west.",
     commands: [
         {
             text: "войти~enter",
@@ -199,29 +204,89 @@ export const gates = Object.assign(new Obj("ворота"), {
 })
 
 
-export const hole = Object.assign(new Obj("яма"), {
-    isHidden: yes,
+export const gardenSpot = combine(new Obj("пятноВСаду"), {
+    name: "пятно~spot",
+    description: "Здесь было бы совсем красиво, если бы не бесцветное " +
+        "вытоптанное {object} перед воротами.~It would be quite beautiful here if it weren't for the colorless " +
+        "trampled {object} in front of the gates.",
+    commands: [
+        {
+            text: "копать яму~dig a hole/руками~with bare hands",
+            condition: () => gardenHole.isHidden,
+            execution: "Руками копать не получается. Для этого нужен подходящий инструмент." +
+                "~You can't dig with your hands. You need a suitable tool for that."
+        }, {
+            text: "копать яму~dig a hole/лопатой~with a shovel",
+            condition: () => gardenHole.isHidden && player.has(shovel),
+            execution: () => {
+                if(gardenHole.contains(key)) {
+                    write("Вы испортили красивую лужайку глубокой ямой. Но вот что-то блеснуло... Это ключ!" +
+                        "~You ruined a beautiful lawn with a deep hole. But something sparkled... It's the key!")
+                } else {
+                    write("OK, вы выкопали яму.~OK, you've dug a hole.")
+                }
+                gardenHole.isHidden = no
+                gardenSpot.isHidden = yes
+            }
+        }
+    ]
+})
 
-    objects: "ключ",
+export const gardenHole = combine(new Obj("ямаВСаду"), {
+    isHidden: true,
+    fillText: "OК, вы закопали яму и оставили на лужайке некрасивое пятно!" +
+        "~OK, you filled in the hole and left an unsightly spot on the lawn!",
+
     name: ["яма~hole", "яму~hole"],
+    objects: "ключ",
+    description: "Перед воротами выкопана {object}.~There is a {object} in front of the gates.",
     commands: [
         {
             text: "осмотреть~inspect",
+            condition: (hole) => hole.isHidden,
+            execution: "Выглядит так, как будто здесь кто-то копал.~It looks like someone has been digging here."
+        }, {
+            text: "осмотреть~inspect",
             execution: "Это довольно глубокая яма, и если туда свалиться, то...!" +
-                "~This is a pretty deep hole—if you fall in, then...!"
+                "~This is a pretty deep hole — if you fall in, then...!"
         }, {
             text: "закопать~fill/лопатой~with shovel",
-            condition: () => player.has(shovel),
-            execution: () => {
-                write("OК, вы закопали яму и оставили на лужайке некрасивое пятно!" +
-                    "~OK, you filled in the hole and left an unsightly spot on the lawn!")
+            condition: (hole) => !hole.isHidden & player.has(shovel),
+            execution: (hole) => {
+                write(hole.fillText)
                 hole.isHidden = yes
             }
         }, {
             text: "закопать~fill/руками~with bare hands",
-            execution: () => {
-                write("OК, вы закопали яму и оставили на лужайке некрасивое пятно!" +
-                    "~OK, you filled in the hole and left an unsightly spot on the lawn!")
+            condition: (hole) => !hole.isHidden,
+            execution: (hole) => {
+                write(hole.fillText)
+                hole.isHidden = yes
+            }
+        }
+    ]
+})
+
+export const fieldHole = combine(new Obj("ямаВПоле"), {
+    isHidden: true,
+    fillText: "OK, вы закопали яму в поле.~OK, you filled in the hole in the field.",
+
+    name: ["яма~hole", "яму~hole"],
+    description: function() {return this.isHidden ? "" : "В поле выкопана {object}." +
+        "~There is a {object} in the field."},
+    commands: [
+        {
+            text: "закопать~fill/лопатой~with shovel",
+            condition: (hole) => !hole.isHidden & player.has(shovel),
+            execution: (hole) => {
+                write(hole.fillText)
+                hole.isHidden = yes
+            }
+        }, {
+            text: "закопать~fill/руками~with bare hands",
+            condition: (hole) => !hole.isHidden,
+            execution: (hole) => {
+                write(hole.fillText)
                 hole.isHidden = yes
             }
         }

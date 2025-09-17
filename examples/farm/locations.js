@@ -1,12 +1,15 @@
+// noinspection JSUnusedGlobalSymbols
+
 import {yes, no} from "../../src/main.js"
 import {light} from "./main.js"
 import {write, reset} from "../../src/gui.js"
 import {player} from "../../src/person.js"
 import {key, shovel, blanket, torch, box} from "./items.js"
-import {cupboard, gates, door, safe, hole} from "./objects.js"
+import {cupboard, gates, door, safe, gardenHole, fieldHole} from "./objects.js"
 import {Location} from "../../src/location.js"
+import {combine} from "../../src/functions.js"
 
-export const begin = Object.assign(new Location("начало"), {
+export const begin = combine(new Location("начало"), {
     image: "intro.jpg",
     description:
         `Цель этой короткой игры очень проста. Вам надо разыскать крупный алмаз и завладеть им.
@@ -20,7 +23,7 @@ export const begin = Object.assign(new Location("начало"), {
 })
 
 
-export const authors = Object.assign(new Location("авторы"), {
+export const authors = combine(new Location("авторы"), {
     image: "intro.jpg",
     description:
         `Оригинальная платформа Adventure Building System: T. D. Frost
@@ -38,7 +41,7 @@ export const authors = Object.assign(new Location("авторы"), {
 })
 
 
-export const barn = Object.assign(new Location("амбар"), {
+export const barn = combine(new Location("амбар"), {
     objects: "лопата",
     image: () => "barn_inside" + (barn.contains(shovel) ? "_shovel" : "") + ".jpg",
     description: "Вы находитесь в чистом и аккуратном амбаре. Фермер, которому он принадлежит, по-видимому" +
@@ -47,7 +50,7 @@ export const barn = Object.assign(new Location("амбар"), {
 })
 
 
-export const yard = Object.assign(new Location("двор"), {
+export const yard = combine(new Location("двор"), {
     image: "barn_yard.jpg",
     description: "Вы вышли на двор фермы. Никаких животных не видно. На севере - *амбар=*, на юге - *поле=*." +
         "~You have come out into the farm yard. No animals are visible. To the north is a *barn=амбар*, " +
@@ -55,7 +58,7 @@ export const yard = Object.assign(new Location("двор"), {
 })
 
 
-export const stable = Object.assign(new Location("конюшня"), {
+export const stable = combine(new Location("конюшня"), {
     image: "stable_inside.jpg",
     description: "Конюшня совершенно пуста. Нет даже характерного запаха животных. " +
         "Лестница ведет *на чердак=чердак*, видны также *ступени=погреб*, скрывающиеся где-то внизу, в темноте. " +
@@ -67,7 +70,7 @@ export const stable = Object.assign(new Location("конюшня"), {
 })
 
 
-export const attic = Object.assign(new Location("чердак"), {
+export const attic = combine(new Location("чердак"), {
     image: "stable_attic.jpg",
     description: "Забравшись по *лестнице=конюшня* вверх, вы попали как бы на открытый чердак. " +
         "Скорее его можно описать, как большое хранилище над комнатой." +
@@ -76,45 +79,31 @@ export const attic = Object.assign(new Location("чердак"), {
 })
 
 
-export const field = Object.assign(new Location("поле"), {
-    holeIsDug: no,
-
+export const field = combine(new Location("поле"), {
+    objects: "ямаВПоле",
     image: "field.jpg",
-    description: "Вы вышли в открытое *поле*. Оно было недавно вспахано, но ничего посажено не было. " +
+    description: "Вы вышли в открытое *поле*. Оно было недавно вспахано, но ничего посажено не было.{objects} " +
         "Можно пойти *на север=двор*, *на юг=дорога*, *на восток=порог* и *на запад=конюшня*." +
-        "~You have come out into an open *field*. It has been recently plowed, but nothing has been planted. " +
-        "You can go *north=двор*, *south=дорога*, *east=порог*, and *west=конюшня*.",
+        "~You have come out into an open *field*. It has been recently plowed, but nothing has been " +
+        "planted.{objects} You can go *north=двор*, *south=дорога*, *east=порог*, and *west=конюшня*.",
     commands: [
         {
-            text: "поле~field/выкопать яму лопатой~dig a hole with shovel",
-            condition: () => !field.holeIsDug && player.has(shovel),
+            text: "поле~field/выкопать яму~dig a hole/лопатой~with a shovel",
+            condition: () => fieldHole.isHidden && player.has(shovel),
             execution: () => {
                 write("ОК, вы выкопали яму в поле.~OK, you dug a hole in the field.")
-                field.holeIsDug = yes
-            }
-        }, {
-            text: "яма~hole/закопать лопатой~fill with a shovel",
-            condition: () => field.holeIsDug && player.has(shovel),
-            execution: () => {
-                write("OK, вы закопали яму в поле.~OK, you filled in the hole in the field.")
-                field.holeIsDug = no
+                fieldHole.isHidden = false
             }
         }, {
             text: "поле~field/осмотреть~inspect",
-            execution: () => {
-                if(field.holeIsDug) {
-                    write("Здесь *яма*, будьте ocтopoжны!~There is a *hole* here, be careful!")
-                } else {
-                    write("Чувствуeтcя заботливый уход, нo недавний дождь оставил раскисшую почву!" +
-                        "~It feels well tended, but the recent rain has left the soil soggy!")
-                }
-            }
+            execution: "Чувствуeтcя заботливый уход, нo недавний дождь оставил раскисшую почву!" +
+                        "~It feels well tended, but the recent rain has left the soil soggy!"
         }
     ],
 })
 
 
-export const entrance = Object.assign(new Location("порог"), {
+export const entrance = combine(new Location("порог"), {
     objects: "дверь",
     image: () => "house_entrance_door_" + (door.isClosed ? "closed" : "opened") + ".jpg",
     description: "Вы находитесь у двери фермерского дома. Дом сделан очень добротно и крепко, как будто хозяевам было" +
@@ -125,18 +114,18 @@ export const entrance = Object.assign(new Location("порог"), {
 
 
 
-export const hallway = Object.assign(new Location("прихожая"), {
+export const hallway = combine(new Location("прихожая"), {
     objects: ["дверь", "буфет"],
     image: () => "hallway_cupboard_" + (cupboard.isClosed ? "closed" : "opened") +
         "_door_" + (door.isClosed ? "closed" : "opened") + ".jpg",
-    description: () => "Перед вами небольшая прихожая. В углу стоит буфет и больше ничего здесь нет. " +
+    description: () => "Перед вами небольшая прихожая.{objects}" +
         "На востоке - *кухня=*, на севере - *гостиная=*." +
-        "~In front of you is a small hallway. In the corner there is a cupboard and nothing else here. " +
+        "~In front of you is a small hallway.{objects} " +
         "To the east is the *kitchen=кухня*, to the north is the *living room=гостиная*.",
 })
 
 
-export const livingRoom = Object.assign(new Location("гостиная"), {
+export const livingRoom = combine(new Location("гостиная"), {
     objects: "факел",
     image: () => "living_room" + (livingRoom.contains(torch) ? "_torch" : "") + ".jpg",
     description: "Уютная гостиная крестьянского дома. Вы чувствуете на себе чей-то взгляд." +
@@ -146,7 +135,7 @@ export const livingRoom = Object.assign(new Location("гостиная"), {
 })
 
 
-export const diningRoom = Object.assign(new Location("столовая"), {
+export const diningRoom = combine(new Location("столовая"), {
     objects: "плед",
     image: () => "dining_room" + (diningRoom.contains(blanket) ? "_plaid" : "") + ".jpg",
     description: "Кажется, что этой столовой комнатой давно никто не пользовался. Наверное, здесь никто не живет." +
@@ -156,7 +145,7 @@ export const diningRoom = Object.assign(new Location("столовая"), {
 })
 
 
-export const kitchen = Object.assign(new Location("кухня"), {
+export const kitchen = combine(new Location("кухня"), {
     image: "kitchen.jpg",
     description: "Кухня сверкает чистотой. В воздухе определенно чувствуется запах чего-то приятного. " +
         "Можно идти *в прихожую=прихожая*, *в столовую=столовая* или *в сад=сад*." +
@@ -165,7 +154,7 @@ export const kitchen = Object.assign(new Location("кухня"), {
 })
 
 
-export const basement = Object.assign(new Location("погреб"), {
+export const basement = combine(new Location("погреб"), {
     objects: "сейф",
     image: () => {
         if(light(basement)) {
@@ -181,30 +170,29 @@ export const basement = Object.assign(new Location("погреб"), {
         }
     },
     description: () => light(basement) ? "В отличие от большинства обычных погребов, этот явно не " +
-        "используется для хранения всяких запасов. А в углу можно разглядеть большой старомодный сейф со встроенным " +
-        "в него бронзовым замком. Можно взобраться обратно *по лестнице=конюшня*." +
-        "~Unlike most ordinary cellars, this one is clearly not used for storing supplies. And in the corner you can " +
-        "see a large old-fashioned safe with a bronze lock built into it. You can climb back up *the stairs=конюшня*." :
+        "используется для хранения всяких запасов.{objects} Можно взобраться обратно *по лестнице=конюшня*." +
+        "~Unlike most ordinary cellars, this one is clearly not used for storing supplies.{objects} " +
+        "You can climb back up *the stairs=конюшня*." :
         "Здесь темно и ничего не видно! Только на *лестницу=конюшня* падает немного света." +
         "~It's dark here and you can't see anything! Only a little light falls on the *stairs=конюшня*.",
 })
 
 
-export const deadEnd = Object.assign(new Location("тупик"), {
+export const deadEnd = combine(new Location("тупик"), {
     image: "dead_end.jpg",
     description: "Это тупик. Можно было сюда вообще не приходить. Вернемся *назад=дорога*?" +
         "~This is a dead end. You didn't need to come here at all. Shall we go *back=дорога*?",
 })
 
 
-export const road = Object.assign(new Location("дорога"), {
+export const road = combine(new Location("дорога"), {
     image: "road.jpg",
     description: "Эта дорога ведет с *востока=уВорот* на *север=поле*. Но, кажется, можно пройти и *на запад=тупик*." +
         "~This road leads from the *east=уВорот* to the *north=поле*. But it seems that you can also go *west=тупик*.",
 })
 
 
-export const atTheGates = Object.assign(new Location("уВорот"), {
+export const atTheGates = combine(new Location("уВорот"), {
     objects: "ворота",
     image: () => "gates_" + (gates.isClosed ? "closed" : "opened") + ".jpg",
     description: "*Дорога=дорога* упирается в ворота, за ними расположен приусадебный сад." +
@@ -212,52 +200,29 @@ export const atTheGates = Object.assign(new Location("уВорот"), {
 })
 
 
-export const garden = Object.assign(new Location("сад"), {
-    objects: ["ворота", "яма"],
+export const garden = combine(new Location("сад"), {
+    objects: ["ворота", "пятноВСаду", "ямаВСаду"],
     image: () => "garden_gates_" + (gates.isClosed ? "closed" : "opened") +
-        (hole.isHidden ? "_spot" : "_hole") + ".jpg",
+        (gardenHole.isHidden ? "_spot" : "_hole") + ".jpg",
     description: () => "Это довольно пустынный *сад*, который скорее похож на лужайку с несколькими " +
-        "цветочными клумбами. " + (hole.isHidden ? "Здесь было бы совсем красиво, если бы не бесцветное вытоптанное " +
-        "*пятно* перед воротами, ведущими на запад." : "") + "Вы видите ворота, ведущие на запад." +
-        "Можно *войти в дом=кухня*." +
+        "цветочными клумбами.{objects} Можно *войти в дом=кухня*." +
         "~This is a rather deserted *garden*, which looks more like a lawn with a few flower " +
-        "beds. " + (hole.isHidden ? "It would be quite beautiful here if it weren't for the colorless trampled " +
-        "*spot* in front of the gate leading to the west." : "") + "You see the gate leading west. " +
-        "You can *enter the house=кухня*.",
+        "beds.{objects} You can *enter the house=кухня*.",
     commands: [
         {
             text: "сад~garden/осмотреть~inspect",
-            condition: () => hole.isHidden,
+            condition: () => gardenHole.isHidden,
             execution: "Вы не видите ничего необычного.~You don't see anything unusual."
         }, {
             text: "сад~garden/осмотреть~inspect",
-            condition: () => !hole.isHidden,
+            condition: () => !gardenHole.isHidden,
             execution: "Здесь *яма*, будьте ocтopoжны!~There's a *hole* here, be careful!"
-        }, {
-            text: "пятно~spot/осмотреть~inspect",
-            execution: "Выглядит так, как будто здесь кто-то копал.~It looks like someone has been digging here."
-        }, {
-            text: "пятно~spot/копать яму~dig a hole/руками~with bare hands",
-            execution: "Руками копать не получается. Для этого нужен подходящий инструмент." +
-                "~You can't dig with your hands. You need a suitable tool for that."
-        }, {
-            text: "пятно~spot/копать яму~dig a hole/лопатой~with a shovel",
-            condition: () => player.has(shovel),
-            execution: () => {
-                if(hole.contains(key)) {
-                    write("Вы испортили красивую лужайку глубокой ямой. Но вот что-то блеснуло... Это ключ!" +
-                        "~You ruined a beautiful lawn with a deep hole. But something sparkled... It's the key!")
-                } else {
-                    write("OK, вы выкопали яму в саду.~OK, you've dug a hole in the garden.")
-                }
-                hole.isHidden = no
-            }
         }
     ],
 })
 
 
-export const end = Object.assign(new Location("конец"), {
+export const end = combine(new Location("конец"), {
     plaid: no,
 
     image: () => "end" + (end.plaid ? "_plaid" : "") + ".jpg",

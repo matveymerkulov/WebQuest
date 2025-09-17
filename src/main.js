@@ -1,5 +1,3 @@
-// noinspection NonAsciiCharacters
-
 import {executeMenuItem, update, clearConsole, showMenu} from "./gui.js"
 import {toArray, toString, isArray, isFunction, error, isHidden, isClosed} from "./functions.js"
 import {player} from "./person.js"
@@ -27,6 +25,7 @@ export function setActionsBefore(func) {
 
 
 export function declineName(object, pad = Pad.imen) {
+    if(object.name === undefined || object.name === "") error(loc("NoName"))
     return decline(isFunction(object.name) ? object.name(object) : object.name, pad)
 }
 
@@ -90,6 +89,8 @@ export function updateCommands() {
     for(let object of player.clothes) {
         operateCommands(object, declineName(object, Pad.vin) + "/")
     }
+
+    console.log(menu)
 }
 
 export function executeCommand(text) {

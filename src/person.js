@@ -36,9 +36,9 @@ export class Person extends Obj {
         return this.inventory.includes(item)
     }
 
-    взять(item){
-        const макс = this.maxItems
-        if(макс >= 0 && this.inventory.length >= макс) {
+    take(item){
+        const max = this.maxItems
+        if(max >= 0 && this.inventory.length >= max) {
             write("Вы не можете нести больше предметов.")
             return
         }

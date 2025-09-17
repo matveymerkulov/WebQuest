@@ -80,14 +80,22 @@ function parseText(text) {
 
 
 function objectsText(object) {
-    let text = ""
+    let text = "", description = ""
     for(let childObject of object.objects) {
         if(isHidden(childObject)) continue
-        text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>`
+        const objectHTML = `<span class="link">${declineName(childObject, Pad.vin)}</span>`
+        if(childObject.description !== undefined) {
+            description += tran(" " + toString(childObject.description, childObject)).replace("{object}"
+                , objectHTML)
+        } else {
+            text += ", " + objectHTML
+        }
         if(isClosed(childObject)) continue
-        text += objectsText(childObject)
+        const texts = objectsText(childObject)
+        description += tran(texts[0])
+        text += tran(texts[1])
     }
-    return text
+    return [description, text]
 }
 
 
@@ -104,15 +112,20 @@ export function update() {
     updateCommands()
 
     const location = player.location
-    let text = objectsText(location)
-    if(text !== "") text = "<p>" + loc("youSee") + text.substring(2)
+    let texts = objectsText(location)
+    if(texts[1] !== "") texts[1] = "<p>" + loc("youSee") + texts[1].substring(2)
+
+    let locText = tran(toString(location.description, location))
+    if(locText.indexOf("{objects}") >= 0) {
+        locText = locText.replace("{objects}", tran(texts[0]))
+    } else {
+        locText += texts[0]
+    }
 
     descriptionElement.innerHTML =
-        parseText(
-            tran(toString(location.description, location))) +
-            text +
+        parseText(locText + texts[1] +
             personInfoText(player.inventory, "<p>" + loc("youHave")) +
-            personInfoText(player.clothes, "<p>" + loc("youWear"), Pad.vin)
+            personInfoText(player.clothes, "<p>" + loc("youWear"), Pad.vin))
 
     const imageFile = toString(location.image, location)
     if(imageFile === "") {
