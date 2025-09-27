@@ -59,7 +59,6 @@ export const cupboard = combine(new Obj("буфет"), {
     wasOpen: no,
 
     name: () => (cupboard.isClosed ? "закрытый буфет~closed cupboard" : "открытый буфет~opened cupboard"),
-    description: " В углу стоит {object}.~ In the corner there is a {object}.",
     commands: [
         {
             text: "открыть~open",
@@ -95,8 +94,6 @@ export const safe = combine(new Obj("сейф"), {
     isHidden: () => !light(basement),
 
     objects: "шкатулка",
-    description: "А в углу можно разглядеть большой старомодный {object} со встроенным в него бронзовым замком." +
-        "~And in the corner you can see a large old-fashioned {object} with a bronze lock built into it. ",
     name: () => (safe.isClosed ? "закрытый сейф~closed safe" : "открытый сейф~opened safe"),
     commands: [
         {
@@ -159,7 +156,6 @@ export const gates = combine(new Obj("ворота"), {
     isClosed: yes,
 
     name: () => (gates.isClosed ? "закрытые ворота~closed gates" : "открытые ворота~open gates"),
-    description: "Вы видите {object}, ведущие на запад.~You see {object} leading west.",
     commands: [
         {
             text: "войти~enter",
@@ -206,18 +202,17 @@ export const gates = combine(new Obj("ворота"), {
 
 export const gardenSpot = combine(new Obj("пятноВСаду"), {
     name: "пятно~spot",
-    description: "Здесь было бы совсем красиво, если бы не бесцветное " +
-        "вытоптанное {object} перед воротами.~It would be quite beautiful here if it weren't for the colorless " +
-        "trampled {object} in front of the gates.",
     commands: [
         {
+            text: "осмотреть~inspect",
+            execution: "Выглядит так, как будто здесь кто-то копал.~It looks like someone has been digging here."
+        }, {
             text: "копать яму~dig a hole/руками~with bare hands",
-            condition: () => gardenHole.isHidden,
             execution: "Руками копать не получается. Для этого нужен подходящий инструмент." +
                 "~You can't dig with your hands. You need a suitable tool for that."
         }, {
             text: "копать яму~dig a hole/лопатой~with a shovel",
-            condition: () => gardenHole.isHidden && player.has(shovel),
+            condition: () => player.has(shovel),
             execution: () => {
                 if(gardenHole.contains(key)) {
                     write("Вы испортили красивую лужайку глубокой ямой. Но вот что-то блеснуло... Это ключ!" +
@@ -239,26 +234,20 @@ export const gardenHole = combine(new Obj("ямаВСаду"), {
 
     name: ["яма~hole", "яму~hole"],
     objects: "ключ",
-    description: "Перед воротами выкопана {object}.~There is a {object} in front of the gates.",
     commands: [
         {
-            text: "осмотреть~inspect",
-            condition: (hole) => hole.isHidden,
-            execution: "Выглядит так, как будто здесь кто-то копал.~It looks like someone has been digging here."
-        }, {
             text: "осмотреть~inspect",
             execution: "Это довольно глубокая яма, и если туда свалиться, то...!" +
                 "~This is a pretty deep hole — if you fall in, then...!"
         }, {
             text: "закопать~fill/лопатой~with shovel",
-            condition: (hole) => !hole.isHidden & player.has(shovel),
+            condition: () => player.has(shovel),
             execution: (hole) => {
                 write(hole.fillText)
                 hole.isHidden = yes
             }
         }, {
             text: "закопать~fill/руками~with bare hands",
-            condition: (hole) => !hole.isHidden,
             execution: (hole) => {
                 write(hole.fillText)
                 hole.isHidden = yes
@@ -272,8 +261,6 @@ export const fieldHole = combine(new Obj("ямаВПоле"), {
     fillText: "OK, вы закопали яму в поле.~OK, you filled in the hole in the field.",
 
     name: ["яма~hole", "яму~hole"],
-    description: function() {return this.isHidden ? "" : "В поле выкопана {object}." +
-        "~There is a {object} in the field."},
     commands: [
         {
             text: "закопать~fill/лопатой~with shovel",

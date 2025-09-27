@@ -82,10 +82,10 @@ export const attic = combine(new Location("чердак"), {
 export const field = combine(new Location("поле"), {
     objects: "ямаВПоле",
     image: "field.jpg",
-    description: "Вы вышли в открытое *поле*. Оно было недавно вспахано, но ничего посажено не было.{objects} " +
+    description: "Вы вышли в открытое *поле*. Оно было недавно вспахано, но ничего посажено не было. " +
         "Можно пойти *на север=двор*, *на юг=дорога*, *на восток=порог* и *на запад=конюшня*." +
-        "~You have come out into an open *field*. It has been recently plowed, but nothing has been " +
-        "planted.{objects} You can go *north=двор*, *south=дорога*, *east=порог*, and *west=конюшня*.",
+        "~You have come out into an open *field*. It has been recently plowed, but nothing has been planted. " +
+        "You can go *north=двор*, *south=дорога*, *east=порог*, and *west=конюшня*.",
     commands: [
         {
             text: "поле~field/выкопать яму~dig a hole/лопатой~with a shovel",
@@ -118,9 +118,9 @@ export const hallway = combine(new Location("прихожая"), {
     objects: ["дверь", "буфет"],
     image: () => "hallway_cupboard_" + (cupboard.isClosed ? "closed" : "opened") +
         "_door_" + (door.isClosed ? "closed" : "opened") + ".jpg",
-    description: () => "Перед вами небольшая прихожая.{objects}" +
+    description: () => "Перед вами небольшая прихожая. В углу стоит буфет и больше ничего здесь нет. " +
         "На востоке - *кухня=*, на севере - *гостиная=*." +
-        "~In front of you is a small hallway.{objects} " +
+        "~In front of you is a small hallway. In the corner there is a cupboard and nothing else here. " +
         "To the east is the *kitchen=кухня*, to the north is the *living room=гостиная*.",
 })
 
@@ -170,9 +170,10 @@ export const basement = combine(new Location("погреб"), {
         }
     },
     description: () => light(basement) ? "В отличие от большинства обычных погребов, этот явно не " +
-        "используется для хранения всяких запасов.{objects} Можно взобраться обратно *по лестнице=конюшня*." +
-        "~Unlike most ordinary cellars, this one is clearly not used for storing supplies.{objects} " +
-        "You can climb back up *the stairs=конюшня*." :
+        "используется для хранения всяких запасов. А в углу можно разглядеть большой старомодный сейф со встроенным " +
+        "в него бронзовым замком. Можно взобраться обратно *по лестнице=конюшня*." +
+        "~Unlike most ordinary cellars, this one is clearly not used for storing supplies. And in the corner you can " +
+        "see a large old-fashioned safe with a bronze lock built into it. You can climb back up *the stairs=конюшня*." :
         "Здесь темно и ничего не видно! Только на *лестницу=конюшня* падает немного света." +
         "~It's dark here and you can't see anything! Only a little light falls on the *stairs=конюшня*.",
 })
@@ -205,9 +206,13 @@ export const garden = combine(new Location("сад"), {
     image: () => "garden_gates_" + (gates.isClosed ? "closed" : "opened") +
         (gardenHole.isHidden ? "_spot" : "_hole") + ".jpg",
     description: () => "Это довольно пустынный *сад*, который скорее похож на лужайку с несколькими " +
-        "цветочными клумбами.{objects} Можно *войти в дом=кухня*." +
+        "цветочными клумбами. " + (gardenHole.isHidden ? "Здесь было бы совсем красиво, если бы не бесцветное " +
+        "вытоптанное *пятно* перед воротами, ведущими на запад. " : "") + "Вы видите ворота, ведущие на запад. " +
+        "Можно *войти в дом=кухня*." +
         "~This is a rather deserted *garden*, which looks more like a lawn with a few flower " +
-        "beds.{objects} You can *enter the house=кухня*.",
+        "beds. " + (gardenHole.isHidden ? "It would be quite beautiful here if it weren't for the colorless trampled " +
+        "*spot* in front of the gate leading to the west. " : "") + "You see the gate leading west. " +
+        "You can *enter the house=кухня*.",
     commands: [
         {
             text: "сад~garden/осмотреть~inspect",
