@@ -16,14 +16,12 @@ export const door = combine(new Obj("дверь"), {
 
     name: () => (door.isClosed ? ["закрытая дверь~closed door", "закрытую дверь~closed door"]
         : ["открытая дверь~open door", "открытую дверь~open door"]),
+    inspect: () => tran("Дверь сделана из добротного дерева и в данный момент " +
+        "~The door is made of good quality wood and is currently ") +
+        tran(door.isClosed ? "закрыта, но не заперта~closed but not locked" :
+        "остается широко открытой~wide open") + ".",
     commands: [
         {
-            text: "осмотреть~inspect",
-            execution: () => write(tran("Дверь сделана из добротного дерева и в данный момент " +
-                "~The door is made of good quality wood and is currently ")+
-                tran(door.isClosed ? "закрыта, но не заперта~closed but not locked" :
-                    "остается широко открытой~wide open") + ".")
-        }, {
             text: "войти~enter",
             condition: () => !door.isClosed && player.isIn(entrance),
             execution: () => {
@@ -95,6 +93,9 @@ export const safe = combine(new Obj("сейф"), {
 
     objects: "шкатулка",
     name: () => (safe.isClosed ? "закрытый сейф~closed safe" : "открытый сейф~opened safe"),
+    inspect: () => safe.isClosed ?
+        "Дверца сейфа закрыта.~The safe door is closed." :
+        "Дверца сейфа открыта.~The safe door is open.",
     commands: [
         {
             text: "отпереть~unlock/бронзовым ключом~with the bronze key",
@@ -137,16 +138,6 @@ export const safe = combine(new Obj("сейф"), {
                 write("ОК, вы закрыли дверь сейфа.~OK, you have closed the safe door.")
                 safe.isClosed = yes
             }
-        }, {
-            text: "осмотреть~inspect",
-            condition: () => !safe.isClosed,
-            execution: () => {
-                if(safe.isClosed) {
-                    write("Дверца сейфа закрыта.~The safe door is closed.")
-                } else {
-                    write("Дверца сейфа открыта.~The safe door is open.")
-                }
-            }
         }
     ],
 })
@@ -156,6 +147,11 @@ export const gates = combine(new Obj("ворота"), {
     isClosed: yes,
 
     name: () => (gates.isClosed ? "закрытые ворота~closed gates" : "открытые ворота~open gates"),
+    inspect: () => tran("Bopoтa сделаны из неважного дерева и в данный момент " +
+        "~The gates are made of low-quality wood and are currently ") +
+        tran(gates.isClosed ?
+        "закрыты изнутри на засов~locked from the inside with a bolt" :
+        "остаются открытыми~standing open") + ".",
     commands: [
         {
             text: "войти~enter",
@@ -168,18 +164,6 @@ export const gates = combine(new Obj("ворота"), {
             condition: () => !gates.isClosed && player.isIn(garden),
             execution: () => {
                 player.moveTo(atTheGates)
-            }
-        }, {
-            text: "осмотреть~inspect",
-            execution: () => {
-                write(
-                    tran("Bopoтa сделаны из неважного дерева и в данный момент " +
-                        "~The gates are made of low-quality wood and are currently ") +
-                    tran(gates.isClosed
-                        ? "закрыты изнутри на засов~locked from the inside with a bolt"
-                        : "остаются открытыми~standing open"
-                    ) + "."
-                )
             }
         }, {
             text: "открыть~open",
@@ -202,11 +186,9 @@ export const gates = combine(new Obj("ворота"), {
 
 export const gardenSpot = combine(new Obj("пятноВСаду"), {
     name: "пятно~spot",
+    inspect: "Выглядит так, как будто здесь кто-то копал.~It looks like someone has been digging here.",
     commands: [
         {
-            text: "осмотреть~inspect",
-            execution: "Выглядит так, как будто здесь кто-то копал.~It looks like someone has been digging here."
-        }, {
             text: "копать яму~dig a hole/руками~with bare hands",
             execution: "Руками копать не получается. Для этого нужен подходящий инструмент." +
                 "~You can't dig with your hands. You need a suitable tool for that."
@@ -233,13 +215,11 @@ export const gardenHole = combine(new Obj("ямаВСаду"), {
         "~OK, you filled in the hole and left an unsightly spot on the lawn!",
 
     name: ["яма~hole", "яму~hole"],
+    inspect: "Это довольно глубокая яма, и если туда свалиться, то...!" +
+        "~This is a pretty deep hole — if you fall in, then...!",
     objects: "ключ",
     commands: [
         {
-            text: "осмотреть~inspect",
-            execution: "Это довольно глубокая яма, и если туда свалиться, то...!" +
-                "~This is a pretty deep hole — if you fall in, then...!"
-        }, {
             text: "закопать~fill/лопатой~with shovel",
             condition: () => player.has(shovel),
             execution: (hole) => {

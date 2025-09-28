@@ -1,4 +1,4 @@
-import {executeMenuItem, update, clearConsole, showMenu} from "./gui.js"
+import {executeMenuItem, update, clearConsole, showMenu, write} from "./gui.js"
 import {toArray, toString, isArray, isFunction, error, isHidden, isClosed} from "./functions.js"
 import {player} from "./person.js"
 import {allObjects} from "./base.js"
@@ -61,6 +61,15 @@ function operateCommand(command, parameter, prefix = "") {
 
 function operateCommands(object, prefix = "") {
     if(isHidden(object)) return
+
+    if(object.inspect !== undefined) {
+        operateCommand({
+            text: "осмотреть~inspect",
+            execution: (object) => {
+                write(toString(object.inspect))
+            }
+        }, object, prefix)
+    }
 
     for(let command of toArray(object.commands)) {
         operateCommand(command, object, prefix)

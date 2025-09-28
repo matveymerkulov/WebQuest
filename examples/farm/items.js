@@ -46,17 +46,15 @@ export const diamond = combine(new Item("алмаз"), {
 export const blanket = combine(new Cloth("плед"), {
     name: "шерстяной плед~woolen blanket",
     inspect: "Красивый плед, выглядит как из французской шерсти." +
-        "~A beautiful blanket; it looks like it's made of French wool.",
+        "~A beautiful blanket, it looks like it's made of French wool.",
 })
 
 
 export const box = combine(new Item("шкатулка"), {
     name: ["деревянная шкатулка~wooden box", "деревянную шкатулку~wooden box"],
+    inspect: "Она достаточно прочна.~It's quite sturdy.",
     commands: [
         {
-            text: "осмотреть~inspect",
-            execution: "Она достаточно прочна.~It's quite sturdy."
-        }, {
             text: "открыть~open",
             execution: "Несмотря ни на какие усилия, открыть ее не удаётся!~Despite all efforts, it cannot be opened!"
         }, {
