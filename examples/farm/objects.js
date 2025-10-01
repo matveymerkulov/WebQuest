@@ -96,6 +96,7 @@ export const safe = combine(new Obj("сейф"), {
     inspect: () => safe.isClosed ?
         "Дверца сейфа закрыта.~The safe door is closed." :
         "Дверца сейфа открыта.~The safe door is open.",
+    inside: "в сейфе~inside safe",
     commands: [
         {
             text: "отпереть~unlock/бронзовым ключом~with the bronze key",
@@ -217,6 +218,7 @@ export const gardenHole = combine(new Obj("ямаВСаду"), {
     name: ["яма~hole", "яму~hole"],
     inspect: "Это довольно глубокая яма, и если туда свалиться, то...!" +
         "~This is a pretty deep hole — if you fall in, then...!",
+    inside: "в яме~inside hole",
     objects: "ключ",
     commands: [
         {

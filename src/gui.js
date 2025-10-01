@@ -83,7 +83,9 @@ function objectsText(object) {
     let text = ""
     for(let childObject of object.objects) {
         if(isHidden(childObject)) continue
-        text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>`
+        let inside = childObject.container?.inside
+        inside = inside === undefined ? "" : ` (${tran(inside)})`
+        text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>${inside}`
         if(isClosed(childObject)) continue
         text += objectsText(childObject)
     }

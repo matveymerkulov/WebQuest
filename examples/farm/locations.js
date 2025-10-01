@@ -207,7 +207,7 @@ export const garden = combine(new Location("сад"), {
         (gardenHole.isHidden ? "_spot" : "_hole") + ".jpg",
     description: () => "Это довольно пустынный *сад*, который скорее похож на лужайку с несколькими " +
         "цветочными клумбами. " + (gardenHole.isHidden ? "Здесь было бы совсем красиво, если бы не бесцветное " +
-        "вытоптанное *пятно* перед воротами, ведущими на запад. " : "") + "Вы видите ворота, ведущие на запад. " +
+        "вытоптанное пятно перед воротами, ведущими на запад. " : "") + "Вы видите ворота, ведущие на запад. " +
         "Можно *войти в дом=кухня*." +
         "~This is a rather deserted *garden*, which looks more like a lawn with a few flower " +
         "beds. " + (gardenHole.isHidden ? "It would be quite beautiful here if it weren't for the colorless trampled " +

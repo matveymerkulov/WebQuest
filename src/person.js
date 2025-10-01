@@ -15,6 +15,7 @@ function removeFromPersonArray(person, array, item) {
     if(!array.includes(item)) return
     removeFromArray(array, item)
     person.location.objects.push(item)
+    item.container = person.location
 }
 
 export class Person extends Obj {
