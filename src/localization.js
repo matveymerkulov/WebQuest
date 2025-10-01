@@ -43,15 +43,24 @@ export function getEnglishSystemLocale() {
 }
 
 
-let locale = {}, localesList = [], currentLocale = 0
+let localesList = [], currentLocale = 0
 export let currentLocaleIndex = 0
-export function setLocale(name, strings, setAsCurrent) {
+export function newLocale(name, strings, setAsCurrent) {
     if(setAsCurrent) {
         currentLocale = strings
         currentLocaleIndex = localesList.length
     }
-    locale[name] = strings
+    strings.name = name
     localesList.push(strings)
+}
+
+export function setLocale(name) {
+    for(let index = 0; index < localesList.length; index++) {
+        if(localesList[index].name === name) {
+            currentLocaleIndex = index
+            return
+        }
+    }
 }
 
 export function loc(string) {

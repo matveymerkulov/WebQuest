@@ -8,18 +8,30 @@ import {key, shovel, blanket, torch, box} from "./items.js"
 import {cupboard, gates, door, safe, gardenHole, fieldHole} from "./objects.js"
 import {Location} from "../../src/location.js"
 import {combine} from "../../src/functions.js"
+import {currentLocaleIndex, setLocale} from "../../src/localization.js"
 
 export const begin = combine(new Location("начало"), {
     image: "intro.jpg",
     description:
         `Цель этой короткой игры очень проста. Вам надо разыскать крупный алмаз и завладеть им.
         
+        *Switch to English*
         *Начать игру=поле*
         *Авторы=авторы*
         ~The goal of this short quest is very simple. You need to find a large diamond and take possession of it.
-
+        
+        *Переключить на русский язык*
         *Begin game=поле*
         *Authors=авторы*`,
+    commands: [
+        {
+            text: "Переключить на русский язык",
+            execution: () => setLocale("Русский")
+        }, {
+            text: "Switch to English",
+            execution: () => setLocale("English")
+        }
+    ]
 })
 
 
