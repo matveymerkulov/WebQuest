@@ -58,6 +58,7 @@ export function setLocale(name) {
     for(let index = 0; index < localesList.length; index++) {
         if(localesList[index].name === name) {
             currentLocaleIndex = index
+            currentLocale = localesList[index]
             return
         }
     }
