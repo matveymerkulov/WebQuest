@@ -228,15 +228,17 @@ export const gardenHole = combine(new Obj("ямаВСаду"), {
         {
             text: "закопать~fill/лопатой~with shovel",
             condition: () => player.has(shovel),
-            execution: (hole) => {
-                write(hole.fillText)
-                hole.isHidden = yes
+            execution: () => {
+                write(gardenHole.fillText)
+                gardenHole.isHidden = yes
+                gardenSpot.isHidden = no
             }
         }, {
             text: "закопать~fill/руками~with bare hands",
-            execution: (hole) => {
-                write(hole.fillText)
-                hole.isHidden = yes
+            execution: () => {
+                write(gardenHole.fillText)
+                gardenSpot.isHidden = no
+                gardenHole.isHidden = yes
             }
         }
     ]
@@ -252,17 +254,17 @@ export const fieldHole = combine(new Obj("ямаВПоле"), {
     commands: [
         {
             text: "закопать~fill/лопатой~with shovel",
-            condition: (hole) => !hole.isHidden & player.has(shovel),
-            execution: (hole) => {
-                write(hole.fillText)
-                hole.isHidden = yes
+            condition: () => !fieldHole.isHidden & player.has(shovel),
+            execution: () => {
+                write(fieldHole.fillText)
+                fieldHole.isHidden = yes
             }
         }, {
             text: "закопать~fill/руками~with bare hands",
-            condition: (hole) => !hole.isHidden,
-            execution: (hole) => {
-                write(hole.fillText)
-                hole.isHidden = yes
+            condition: () => !fieldHole.isHidden,
+            execution: () => {
+                write(fieldHole.fillText)
+                fieldHole.isHidden = yes
             }
         }
     ]

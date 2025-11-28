@@ -17,7 +17,7 @@ export class Cloth extends Item {
         function addDropCommand(container) {
             if(!container.put) return
             commands.push({
-                text: () => loc("putOff") + "/" + loc(container.put),
+                text: () => loc("putOff") + "/" + tran(container.put),
                 condition: (item) => player.wears(item),
                 execution: (item) => player.putOff(item, container)
             })
