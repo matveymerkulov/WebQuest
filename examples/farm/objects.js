@@ -230,8 +230,8 @@ export const gardenHole = combine(new Obj("ямаВСаду"), {
             condition: () => player.has(shovel),
             execution: () => {
                 write(gardenHole.fillText)
-                gardenHole.isHidden = yes
                 gardenSpot.isHidden = no
+                gardenHole.isHidden = yes
             }
         }, {
             text: "закопать~fill/руками~with bare hands",

@@ -83,8 +83,10 @@ function operateCommands(object, prefix = "") {
 
     if(isClosed(object)) return
 
-    for(let childObject of object.objects) {
-        operateCommands(childObject, declineName(childObject, Pad.vin) + "/")
+    if(object.objects) {
+        for(let childObject of object.objects) {
+            operateCommands(childObject, declineName(childObject, Pad.vin) + "/")
+        }
     }
 }
 

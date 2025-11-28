@@ -14,6 +14,7 @@ const imageElement = new Image()
 const consoleElement = document.getElementById("console")
 
 function applyOrientation() {
+    if(columnElement === null) return
     portrait = document.body.offsetWidth / document.body.offsetHeight < 1
     if(portrait) {
         columnElement.insertBefore(descriptionElement, consoleElement)
@@ -80,6 +81,7 @@ function parseText(text) {
 
 
 function objectsText(object) {
+    if(object.objects === undefined) return
     let text = ""
     for(let childObject of object.objects) {
         if(isHidden(childObject)) continue
