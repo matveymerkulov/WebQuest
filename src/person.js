@@ -2,7 +2,7 @@ import {write, update, clearConsole} from "./gui.js"
 import {Obj} from "./object.js"
 import {allObjects} from "./base.js"
 import {removeFromArray} from "./functions.js"
-import {objectsStack} from "./main.js"
+import {clearContainerStack, containerStack} from "./main.js"
 
 
 function addToPersonArray(person, array, item) {
@@ -27,7 +27,7 @@ export class Person extends Obj {
 
     moveTo(location) {
         this.location = location
-        objectsStack.clear()
+        clearContainerStack()
         clearConsole()
     }
 

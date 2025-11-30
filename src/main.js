@@ -61,10 +61,15 @@ function operateCommand(command, parameter, prefix = "") {
 }
 
 
-export const objectsStack = []
+export let containerStack = []
+
 export function currentContainer() {
-    if(objectsStack.length > 0) return objectsStack[objectsStack.length - 1]
+    if(containerStack.length > 0) return containerStack[containerStack.length - 1]
     return player.location
+}
+
+export function clearContainerStack() {
+    containerStack = []
 }
 
 function operateCommands(object, prefix = "") {
@@ -95,7 +100,7 @@ function operateCommands(object, prefix = "") {
         operateCommand({
             text: "осмотреть~inspect",
             execution: (object) => {
-                objectsStack.push(object)
+                containerStack.push(object)
             }
         }, object, prefix)
     }
@@ -119,7 +124,7 @@ export function updateCommands() {
     operateCommand({
         text: "вернуться",
         execution: () => {
-            objectsStack.pop()
+            containerStack.pop()
         }
     }, undefined)
 
@@ -148,7 +153,7 @@ export function executeCommand(text) {
 
 export function movePlayerTo(exit) {
     player.location = allObjects.get(exit)
-    objectsStack.clear()
+    containerStack = []
     clearConsole()
     update()
 }

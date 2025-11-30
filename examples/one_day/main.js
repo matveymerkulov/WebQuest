@@ -1,3 +1,4 @@
+import "./cloth.js"
 import "./items.js"
 import "./objects.js"
 import "./locations.js"

@@ -1,4 +1,4 @@
-import {executeCommand, movePlayerTo, objectsStack, objectsText, Pad, parseText, personInfoText, updateCommands} from "./main.js"
+import {executeCommand, movePlayerTo, containerStack, objectsText, Pad, parseText, personInfoText, updateCommands} from "./main.js"
 import {isHidden, toString} from "./functions.js"
 import {player} from "./person.js"
 import {allObjects} from "./base.js"
@@ -53,15 +53,15 @@ export function update() {
 
     let location = player.location
     let text = ""
-    if(objectsStack.length > 0) {
-        location = objectsStack[objectsStack.length - 1]
+    if(containerStack.length > 0) {
+        location = containerStack[containerStack.length - 1]
     }
 
     text += objectsText(location)
     if(text !== "") text = "<p>" + loc("youSee") + text.substring(2)
     text = parseText(tran(toString(location.description, location))) + text
 
-    if(objectsStack.length > 0) {
+    if(containerStack.length > 0) {
         text = `(<span class="link">вернуться</span>) ` + text
     }
 

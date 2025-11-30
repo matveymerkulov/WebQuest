@@ -1,4 +1,4 @@
-import {no, setActionsBefore, yes} from "../../src/main.js"
+import{no, setActionsBefore, yes} from "../../src/main.js"
 import "./items.js"
 import "./objects.js"
 import "./locations.js"

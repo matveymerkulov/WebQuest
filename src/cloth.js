@@ -5,7 +5,7 @@ import {currentContainer} from "./main.js"
 
 export class Cloth extends Item {
     getCommands() {
-        const commands = []
+        const commands = super.getCommands()
         commands.push({
             text: () => loc("putOn"),
             condition: (item) => !player.wears(item),

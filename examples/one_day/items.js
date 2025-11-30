@@ -15,22 +15,3 @@ export const sheet = combine(new Item("простыня"), {
 
 export const blanket = combine(new Item("одеяло"), {
 })
-
-export const flippers = combine(new Item("тапочки"), {
-})
-
-export const socks = combine(new Item("носки"), {
-})
-
-export const boots = combine(new Item("ботинки"), {
-})
-
-export const suit = combine(new Item("пиджак"), {
-})
-
-export const shirt = combine(new Item("рубашка"), {
-    name: ["рубашка", "рубашку"]
-})
-
-export const trousers = combine(new Item("брюки"), {
-})
