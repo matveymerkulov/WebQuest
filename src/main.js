@@ -1,8 +1,9 @@
-import {executeMenuItem, update, clearConsole, showMenu, write} from "./gui.js"
-import {toArray, toString, isArray, isFunction, error, isHidden, isClosed} from "./functions.js"
+import {clearConsole, executeMenuItem, showMenu, update, write} from "./gui.js"
+import {error, isArray, isClosed, isContainer, isFunction, isHidden, toArray, toString} from "./functions.js"
 import {player} from "./person.js"
 import {allObjects} from "./base.js"
 import {loc, tran} from "./localization.js"
+import {Container} from "./container.js"
 
 export const yes = true, no = false
 
@@ -59,6 +60,9 @@ function operateCommand(command, parameter, prefix = "") {
     }
 }
 
+
+export const objectsStack = []
+
 function operateCommands(object, prefix = "") {
     if(isHidden(object)) return
 
@@ -83,6 +87,15 @@ function operateCommands(object, prefix = "") {
 
     if(isClosed(object)) return
 
+    if(object.inspectable) {
+        operateCommand({
+            text: "осмотреть~inspect",
+            execution: (object) => {
+                objectsStack.push(object)
+            }
+        }, object, prefix)
+    }
+
     if(object.objects) {
         for(let childObject of object.objects) {
             operateCommands(childObject, declineName(childObject, Pad.vin) + "/")
@@ -95,10 +108,17 @@ function operateCommands(object, prefix = "") {
 export function updateCommands() {
     actionsBefore()
 
-
     const location = player.location
 
     menu = {}
+
+    operateCommand({
+        text: "вернуться",
+        execution: () => {
+            objectsStack.pop()
+        }
+    }, undefined)
+
     operateCommands(location)
 
     for(let object of player.inventory) {
@@ -126,4 +146,68 @@ export function movePlayerTo(exit) {
     player.location = allObjects.get(exit)
     clearConsole()
     update()
+}
+
+
+
+export function parseText(text) {
+    let begin = 0, link = false, newText = "", locale = 0
+    text = tran(text)
+    for(let index = 0; index < text.length; index++) {
+        const symbol = text.charAt(index)
+        if(symbol === "*") {
+            if(link) {
+                const part = text.substring(begin, index).split("=")
+                let exit = ""
+                if(part.length > 1) {
+                    exit = part[1]
+                    if(exit === "") exit = part[0]
+                    exit = ` exit="${exit}"`
+                }
+                newText += `<span class="link"${exit}>${part[0]}</span>`
+            } else {
+                newText += text.substring(begin, index)
+            }
+            begin = index + 1
+            link = !link
+        } else if(symbol === "\n") {
+            newText += text.substring(begin, index) + "<p>"
+            begin = index + 1
+        } else if(symbol === "~") {
+            locale++
+        }
+    }
+    newText = newText.concat(text.substring(begin))
+    return newText
+}
+
+
+
+export function objectsText(object) {
+    if(object.objects === undefined) return ""
+    let text = ""
+    for(let childObject of object.objects) {
+        if(isHidden(childObject)) continue
+        if(childObject.constructor !== Container) {
+            let container = childObject.container
+            let inside = container?.inside
+            if(isContainer(container)) inside = container.name
+            inside = inside === undefined ? "" : ` (${tran(inside)})`
+            text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>${inside}`
+        }
+        if(isClosed(childObject)) continue
+        if(childObject.inspectable) continue
+        text += objectsText(childObject)
+    }
+    return text
+}
+
+
+
+export function personInfoText(array, prefix, pad = Pad.imen) {
+    let text = ""
+    for(let object of array) {
+        text += `${text === "" ? "" : ", "}<span class="link">${declineName(object, pad)}</span>`
+    }
+    return text === "" ? "" : prefix + text
 }

@@ -1,8 +1,8 @@
-import {executeCommand, updateCommands, Pad, declineName, movePlayerTo} from "./main.js"
-import {isClosed, isHidden, toString} from "./functions.js"
+import {executeCommand, movePlayerTo, objectsStack, objectsText, Pad, parseText, personInfoText, updateCommands} from "./main.js"
+import {isHidden, toString} from "./functions.js"
 import {player} from "./person.js"
 import {allObjects} from "./base.js"
-import {currentLocaleIndex, loc, tran} from "./localization.js"
+import {loc, tran} from "./localization.js"
 
 let portrait
 const mainElement = document.getElementById("main")
@@ -47,76 +47,27 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 
-function parseText(text) {
-    let begin = 0, link = false, newText = "", locale = 0
-    text = tran(text)
-    for(let index = 0; index < text.length; index++) {
-        const symbol = text.charAt(index)
-        if(symbol === "*") {
-            if(link) {
-                const part = text.substring(begin, index).split("=")
-                let exit = ""
-                if(part.length > 1) {
-                    exit = part[1]
-                    if(exit === "") exit = part[0]
-                    exit = ` exit="${exit}"`
-                }
-                newText = newText.concat(`<span class="link"${exit}>${part[0]}</span>`)
-            } else {
-                newText = newText.concat(text.substring(begin, index))
-            }
-            begin = index + 1
-            link = !link
-        } else if(symbol === "\n") {
-            newText = newText.concat(text.substring(begin, index), "<p>")
-            begin = index + 1
-        } else if(symbol === "~") {
-            locale++
-        }
-    }
-    newText = newText.concat(text.substring(begin))
-    return newText
-}
-
-
-
-function objectsText(object) {
-    if(object.objects === undefined) return
-    let text = ""
-    for(let childObject of object.objects) {
-        if(isHidden(childObject)) continue
-        let inside = childObject.container?.inside
-        inside = inside === undefined ? "" : ` (${tran(inside)})`
-        text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>${inside}`
-        if(isClosed(childObject)) continue
-        text += objectsText(childObject)
-    }
-    return text
-}
-
-
-function personInfoText(array, prefix, pad = Pad.imen) {
-    let text = ""
-    for(let object of array) {
-        text += `${text === "" ? "" : ", "}<span class="link">${declineName(object, pad)}</span>`
-    }
-    return text === "" ? "" : prefix + text
-}
-
 
 export function update() {
     updateCommands()
 
-    const location = player.location
-    let text = objectsText(location)
-    if(text !== "") text = "<p>" + loc("youSee") + text.substring(2)
+    let location = player.location
+    let text = ""
+    if(objectsStack.length > 0) {
+        location = objectsStack[objectsStack.length - 1]
+    }
 
-    descriptionElement.innerHTML =
-        parseText(
-            tran(toString(location.description, location))) +
-        text +
-        personInfoText(player.inventory, "<p>" + loc("youHave")) +
-        personInfoText(player.clothes, "<p>" + loc("youWear"), Pad.vin)
+    text += objectsText(location)
+    if(text !== "") text = "<p>" + loc("youSee") + text.substring(2)
+    text = parseText(tran(toString(location.description, location))) + text
+
+    if(objectsStack.length > 0) {
+        text = `(<span class="link">вернуться</span>) ` + text
+    }
+
+    descriptionElement.innerHTML = text
+        + personInfoText(player.inventory, "<p>" + loc("youHave"))
+        + personInfoText(player.clothes, "<p>" + loc("youWear"), Pad.vin)
 
     const imageFile = toString(location.image, location)
     if(imageFile === "") {
@@ -211,6 +162,7 @@ export function clearConsole() {
 }
 
 export function write(text) {
+    if(consoleElement === undefined) return
     if(consoleElement.innerHTML.length > 0) consoleElement.innerHTML += "<p>"
     consoleElement.innerHTML += parseText(text)
     consoleElement.scrollTop = consoleElement.scrollHeight;

@@ -7,6 +7,5 @@ import {livingRoom} from "./locations.js"
 
 newLocale("Русский", getRussianSystemLocale(), true)
 
-player.maxItems = 2
 player.location = livingRoom
 

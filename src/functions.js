@@ -1,7 +1,14 @@
+import {Container} from "./container.js"
+
 export const isArray = (object) => Array.isArray(object)
 export const isString = (object) => typeof object === "string"
 export const isFunction = (object) => typeof object === "function"
 
+
+export function isContainer(object) {
+    if(object === undefined) return false
+    return object.constructor === Container
+}
 
 export function toArray(object, parent = undefined) {
     if(object === undefined) return []
