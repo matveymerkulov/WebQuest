@@ -1,0 +1,50 @@
+import {combine, isClosed} from "../../src/functions.js"
+import {Obj} from "../../src/object.js"
+import {no, yes} from "../../src/main.js"
+import {tran} from "../../src/localization.js"
+import {player} from "../../src/person.js"
+import {write} from "../../src/gui.js"
+import {Passage} from "../../src/passage.js"
+
+export class Door extends Passage{
+    isClosed = yes
+
+    init() {
+        super.init()
+        this.doorName = this.name
+        this.name = (door) => (door.isClosed ? "закрытая " : "открытая ") + door.doorName
+    }
+
+    getCommands() {
+        return [
+            {
+                text: "войти",
+                condition: (door) => !door.isClosed,
+                execution: (door) => {
+                    player.moveTo(player.location === door.location0 ? door.location1 : door.location0)
+                }
+            }, {
+                text: "открыть",
+                condition: (door) => door.isClosed,
+                execution: (door) => {
+                    door.isClosed = no
+                }
+            }, {
+                text: "закрыть",
+                condition: (door) => !door.isClosed,
+                execution: (door) => {
+                    door.isClosed = yes
+                }
+            }
+        ]
+    }
+}
+
+
+export const livingRoomDoor = combine(new Door("дверь в гостиную", "гостиная", "прихожая"))
+
+export const wcDoor = combine(new Door("дверь в туалет", "туалет", "прихожая"))
+
+export const bathroomDoor = combine(new Door("дверь в ванную", "ванная", "прихожая"))
+
+export const kitchenDoor = combine(new Door("дверь в ванную", "кухня", "прихожая"))

@@ -176,14 +176,3 @@ export const kitchenTable = combine(new Obj("стол [на кухне]"), {
 
 export const fridge = combine(new Obj("холодильник"), {
 })
-
-
-
-export const livingRoomDoor = new Passage("дверь в гостиную", "гостиная", "прихожая")
-
-export const wcDoor = new Passage("дверь в туалет", "туалет", "прихожая")
-
-export const bathroomDoor = new Passage("дверь в ванную", "ванная", "прихожая")
-
-export const kitchenDoor = new Passage("дверь в ванную", "кухня", "прихожая")
-

@@ -158,11 +158,12 @@ function hideMenu() {
 }
 
 export function clearConsole() {
+    if(!consoleElement) return
     consoleElement.textContent = ""
 }
 
 export function write(text) {
-    if(consoleElement === undefined) return
+    if(!consoleElement) return
     if(consoleElement.innerHTML.length > 0) consoleElement.innerHTML += "<p>"
     consoleElement.innerHTML += parseText(text)
     consoleElement.scrollTop = consoleElement.scrollHeight;

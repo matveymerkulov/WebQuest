@@ -25,3 +25,7 @@ export class Passage extends BaseObject {
         player.location = player.location === this.location0 ? this.location1 : this.location0
     }
 }
+
+export class Door extends Passage {
+
+}
