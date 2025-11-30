@@ -1,6 +1,7 @@
 import {Obj} from "./object.js"
 import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
+import {currentContainer} from "./main.js"
 
 export class Item extends Obj {
     getCommands() {
@@ -24,8 +25,8 @@ export class Item extends Obj {
             })
         }
 
-        addDropCommand(player.location)
-        for(const object of player.location.objects) {
+        addDropCommand(currentContainer())
+        for(const object of currentContainer().objects) {
             addDropCommand(object)
         }
 

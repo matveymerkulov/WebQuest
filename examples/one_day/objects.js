@@ -7,16 +7,20 @@ import {bathroom, hallway, kitchen, livingRoom, wc} from "./locations.js"
 
 
 export const insideWardrobe = combine(new Container("в шкафу"), {
-    objects: ["пиджак", "брюки", "рубашка"]
+    objects: ["пиджак", "брюки", "рубашка"],
+    put: "в шкаф",
 })
 
 export const onShelf = combine(new Container("на полке"), {
+    put: "на полку",
 })
 
 export const onWardrobe = combine(new Container("на шкафу"), {
+    put: "на шкаф",
 })
 
 export const underWardrobe = combine(new Container("под шкафом"), {
+    put: "под шкаф",
 })
 
 export const wardrobe = combine(new Obj("шкаф"), {
@@ -29,10 +33,12 @@ export const wardrobe = combine(new Obj("шкаф"), {
 
 
 export const onTable = combine(new Container("на столе"), {
-    objects: "ноутбук"
+    objects: "ноутбук",
+    put: "на стол",
 })
 
 export const underTable = combine(new Container("под столом"), {
+    put: "под стол",
 })
 
 export const table = combine(new Obj("стол [в гостиной]"), {
@@ -45,11 +51,13 @@ export const table = combine(new Obj("стол [в гостиной]"), {
 
 
 export const onBed = combine(new Container("на кровати"), {
-    objects: ["простыня", "одеяло", "подушка"]
+    objects: ["простыня", "одеяло", "подушка"],
+    put: "на кровать",
 })
 
 export const underBed = combine(new Container("под кроватью"), {
-    objects: ["носки", "тапочки"]
+    objects: ["носки", "тапочки"],
+    put: "под кровать",
 })
 
 export const bed = combine(new Obj("кровать"), {

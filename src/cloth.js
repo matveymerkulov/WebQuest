@@ -1,6 +1,7 @@
 import {Item} from "./item.js"
 import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
+import {currentContainer} from "./main.js"
 
 export class Cloth extends Item {
     getCommands() {
@@ -9,7 +10,7 @@ export class Cloth extends Item {
             text: () => loc("putOn"),
             condition: (item) => !player.wears(item),
             execution: (item) => {
-                player.drop(item, player.location)
+                player.drop(item, currentContainer())
                 player.putOn(item)
             }
         })
@@ -23,8 +24,8 @@ export class Cloth extends Item {
             })
         }
 
-        addDropCommand(player.location)
-        for(const object of player.location.objects) {
+        addDropCommand(currentContainer())
+        for(const object of currentContainer().objects) {
             addDropCommand(object)
         }
 

@@ -62,6 +62,10 @@ function operateCommand(command, parameter, prefix = "") {
 
 
 export const objectsStack = []
+export function currentContainer() {
+    if(objectsStack.length > 0) return objectsStack[objectsStack.length - 1]
+    return player.location
+}
 
 function operateCommands(object, prefix = "") {
     if(isHidden(object)) return
@@ -144,6 +148,7 @@ export function executeCommand(text) {
 
 export function movePlayerTo(exit) {
     player.location = allObjects.get(exit)
+    objectsStack.clear()
     clearConsole()
     update()
 }
