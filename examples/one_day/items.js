@@ -15,3 +15,15 @@ export const sheet = combine(new Item("простыня"), {
 
 export const blanket = combine(new Item("одеяло"), {
 })
+
+export const deodorant = combine(new Item("дезодорант"), {
+})
+
+export const soap = combine(new Item("мыло"), {
+})
+
+export const glass = combine(new Item("стакан [в ванной]"), {
+})
+
+export const toothbrush = combine(new Item("зубная щётка"), {
+})

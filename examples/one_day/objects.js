@@ -4,6 +4,7 @@ import {Container} from "../../src/container.js"
 import {yes} from "../../src/main.js"
 import {Passage} from "../../src/passage.js"
 import {bathroom, hallway, kitchen, livingRoom, wc} from "./locations.js"
+import {Item} from "../../src/item.js"
 
 
 export const insideWardrobe = combine(new Container("в шкафу"), {
@@ -130,12 +131,23 @@ export const bath = combine(new Obj("ванна"), {
 })
 
 
-export const insideBathroomSink = combine(new Container("в раковине"), {
-})
 
-export const bathroomSink = combine(new Obj("раковина [в ванной]"), {
-    objects: "в раковине"
-})
+function createSink(where) {
+    where = " [" + where + "]"
+
+    combine(new Container("в раковине" + where))
+    combine(new Obj("кран" + where))
+    combine(new Obj("вентиль холодной воды" + where))
+    combine(new Obj("вентиль горячей воды" + where))
+
+    return combine(new Obj("раковина" + where), {
+        objects: ["кран" + where, "вентиль холодной воды" + where, "вентиль горячей воды" + where, "в раковине" + where],
+        inspectable: yes,
+    })
+}
+
+
+export const bathroomSink = createSink("в ванной")
 
 
 export const bathroomMirror = combine(new Obj("зеркало [в ванной]"), {
@@ -146,33 +158,35 @@ export const hanger = combine(new Obj("вешалка"), {
 })
 
 
-export const onBottomShelfOfBathroomShelf = combine(new Container("на нижней полке [шкафчика в ванной]"), {
-})
+function createShelf(where) {
+    combine(new Container("на нижней полке [шкафчика " + where + "]"))
+    combine(new Container("на верхней полке [шкафчика " + where + "]"))
+    combine(new Container("на шкафчике [" + where + "]"))
 
-export const onTopShelfOfBathroomShelf = combine(new Container("на верхней полке [шкафчика в ванной]"), {
-})
+    return combine(new Obj("шкафчик [в ванной]"), {
+        objects: ["на нижней полке [шкафчика в ванной]", "на верхней полке [шкафчика " + where + "]"
+            , "на шкафчике [" + where + "]"],
+        inspectable: yes,
+    })
 
-export const onTopOfBathroomShelf = combine(new Container("на шкафчике [в ванной]"), {
-})
+}
 
-export const bathroomShelf = combine(new Obj("шкафчик [в ванной]"), {
-    objects: ["на нижней полке [шкафчика в ванной]", "на верхней полке [шкафчика в ванной]"
-        , "на шкафчике [в ванной]"],
+export const bathroomShelf = createShelf("в ванной")
+
+
+export const cupboard = combine(new Obj("буфет"), {
     inspectable: yes,
 })
 
 
-export const cupboard = combine(new Obj("буфет"), {
-})
-
-
-export const kitchenSink = combine(new Obj("раковина [на кухне]"), {
-})
+export const kitchenSink = createSink("на кухне")
 
 
 export const kitchenTable = combine(new Obj("стол [на кухне]"), {
+    inspectable: yes,
 })
 
 
 export const fridge = combine(new Obj("холодильник"), {
+    inspectable: yes,
 })

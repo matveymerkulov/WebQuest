@@ -6,13 +6,23 @@ import {player} from "../../src/person.js"
 import {write} from "../../src/gui.js"
 import {Passage} from "../../src/passage.js"
 
-export class Door extends Passage{
+export class Door extends Passage {
+    location0doorName
+    location1doorName
     isClosed = yes
+
+    constructor(name, location0, location1, location0doorName, location1doorName) {
+        super(name, location0, location1)
+        this.location0doorName = location0doorName
+        this.location1doorName = location1doorName
+    }
 
     init() {
         super.init()
-        this.doorName = this.name
-        this.name = (door) => (door.isClosed ? "закрытая " : "открытая ") + door.doorName
+        this.name = (door) => {
+            const doorName = player.location === this.location0 ? this.location0doorName : this.location1doorName
+            return (door.isClosed ? "закрытую " : "открытую ") + doorName
+        }
     }
 
     getCommands() {
@@ -41,10 +51,14 @@ export class Door extends Passage{
 }
 
 
-export const livingRoomDoor = combine(new Door("дверь в гостиную", "гостиная", "прихожая"))
+export const livingRoomDoor = combine(new Door("дверь в гостиную", "гостиная", "прихожая",
+    "дверь в прихожую", "дверь в гостиную"))
 
-export const wcDoor = combine(new Door("дверь в туалет", "туалет", "прихожая"))
+export const wcDoor = combine(new Door("дверь в туалет", "туалет", "прихожая",
+    "дверь в прихожую", "дверь в туалет"))
 
-export const bathroomDoor = combine(new Door("дверь в ванную", "ванная", "прихожая"))
+export const bathroomDoor = combine(new Door("дверь в ванную", "ванная", "прихожая",
+    "дверь в прихожую", "дверь в ванную"))
 
-export const kitchenDoor = combine(new Door("дверь в ванную", "кухня", "прихожая"))
+export const kitchenDoor = combine(new Door("дверь в кухню", "кухня", "прихожая",
+    "дверь в прихожую", "дверь в кухню"))
