@@ -11,7 +11,7 @@ export class Item extends Obj {
             text: () => loc("take"),
             condition: (item) => !player.has(item),
             execution: (item) => {
-                player.putOff(item)
+                player.putOff(item, currentContainer())
                 player.take(item)
             }
         })

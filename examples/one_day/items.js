@@ -5,12 +5,10 @@ import {Item} from "../../src/item.js"
 export const laptop = combine(new Item("ноутбук"), {
 })
 
-export const pillow = combine(new Item("подушка"), {
-    name: ["подушка", "подушку"]
+export const pillow = combine(new Item(["подушка", "подушку"]), {
 })
 
-export const sheet = combine(new Item("простыня"), {
-    name: ["простыня", "простыню"]
+export const sheet = combine(new Item(["простыня", "простыню"]), {
 })
 
 export const blanket = combine(new Item("одеяло"), {
