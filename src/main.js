@@ -16,6 +16,11 @@ export const Pad = Object.freeze({
     pred: 5
 })
 
+export const genus = Object.freeze({
+    masculine: 0,
+    feminine: 1,
+    neuter: 2,
+})
 
 
 let actionsBefore = () => {}

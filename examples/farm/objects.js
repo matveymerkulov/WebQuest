@@ -14,38 +14,38 @@ export const door = combine(new Obj("дверь"), {
     location1: "прихожая",
     isClosed: yes,
 
-    name: () => (door.isClosed ? ["закрытая дверь~closed door", "закрытую дверь~closed door"]
+    name: (obj) => (obj.isClosed ? ["закрытая дверь~closed door", "закрытую дверь~closed door"]
         : ["открытая дверь~open door", "открытую дверь~open door"]),
-    inspect: () => tran("Дверь сделана из добротного дерева и в данный момент " +
+    inspect: (obj) => tran("Дверь сделана из добротного дерева и в данный момент " +
         "~The door is made of good quality wood and is currently ") +
-        tran(door.isClosed ? "закрыта, но не заперта~closed but not locked" :
+        tran(obj.isClosed ? "закрыта, но не заперта~closed but not locked" :
         "остается широко открытой~wide open") + ".",
     commands: [
         {
             text: "войти~enter",
-            condition: () => !door.isClosed && player.isIn(entrance),
+            condition: (obj) => !obj.isClosed && player.isIn(entrance),
             execution: () => {
                 player.moveTo(hallway)
             }
         }, {
             text: "выйти~exit",
-            condition: () => !door.isClosed && player.isIn(hallway),
+            condition: (obj) => !obj.isClosed && player.isIn(hallway),
             execution: () => {
                 player.moveTo(entrance)
             }
         }, {
             text: "открыть~open",
             condition: () => door.isClosed,
-            execution: () => {
+            execution: (obj) => {
                 write("ОК, вы открыли дверь.~OK, you opened the door.")
-                door.isClosed = no
+                obj.isClosed = no
             }
         }, {
             text: "закрыть~close",
-            condition: () => !door.isClosed,
-            execution: () => {
+            condition: (obj) => !obj.isClosed,
+            execution: (obj) => {
                 write("OК, теперь дверь закрыта.~OK, now the door is closed.")
-                door.isClosed = yes
+                obj.isClosed = yes
             }
         }
     ],
@@ -56,7 +56,7 @@ export const cupboard = combine(new Obj("буфет"), {
     isClosed: yes,
     wasOpen: no,
 
-    name: () => (cupboard.isClosed ? "закрытый буфет~closed cupboard" : "открытый буфет~opened cupboard"),
+    name: (obj) => (obj.isClosed ? "закрытый буфет~closed cupboard" : "открытый буфет~opened cupboard"),
     inside: "в буфете~inside cupboard",
     put: "в буфет~in cupboard",
     commands: [

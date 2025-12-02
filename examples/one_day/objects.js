@@ -1,13 +1,16 @@
 import {combine, isClosed} from "../../src/functions.js"
 import {Obj} from "../../src/object.js"
 import {Container} from "../../src/container.js"
-import {decline, declineName, no, yes} from "../../src/main.js"
+import {decline, declineName, genus, no, yes} from "../../src/main.js"
 import {write} from "../../src/gui.js"
 
 
-function openable(name) {
+function openable(gen = genus.masculine) {
     return {
-        name: (obj) => (obj.isClosed ? "закрытый " : "открытый ") + decline(obj.initialName),
+        name: (obj) => {
+            const ending = gen === genus.masculine ? "ый" : gen === genus.feminine ? "ая" : "ое"
+            return (obj.isClosed ? "закрыт" : "открыт") + ending + " " + decline(obj.initialName)
+        },
         isClosed: yes,
         commands: [
             {
@@ -237,7 +240,7 @@ combine(new Obj(["стиральная машина", "стиральную ма
     inspectable: yes,
     objects: "брюки [2]",
     put: ""
-}, openable("стиральную машину"))
+}, openable(genus.feminine))
 
 
 // КУХНЯ
