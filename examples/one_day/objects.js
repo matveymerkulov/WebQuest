@@ -1,13 +1,13 @@
 import {combine, isClosed} from "../../src/functions.js"
 import {Obj} from "../../src/object.js"
 import {Container} from "../../src/container.js"
-import {no, yes} from "../../src/main.js"
+import {decline, declineName, no, yes} from "../../src/main.js"
 import {write} from "../../src/gui.js"
 
 
 function openable(name) {
     return {
-        name: (obj) => (obj.isClosed ? "закрытый " : "открытый ") + name,
+        name: (obj) => (obj.isClosed ? "закрытый " : "открытый ") + decline(obj.initialName),
         isClosed: yes,
         commands: [
             {
@@ -53,7 +53,7 @@ combine(new Obj("шкаф"), {
     inspectable: yes,
 
     description: "Это деревянный платяной шкаф, покрашенный коричневой краской."
-}, openable("шкаф"))
+}, openable())
 
 
 
@@ -69,7 +69,6 @@ combine(new Container("под столом"), {
 combine(new Obj("стол [в гостиной]"), {
     objects: ["на столе", "под столом"],
     inspectable: yes,
-
     description: "Это обычный письменный стол."
 })
 
@@ -88,7 +87,6 @@ combine(new Container("под кроватью"), {
 combine(new Obj("кровать"), {
     objects: ["на кровати", "под кроватью"],
     inspectable: yes,
-
     description: "Кровать из ДСП."
 })
 
@@ -194,7 +192,7 @@ function createShelf(where) {
     return combine(new Obj("шкафчик [" + where + "]"), {
         objects: [bottomShelf, topShelf, onShelf],
         inspectable: yes,
-    }, openable("шкафчик"))
+    }, openable())
 }
 
 
@@ -247,7 +245,7 @@ combine(new Obj(["стиральная машина", "стиральную ма
 
 combine(new Obj("буфет"), {
     inspectable: yes,
-}, openable("буфет"))
+}, openable())
 
 
 createSink("на кухне")
@@ -260,4 +258,4 @@ combine(new Obj("стол [на кухне]"), {
 
 combine(new Obj("холодильник"), {
     inspectable: yes,
-}, openable("холодильник"))
+}, openable())

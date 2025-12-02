@@ -14,6 +14,7 @@ export class BaseObject {
             allObjects.set(name, this)
             this.name = removeBrackets(name)
         }
+        this.initialName = this.name
     }
 
     init() {

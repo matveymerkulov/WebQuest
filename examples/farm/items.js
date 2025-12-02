@@ -14,17 +14,17 @@ export const torch = combine(new Item("факел"), {
     commands: [
         {
             text: "погасить~extinguish",
-            condition: () => torch.lit,
-            execution: () => {
-                torch.lit = no
+            condition: (obj) => obj.lit,
+            execution: (obj) => {
+                obj.lit = no
                 write("OК, он сразу же погас.~OK, it went out immediately.")
             }
         }, {
             text: "зажечь~lit",
-            condition: () => !torch.lit,
-            execution: () => {
-                torch.lit = yes
-                write("OK, now the torch is burning.")
+            condition: (obj) => !obj.lit,
+            execution: (obj) => {
+                obj.lit = yes
+                write("OК, факел теперь горит.~OK, now the torch is burning.")
             }
         }
     ]

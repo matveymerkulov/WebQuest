@@ -62,25 +62,25 @@ export const cupboard = combine(new Obj("буфет"), {
     commands: [
         {
             text: "открыть~open",
-            condition: () => cupboard.isClosed,
-            execution: () => {
-                cupboard.isClosed = no
+            condition: (obj) => obj.isClosed,
+            execution: (obj) => {
+                obj.isClosed = no
                 write("ОК, вы открыли буфет.")
-                if(!cupboard.wasOpen) {
+                if(!obj.wasOpen) {
                     write('Вы слышите тихий голос, доносящийся из глубины буфета: ' +
                         '"Швырни шкатулку c чердака и увидишь, что будет!".' +
                         '~You hear a quiet voice coming from the depths of the cupboard: ' +
                         '"Throw the box from the attic and see what happens!"')
-                    cupboard.wasOpen = yes
+                    obj.wasOpen = yes
                 } else {
                     write("Но что такое? Все тихо!~But what's going on? Everything is quiet!")
                 }
             }
         }, {
             text: "закрыть~close",
-            condition: () => !cupboard.isClosed,
-            execution: () => {
-                cupboard.isClosed = yes
+            condition: (obj) => !obj.isClosed,
+            execution: (obj) => {
+                obj.isClosed = yes
                 write("ОК, теперь буфет закрыт.~OK, now the cupboard is closed.")
             }
         }
@@ -94,8 +94,8 @@ export const safe = combine(new Obj("сейф"), {
     isHidden: () => !light(basement),
 
     objects: "шкатулка",
-    name: () => (safe.isClosed ? "закрытый сейф~closed safe" : "открытый сейф~opened safe"),
-    inspect: () => safe.isClosed ?
+    name: (obj) => (obj.isClosed ? "закрытый сейф~closed safe" : "открытый сейф~opened safe"),
+    inspect: (obj) => obj.isClosed ?
         "Дверца сейфа закрыта.~The safe door is closed." :
         "Дверца сейфа открыта.~The safe door is open.",
     inside: "в сейфе~inside safe",
@@ -103,18 +103,18 @@ export const safe = combine(new Obj("сейф"), {
     commands: [
         {
             text: "отпереть~unlock/бронзовым ключом~with the bronze key",
-            condition: () => player.has(key) && safe.isLocked,
-            execution: () => {
+            condition: (obj) => player.has(key) && obj.isLocked,
+            execution: (obj) => {
                 write("ОК, вы отперли сейф ключом.~OK, you have unlocked the safe with the key.")
-                safe.isLocked = no
+                obj.isLocked = no
             }
         }, {
             text: "запереть~lock/бронзовым ключом~with bronze key",
-            condition: () => player.has(key) && !safe.isLocked,
-            execution: () => {
-                if(safe.isClosed) {
+            condition: (obj) => player.has(key) && !obj.isLocked,
+            execution: (obj) => {
+                if(obj.isClosed) {
                     write("ОК, вы заперли сейф на ключ.~OK, you've locked the safe.")
-                    safe.isLocked = yes
+                    obj.isLocked = yes
                 } else {
                     write("Сейф в данный момент открыт, его нельзя запереть." +
                         "~The safe is currently open and cannot be locked.")
@@ -122,25 +122,25 @@ export const safe = combine(new Obj("сейф"), {
             }
         }, {
             text: "открыть~open",
-            condition: () => safe.isClosed,
-            execution: () => {
-                if(safe.isLocked) {
+            condition: (obj) => obj.isClosed,
+            execution: (obj) => {
+                if(obj.isLocked) {
                     write("Не открывается! Заперт на ключ.~It won't open! It's locked.")
-                } else if(safe.contains(box)) {
+                } else if(obj.contains(box)) {
                     write("Сейф открывается, и внутри вы видите деревянную шкатулку." +
                         "~The safe opens and inside you see a wooden casket.")
-                    safe.isClosed = no
+                    obj.isClosed = no
                 } else {
                     write("ОК, вы открыли сейф.~OK, you have opened the safe.")
-                    safe.isClosed = no
+                    obj.isClosed = no
                 }
             }
         }, {
             text: "закрыть~close",
-            condition: () => !safe.isClosed,
-            execution: () => {
+            condition: (obj) => !obj.isClosed,
+            execution: (obj) => {
                 write("ОК, вы закрыли дверь сейфа.~OK, you have closed the safe door.")
-                safe.isClosed = yes
+                obj.isClosed = yes
             }
         }
     ],
@@ -150,38 +150,38 @@ export const safe = combine(new Obj("сейф"), {
 export const gates = combine(new Obj("ворота"), {
     isClosed: yes,
 
-    name: () => (gates.isClosed ? "закрытые ворота~closed gates" : "открытые ворота~open gates"),
-    inspect: () => tran("Bopoтa сделаны из неважного дерева и в данный момент " +
+    name: (obj) => (obj.isClosed ? "закрытые ворота~closed gates" : "открытые ворота~open gates"),
+    inspect: (obj) => tran("Bopoтa сделаны из неважного дерева и в данный момент " +
         "~The gates are made of low-quality wood and are currently ") +
-        tran(gates.isClosed ?
+        tran(obj.isClosed ?
         "закрыты изнутри на засов~locked from the inside with a bolt" :
         "остаются открытыми~standing open") + ".",
     commands: [
         {
             text: "войти~enter",
-            condition: () => !gates.isClosed && player.isIn(atTheGates),
+            condition: (obj) => !obj.isClosed && player.isIn(atTheGates),
             execution: () => {
                 player.moveTo(garden)
             }
         }, {
             text: "выйти~exit",
-            condition: () => !gates.isClosed && player.isIn(garden),
+            condition: (obj) => !obj.isClosed && player.isIn(garden),
             execution: () => {
                 player.moveTo(atTheGates)
             }
         }, {
             text: "открыть~open",
-            condition: () => gates.isClosed && player.isIn(garden),
-            execution: () => {
+            condition: (obj) => obj.isClosed && player.isIn(garden),
+            execution: (obj) => {
                 write("ОК, вы открыли ворота, отодвинув засов.~OK, you opened the gates by sliding the bolt.")
-                gates.isClosed = no
+                obj.isClosed = no
             }
         }, {
             text: "закрыть~close",
-            condition: () => !gates.isClosed && player.isIn(garden),
-            execution: () => {
+            condition: (obj) => !obj.isClosed && player.isIn(garden),
+            execution: (obj) => {
                 write("ОК, вы закрыли ворота на засов.~OK, you bolted the gates.")
-                gates.isClosed = yes
+                obj.isClosed = yes
             }
         }
     ]

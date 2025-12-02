@@ -51,14 +51,14 @@ export class Door extends Passage {
 }
 
 
-export const livingRoomDoor = combine(new Door("дверь в гостиную", "гостиная", "прихожая",
+combine(new Door("дверь в гостиную", "гостиная", "прихожая",
     "дверь в прихожую", "дверь в гостиную"))
 
-export const wcDoor = combine(new Door("дверь в туалет", "туалет", "прихожая",
+combine(new Door("дверь в туалет", "туалет", "прихожая",
     "дверь в прихожую", "дверь в туалет"))
 
-export const bathroomDoor = combine(new Door("дверь в ванную", "ванная", "прихожая",
+combine(new Door("дверь в ванную", "ванная", "прихожая",
     "дверь в прихожую", "дверь в ванную"))
 
-export const kitchenDoor = combine(new Door("дверь на кухню", "кухня", "прихожая",
+combine(new Door("дверь на кухню", "кухня", "прихожая",
     "дверь в прихожую", "дверь на кухню"))

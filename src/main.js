@@ -26,7 +26,7 @@ export function setActionsBefore(func) {
 
 
 export function declineName(object, pad = Pad.imen) {
-    if(object.name === undefined || object.name === "") error(loc("NoName"))
+    if(object.name === undefined || object.name === "") error(loc("noName"))
     return decline(isFunction(object.name) ? object.name(object) : object.name, pad)
 }
 
