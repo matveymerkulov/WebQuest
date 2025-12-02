@@ -45,6 +45,7 @@ export function decline(text, pad = Pad.imen) {
 let menu
 
 function operateCommand(command, parameter, prefix = "") {
+    console.log(prefix + toString(command.text))
     if(command.condition && !command.condition(parameter)) return
     const nodes = (prefix + toString(command.text)).split("/")
     let level = menu
@@ -98,8 +99,6 @@ function operateCommands(object, prefix = "") {
         operateCommand(command, object, prefix)
     }
 
-    if(isClosed(object)) return
-
     if(object.inspectable) {
         operateCommand({
             text: "осмотреть~inspect",
@@ -107,10 +106,12 @@ function operateCommands(object, prefix = "") {
                 containerStack.push(object)
             }
         }, object, prefix)
+        return
     }
 
     if(object.objects) {
         for(let childObject of object.objects) {
+            if(isClosed(object) && !childObject.outside) continue
             operateCommands(childObject, declineName(childObject, Pad.vin) + "/")
         }
     }
@@ -121,8 +122,7 @@ function operateCommands(object, prefix = "") {
 export function updateCommands() {
     actionsBefore()
 
-    const location = player.location
-
+    console.clear()
     menu = {}
 
     operateCommand({
@@ -132,7 +132,9 @@ export function updateCommands() {
         }
     }, undefined)
 
-    operateCommands(location)
+    for(let childObject of currentContainer().objects) {
+        operateCommands(childObject, declineName(childObject, Pad.vin) + "/")
+    }
 
     for(let object of player.inventory) {
         operateCommands(object, declineName(object) + "/")
@@ -202,6 +204,7 @@ export function objectsText(object) {
     let text = ""
     for(let childObject of object.objects) {
         if(isHidden(childObject)) continue
+        if(isClosed(object) && !childObject.outside) continue
         if(childObject.constructor !== Container) {
             let container = childObject.container
             let inside = container?.inside
@@ -209,7 +212,6 @@ export function objectsText(object) {
             inside = inside === undefined ? "" : ` (${tran(inside)})`
             text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>${inside}`
         }
-        if(isClosed(childObject)) continue
         if(childObject.inspectable) continue
         text += objectsText(childObject)
     }

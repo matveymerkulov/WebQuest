@@ -2,6 +2,7 @@ import {Obj} from "./object.js"
 import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
 import {currentContainer} from "./main.js"
+import {isClosed} from "./functions.js"
 
 export class Item extends Obj {
     getCommands() {
@@ -17,18 +18,21 @@ export class Item extends Obj {
         })
 
         function addDropCommand(container) {
-            if(!container.put) return
-            commands.push({
-                text: () => loc("drop") + "/" + tran(container.put),
-                condition: (item) => player.has(item),
-                execution: (item) => player.drop(item, container)
-            })
+            if(container.put && !isClosed(container)) {
+                commands.push({
+                    text: () => loc("drop") + "/" + tran(container.put),
+                    condition: (item) => player.has(item),
+                    execution: (item) => player.drop(item, container)
+                })
+            }
+            if(container.objects === undefined) return
+            for(const object of container.objects) {
+                if(isClosed(container) && !object.outside) continue
+                addDropCommand(object)
+            }
         }
 
         addDropCommand(currentContainer())
-        for(const object of currentContainer().objects) {
-            addDropCommand(object)
-        }
 
         return commands
     }

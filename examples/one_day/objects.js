@@ -46,10 +46,12 @@ combine(new Container("на полке"), {
 
 combine(new Container("на шкафу"), {
     put: "на шкаф",
+    outside: yes,
 })
 
 combine(new Container("под шкафом"), {
     put: "под шкаф",
+    outside: yes,
 })
 
 combine(new Obj("шкаф"), {
@@ -195,7 +197,8 @@ function createShelf(where) {
     })
     const onShelf = "на шкафчике [" + where + "]"
     combine(new Container(onShelf), {
-        put: "на шкафчик"
+        put: "на шкафчик",
+        outside: yes,
     })
 
     return combine(new Obj("шкафчик [" + where + "]"), {
@@ -213,7 +216,8 @@ combine(new Obj("унитаз"), {
 
 
 combine(new Container("на бачке"), {
-    put: "на бачок"
+    put: "на бачок",
+    outside: yes,
 })
 
 combine(new Container("в бачке"), {
@@ -222,7 +226,7 @@ combine(new Container("в бачке"), {
 
 combine(new Obj("бачок"), {
     objects: ["на бачке", "в бачке"]
-})
+}, openable())
 
 
 createShelf("в туалете")
@@ -255,8 +259,18 @@ combine(new Obj("зеркало [в ванной]"), {
 
 
 combine(new Obj(["вешалка [в ванной]", "вешалку"]), {
+    inside: "на вешалке",
     put: "на вешалку",
-    objects: "полотенце"
+    objects: "полотенце",
+    inspectable: yes,
+})
+
+
+combine(new Obj(["вешалка [в ванной 2]", "вешалку"]), {
+    inside: "на вешалке",
+    put: "на вешалку",
+    objects: "мочалка",
+    inspectable: yes,
 })
 
 
@@ -266,10 +280,19 @@ createShelf("в ванной")
 allObjects.get("на нижней полке [шкафчика в ванной]").objects.push("средство для мытья сантехники", "соль для ванн")
 
 
+combine(new Container("на стиральной машине"), {
+    put: "на стиральную машину",
+    outside: yes,
+})
+
+combine(new Container("в стиральной машине"), {
+    put: "в стиральную машину",
+    objects: "брюки [2]",
+})
+
 combine(new Obj(["стиральная машина", "стиральную машину"]), {
     inspectable: yes,
-    objects: "брюки [2]",
-    put: "в стиральную машину"
+    objects: ["на стиральной машине", "в стиральной машине"],
 }, openable(genus.feminine))
 
 
