@@ -5,9 +5,9 @@ import "./locations.js"
 import "./doors.js"
 import {player} from "../../src/person.js"
 import {getRussianSystemLocale, newLocale} from "../../src/localization.js"
-import {livingRoom} from "./locations.js"
+import {allObjects} from "../../src/base.js"
 
 newLocale("Русский", getRussianSystemLocale(), true)
 
-player.location = livingRoom
+player.location = allObjects.get("ванная")
 

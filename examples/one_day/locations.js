@@ -6,7 +6,7 @@ import {Passage} from "../../src/passage.js"
 combine(new Container("на полу [в гостиной]"), {
 })
 
-export const livingRoom = combine(new Location("гостиная"), {
+combine(new Location("гостиная"), {
     description: "Это жилая комната.",
     objects: ["шкаф", "кровать", "стол [в гостиной]", "на полу [в гостиной]"]
 })
@@ -37,7 +37,7 @@ combine(new Container("на полу [в ванной]"), {
 combine(new Location("ванная"), {
     description: "Вы зашли в ванную комнату.",
     objects: ["ванна", "раковина [в ванной]", "шкафчик [в ванной]", "вешалка [в ванной]", "зеркало [в ванной]",
-        "на полу [в ванной]"]
+        "стиральная машина", "на полу [в ванной]"]
 })
 
 

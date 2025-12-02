@@ -1,14 +1,38 @@
-import {combine} from "../../src/functions.js"
+import {combine, isClosed} from "../../src/functions.js"
 import {Obj} from "../../src/object.js"
 import {Container} from "../../src/container.js"
-import {yes} from "../../src/main.js"
+import {no, yes} from "../../src/main.js"
+import {write} from "../../src/gui.js"
+
+
+function openable(name) {
+    return {
+        name: (obj) => (obj.isClosed ? "закрытый " : "открытый ") + name,
+        isClosed: yes,
+        commands: [
+            {
+                text: "открыть",
+                condition: (obj) => obj.isClosed,
+                execution: (obj) => {
+                    obj.isClosed = no
+                }
+            }, {
+                text: "закрыть",
+                condition: (obj) => !obj.isClosed,
+                execution: (obj) => {
+                    obj.isClosed = yes
+                }
+            }
+        ]
+    }
+}
 
 
 // ГОСТИНАЯ
 
 
 combine(new Container("в шкафу"), {
-    objects: ["пиджак", "брюки", "рубашка"],
+    objects: ["пиджак", "брюки [1]", "рубашка"],
     put: "в шкаф",
 })
 
@@ -29,7 +53,7 @@ combine(new Obj("шкаф"), {
     inspectable: yes,
 
     description: "Это деревянный платяной шкаф, покрашенный коричневой краской."
-})
+}, openable("шкаф"))
 
 
 
@@ -98,6 +122,7 @@ combine(new Obj("шкафчик для обуви"), {
 
 
 combine(new Container("на коврике"), {
+    put: "на коврик"
 })
 
 combine(new Obj("коврик для ног"), {
@@ -108,40 +133,19 @@ combine(new Obj("коврик для ног"), {
 combine(new Obj(["вешалка [в прихожей]", "вешалку"]), {
     objects: "куртка",
     inspectable: yes,
+    put: "на вешалку"
 })
 
 
 combine(new Obj(["полка для шапок", "полку для шапок"]), {
     objects: "кепка",
     inspectable: yes,
+    put: "на полку для шапок"
 })
 
 
 combine(new Obj("зеркало [в прихожей]"), {
 
-})
-
-
-
-// ТУАЛЕТ
-
-
-combine(new Obj("унитаз"), {
-})
-
-
-combine(new Container("на нижней полке [в туалете]"), {
-})
-
-combine(new Container("на верхней полке [в туалете]"), {
-})
-
-combine(new Container("на шкафчике [в туалете]"), {
-})
-
-combine(new Obj("шкафчик [в туалете]"), {
-    objects: ["на нижней полке [в туалете]", "на верхней полке [в туалете]", "на шкафчике [в туалете]"],
-    inspectable: yes,
 })
 
 
@@ -151,23 +155,64 @@ combine(new Obj("шкафчик [в туалете]"), {
 function createSink(where) {
     where = " [" + where + "]"
 
-    new Container("в раковине" + where)
-    new Obj("кран" + where)
-    new Obj("вентиль холодной воды" + where)
-    new Obj("вентиль горячей воды" + where)
+    const inside = "в раковине" + where
+    combine(new Container(inside), {
+        put: "в раковину"
+    })
+    const tap = "кран" + where
+    new Obj(tap)
+    const coldValve = "вентиль холодной воды" + where
+    new Obj(coldValve)
+    const hotValve = "вентиль горячей воды" + where
+    new Obj(hotValve)
 
     return combine(new Obj("раковина" + where), {
         name: ["раковина", "раковину"],
-        objects: ["кран" + where, "вентиль холодной воды" + where, "вентиль горячей воды" + where, "в раковине" + where],
+        objects: [tap, coldValve, hotValve, inside],
         inspectable: yes,
     })
 }
+
+
+// ШКАФЧИКИ
+
+
+function createShelf(where) {
+    const bottomShelf = "на нижней полке [шкафчика " + where + "]"
+    combine(new Container(bottomShelf), {
+        put: "на нижнюю полку"
+    })
+    const topShelf = "на верхней полке [шкафчика " + where + "]"
+    combine(new Container(topShelf), {
+        put: "на верхнюю полку"
+    })
+    const onShelf = "на шкафчике [" + where + "]"
+    combine(new Container(onShelf), {
+        put: "на шкафчик"
+    })
+
+    return combine(new Obj("шкафчик [" + where + "]"), {
+        objects: [bottomShelf, topShelf, onShelf],
+        inspectable: yes,
+    }, openable("шкафчик"))
+}
+
+
+// ТУАЛЕТ
+
+
+combine(new Obj("унитаз"), {
+})
+
+
+createShelf("в туалете")
 
 
 // ВАННАЯ
 
 
 combine(new Container("в ванне"), {
+    put: "в ванну"
 })
 
 combine(new Obj(["ванна", "ванну"]), {
@@ -183,28 +228,26 @@ combine(new Obj("зеркало [в ванной]"), {
 
 
 combine(new Obj(["вешалка [в ванной]", "вешалку"]), {
+    put: ""
 })
 
-
-function createShelf(where) {
-    new Container("на нижней полке [шкафчика " + where + "]")
-    new Container("на верхней полке [шкафчика " + where + "]")
-    new Container("на шкафчике [" + where + "]")
-
-    return combine(new Obj("шкафчик [в ванной]"), {
-        objects: ["на нижней полке [шкафчика в ванной]", "на верхней полке [шкафчика " + where + "]"
-            , "на шкафчике [" + where + "]"],
-        inspectable: yes,
-    })
-
-}
 
 createShelf("в ванной")
 
 
+combine(new Obj(["стиральная машина", "стиральную машину"]), {
+    inspectable: yes,
+    objects: "брюки [2]",
+    put: ""
+}, openable("стиральную машину"))
+
+
+// КУХНЯ
+
+
 combine(new Obj("буфет"), {
     inspectable: yes,
-})
+}, openable("буфет"))
 
 
 createSink("на кухне")
@@ -217,4 +260,4 @@ combine(new Obj("стол [на кухне]"), {
 
 combine(new Obj("холодильник"), {
     inspectable: yes,
-})
+}, openable("холодильник"))
