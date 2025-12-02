@@ -1,15 +1,16 @@
 import {combine, isClosed} from "../../src/functions.js"
 import {Obj} from "../../src/object.js"
 import {Container} from "../../src/container.js"
-import {decline, declineName, genus, no, yes} from "../../src/main.js"
+import {decline, declineName, genus, no, Pad, yes} from "../../src/main.js"
 import {write} from "../../src/gui.js"
+import {allObjects} from "../../src/base.js"
 
 
 function openable(gen = genus.masculine) {
     return {
         name: (obj) => {
-            const ending = gen === genus.masculine ? "ый" : gen === genus.feminine ? "ая" : "ое"
-            return (obj.isClosed ? "закрыт" : "открыт") + ending + " " + decline(obj.initialName)
+            const ending = gen === genus.masculine ? "ый" : gen === genus.feminine ? "ую" : "ое"
+            return (obj.isClosed ? "закрыт" : "открыт") + ending + " " + decline(obj.initialName, Pad.vin)
         },
         isClosed: yes,
         commands: [
@@ -160,6 +161,11 @@ function createSink(where) {
     combine(new Container(inside), {
         put: "в раковину"
     })
+    const on = "на раковине" + where
+    combine(new Container(on), {
+        put: "на раковину"
+    })
+
     const tap = "кран" + where
     new Obj(tap)
     const coldValve = "вентиль холодной воды" + where
@@ -169,7 +175,7 @@ function createSink(where) {
 
     return combine(new Obj("раковина" + where), {
         name: ["раковина", "раковину"],
-        objects: [tap, coldValve, hotValve, inside],
+        objects: [tap, coldValve, hotValve, inside, on],
         inspectable: yes,
     })
 }
@@ -206,6 +212,19 @@ combine(new Obj("унитаз"), {
 })
 
 
+combine(new Container("на бачке"), {
+    put: "на бачок"
+})
+
+combine(new Container("в бачке"), {
+    put: "в бачок"
+})
+
+combine(new Obj("бачок"), {
+    objects: ["на бачке", "в бачке"]
+})
+
+
 createShelf("в туалете")
 
 
@@ -216,12 +235,19 @@ combine(new Container("в ванне"), {
     put: "в ванну"
 })
 
+combine(new Container("на ванне"), {
+    put: "на ванну",
+    objects: ["гель для душа", "шампунь"],
+})
+
 combine(new Obj(["ванна", "ванну"]), {
-    objects: "в ванне"
+    objects: ["в ванне", "на ванне"],
+    inspectable: yes,
 })
 
 
 createSink("в ванной")
+allObjects.get("на раковине [в ванной]").objects.push("стакан [в ванной]", "мыло", "зубная паста", "расческа")
 
 
 combine(new Obj("зеркало [в ванной]"), {
@@ -229,17 +255,21 @@ combine(new Obj("зеркало [в ванной]"), {
 
 
 combine(new Obj(["вешалка [в ванной]", "вешалку"]), {
-    put: ""
+    put: "на вешалку",
+    objects: "полотенце"
 })
 
 
 createShelf("в ванной")
 
 
+allObjects.get("на нижней полке [шкафчика в ванной]").objects.push("средство для мытья сантехники", "соль для ванн")
+
+
 combine(new Obj(["стиральная машина", "стиральную машину"]), {
     inspectable: yes,
     objects: "брюки [2]",
-    put: ""
+    put: "в стиральную машину"
 }, openable(genus.feminine))
 
 
