@@ -13,18 +13,18 @@ export function isContainer(object) {
 export function toArray(object, parent = undefined) {
     if(object === undefined) return []
     if(isArray(object)) return object
-    if(isFunction(object)) return object.call(parent)
+    if(isFunction(object)) return object.call(undefined, parent)
     return [object]
 }
 
 export function toString(object, parent = undefined) {
     if(isString(object)) return object
-    if(isFunction(object)) return object.call(parent)
+    if(isFunction(object)) return object.call(undefined, parent)
     return ""
 }
 
 export function toValue(object, parent = undefined) {
-    if(isFunction(object)) return object.call(parent)
+    if(isFunction(object)) return object.call(undefined, parent)
     return object
 }
 

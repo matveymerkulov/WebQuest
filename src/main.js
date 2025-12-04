@@ -44,9 +44,9 @@ export function decline(text, pad = Pad.imen) {
 
 let menu
 
-function operateCommand(command, parameter, prefix = "") {
+function operateCommand(command, object, prefix = "") {
     console.log(prefix + toString(command.text))
-    if(command.condition && !command.condition(parameter)) return
+    if(command.condition && !command.condition(object)) return
     const nodes = (prefix + toString(command.text)).split("/")
     let level = menu
     for(let i = 0; i < nodes.length; i++) {
@@ -55,7 +55,7 @@ function operateCommand(command, parameter, prefix = "") {
             if(level[node] !== undefined) {
                 error(loc("commandExists") + nodes + '".')
             }
-            level[node] = [command, parameter]
+            level[node] = [command, object]
         } else {
             if(level[node] === undefined) {
                 level[node] = {}
@@ -84,7 +84,7 @@ function operateCommands(object, prefix = "") {
         operateCommand({
             text: "осмотреть~inspect",
             execution: (object) => {
-                write(toString(object.inspect))
+                write(toString(object.inspect, object))
             }
         }, object, prefix)
     }
@@ -225,5 +225,5 @@ export function personInfoText(array, prefix, pad = Pad.imen) {
     for(let object of array) {
         text += `${text === "" ? "" : ", "}<span class="link">${declineName(object, pad)}</span>`
     }
-    return text === "" ? "" : prefix + text
+    return text === "" ? "" : prefix + text + "."
 }

@@ -58,7 +58,7 @@ export function update() {
     }
 
     text += objectsText(location)
-    if(text !== "") text = "<p>" + loc("youSee") + text.substring(2)
+    if(text !== "") text = "<p>" + loc("youSee") + text.substring(2) + "."
     text = parseText(tran(toString(location.description, location))) + text
 
     if(containerStack.length > 0) {
