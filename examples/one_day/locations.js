@@ -4,6 +4,7 @@ import {Location} from "../../src/location.js"
 import {Passage} from "../../src/passage.js"
 
 combine(new Container("на полу [в гостиной]"), {
+    put: "на пол",
 })
 
 combine(new Location("гостиная"), {
@@ -13,6 +14,7 @@ combine(new Location("гостиная"), {
 
 
 combine(new Container("на полу [в прихожей]"), {
+    put: "на пол",
 })
 
 combine(new Location("прихожая"), {
@@ -23,6 +25,7 @@ combine(new Location("прихожая"), {
 
 
 combine(new Container("на полу [в туалете]"), {
+    put: "на пол",
 })
 
 combine(new Location("туалет"), {
@@ -32,6 +35,7 @@ combine(new Location("туалет"), {
 
 
 combine(new Container("на полу [в ванной]"), {
+    put: "на пол",
 })
 
 combine(new Location("ванная"), {
@@ -42,6 +46,7 @@ combine(new Location("ванная"), {
 
 
 combine(new Container("на полу [на кухне]"), {
+    put: "на пол",
 })
 
 combine(new Location("кухня"), {

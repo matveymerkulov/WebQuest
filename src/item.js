@@ -27,6 +27,7 @@ export class Item extends Obj {
             }
             if(container.objects === undefined) return
             for(const object of container.objects) {
+                if(object.inspectable) continue
                 if(isClosed(container) && !object.outside) continue
                 addDropCommand(object)
             }
