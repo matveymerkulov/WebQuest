@@ -20,12 +20,10 @@ combine(new Cloth(["рубашка", "рубашку"]), {
 
 function createTrousers(postfix) {
     postfix = " [" + postfix + "]"
-    const pockets = "карманы" + postfix
-    new Container(pockets)
     return combine(new Cloth("брюки" + postfix), {
         inspectable: true,
         put: "в карман",
-        objects: [pockets]
+        inside: "в кармане",
     })
 
 }

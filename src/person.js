@@ -7,7 +7,7 @@ import {clearContainerStack, containerStack} from "./main.js"
 
 function addToPersonArray(person, array, item) {
     if(array.includes(item)) return
-    if(item.container) removeFromArray(item.container.objects, item)
+    if(item.container !== undefined) removeFromArray(item.container.objects, item)
     removeFromArray(person.location.objects, item)
     array.push(item)
 }
@@ -36,16 +36,26 @@ export class Person extends Obj {
     }
 
     has(item) {
-        return this.inventory.includes(item)
+        function containerHasItem(container, item) {
+            for (let childItem of container) {
+                if(childItem === item) return true
+                if(childItem.objects === undefined) continue
+                const has = containerHasItem(childItem.objects, item)
+                if(has) return true
+            }
+            return false
+        }
+        return containerHasItem(this.inventory, item)
     }
 
-    take(item){
+    take(item, container = undefined){
         const max = this.maxItems
         if(max >= 0 && this.inventory.length >= max) {
             write("Вы не можете нести больше предметов.")
             return
         }
-        addToPersonArray(this, this.inventory, item)
+        addToPersonArray(this, container === undefined ? this.inventory : container.objects, item)
+        item.container = container === undefined ? undefined : container
     }
 
     drop(item, container) {

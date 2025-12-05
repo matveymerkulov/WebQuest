@@ -218,6 +218,7 @@ combine(new Obj("унитаз"), {
 combine(new Container("на бачке"), {
     put: "на бачок",
     outside: yes,
+    objects: ["туалетная бумага"],
 })
 
 combine(new Container("в бачке"), {
@@ -277,12 +278,16 @@ combine(new Obj(["вешалка [в ванной 2]", "вешалку"]), {
 createShelf("в ванной")
 
 
-allObjects.get("на нижней полке [шкафчика в ванной]").objects.push("средство для мытья сантехники", "соль для ванн")
+allObjects.get("на верхней полке [шкафчика в ванной]").objects.push("соль для ванн")
+
+allObjects.get("на нижней полке [шкафчика в ванной]").objects.push("средство для мытья сантехники",
+    "средство для мытья унитазов")
 
 
 combine(new Container("на стиральной машине"), {
     put: "на стиральную машину",
     outside: yes,
+    objects: ["стиральный порошок", "стаканчик"],
 })
 
 combine(new Container("в стиральной машине"), {

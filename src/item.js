@@ -7,15 +7,34 @@ import {isClosed} from "./functions.js"
 export class Item extends Obj {
     getCommands() {
         const commands = []
-
         commands.push({
-            text: () => loc("take"),
+            text: () => loc("take") + "/в руки",
             condition: (item) => !player.has(item),
             execution: (item) => {
                 player.putOff(item, currentContainer())
                 player.take(item)
             }
         })
+
+        function addTakeCommand(container) {
+            if(container.put && !isClosed(container)) {
+                commands.push({
+                    text: () => loc("take") + "/" + tran(container.put),
+                    condition: (item) => !player.has(item),
+                    execution: (item) => {
+                        player.putOff(item, currentContainer())
+                        player.take(item, container)
+                    }
+                })
+            }
+
+            const objects = container.objects === undefined ? container : container.objects
+            for(const object of objects) {
+                addTakeCommand(object)
+            }
+        }
+        addTakeCommand(player.inventory)
+        addTakeCommand(player.clothes)
 
         function addDropCommand(container) {
             if(container.put && !isClosed(container)) {

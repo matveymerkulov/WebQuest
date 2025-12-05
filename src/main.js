@@ -103,6 +103,7 @@ function operateCommands(object, prefix = "") {
         operateCommand({
             text: "осмотреть~inspect",
             execution: (object) => {
+                if(currentContainer() === object) return
                 containerStack.push(object)
             }
         }, object, prefix)
@@ -122,7 +123,7 @@ function operateCommands(object, prefix = "") {
 export function updateCommands() {
     actionsBefore()
 
-    console.clear()
+    //console.clear()
     menu = {}
 
     operateCommand({
