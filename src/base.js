@@ -5,15 +5,16 @@ export const allObjects = new Map()
 export class BaseObject {
     constructor(name) {
         if(isArray(name)) {
-            allObjects.set(name[0], this)
+            this.id = name[0]
             for(let i = 0; i < name.length; i++) {
                 name[i] = removeBrackets(name[i])
             }
             this.name = name
         } else {
-            allObjects.set(name, this)
+            this.id = name
             this.name = removeBrackets(name)
         }
+        allObjects.set(this.id, this)
         this.initialName = this.name
     }
 
@@ -21,7 +22,7 @@ export class BaseObject {
     }
 }
 
-function removeBrackets(name) {
+export function removeBrackets(name) {
     const i = name.indexOf("[")
     if(i >= 0) {
         return name.substring(0, i).trim()

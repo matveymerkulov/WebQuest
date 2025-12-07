@@ -47,6 +47,7 @@ let menu
 function operateCommand(command, object, prefix = "") {
     console.log(prefix + toString(command.text))
     if(command.condition && !command.condition(object)) return
+    if(object !== undefined) prefix = object.id + "/"
     const nodes = (prefix + toString(command.text)).split("/")
     let level = menu
     for(let i = 0; i < nodes.length; i++) {
@@ -211,7 +212,7 @@ export function objectsText(object) {
             let inside = container?.inside
             if(isContainer(container)) inside = container.name
             inside = inside === undefined ? "" : ` (${tran(inside)})`
-            text += `, <span class="link">${declineName(childObject, Pad.vin)}</span>${inside}`
+            text += `, <span class="link" objId="${childObject.id}">${declineName(childObject, Pad.vin)}</span>${inside}`
         }
         if(childObject.inspectable) continue
         text += objectsText(childObject)
@@ -224,7 +225,7 @@ export function objectsText(object) {
 export function personInfoText(array, prefix, pad = Pad.imen) {
     let text = ""
     for(let object of array) {
-        text += `${text === "" ? "" : ", "}<span class="link">${declineName(object, pad)}</span>`
+        text += `${text === "" ? "" : ", "}<span class="link" objId="${object.id}">${declineName(object, pad)}</span>`
     }
     return text === "" ? "" : prefix + text + "."
 }

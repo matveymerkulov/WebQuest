@@ -62,7 +62,7 @@ export function update() {
     text = parseText(tran(toString(location.description, location))) + text
 
     if(containerStack.length > 0) {
-        text = `(<span class="link">вернуться</span>) ` + text
+        text = `(<span class="link" objId="вернуться">вернуться</span>) ` + text
     }
 
     descriptionElement.innerHTML = text
@@ -95,7 +95,7 @@ export function update() {
                 movePlayerTo(event.target.getAttribute("exit"))
                 return
             }
-            executeCommand(event.target.innerHTML)
+            executeCommand(event.target.getAttribute("objId"))
         })
     }
 }
