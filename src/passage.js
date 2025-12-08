@@ -2,8 +2,9 @@ import {BaseObject, allObjects} from "./base.js"
 import {write} from "./gui.js"
 import {no} from "./main.js"
 import {player} from "./person.js"
+import {Obj} from "./object.js"
 
-export class Passage extends BaseObject {
+export class Passage extends Obj {
     location0
     location1
 

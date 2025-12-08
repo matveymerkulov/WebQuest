@@ -22,8 +22,8 @@ function createTrousers(postfix) {
     postfix = " [" + postfix + "]"
     return combine(new Cloth("брюки" + postfix), {
         inspectable: true,
-        put: "в карман",
-        inside: "в кармане",
+        put: "в карман брюк",
+        inside: "в кармане брюк",
     })
 
 }

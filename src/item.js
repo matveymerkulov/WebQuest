@@ -1,8 +1,8 @@
 import {Obj} from "./object.js"
 import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
-import {currentContainer} from "./main.js"
-import {isClosed} from "./functions.js"
+import {currentContainer, declineName} from "./main.js"
+import {isClosed, toString} from "./functions.js"
 
 export class Item extends Obj {
     getCommands() {
@@ -17,6 +17,7 @@ export class Item extends Obj {
         })
 
         function addTakeCommand(container) {
+            if(container === this) return
             if(container.put && !isClosed(container)) {
                 commands.push({
                     text: () => loc("take") + "/" + tran(container.put),
@@ -33,10 +34,15 @@ export class Item extends Obj {
                 addTakeCommand(object)
             }
         }
+
         addTakeCommand(player.inventory)
         addTakeCommand(player.clothes)
 
-        function addDropCommand(container) {
+        console.clear()
+
+        function addDropCommand(container, checkContainers = true) {
+            //console.log(declineName(container))
+            if(container === this) return
             if(container.put && !isClosed(container)) {
                 commands.push({
                     text: () => loc("drop") + "/" + tran(container.put),
@@ -44,15 +50,17 @@ export class Item extends Obj {
                     execution: (item) => player.drop(item, container)
                 })
             }
-            if(container.objects === undefined) return
-            for(const object of container.objects) {
-                if(object.inspectable) continue
+            const objects = container.objects === undefined ? container : container.objects
+            for(const object of objects) {
+                if(!checkContainers && object.inspectable) continue
                 if(isClosed(container) && !object.outside) continue
                 addDropCommand(object)
             }
         }
 
-        addDropCommand(currentContainer())
+        addDropCommand(currentContainer(), false)
+        addDropCommand(player.inventory)
+        addDropCommand(player.clothes)
 
         return commands
     }
