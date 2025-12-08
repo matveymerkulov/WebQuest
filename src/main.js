@@ -91,7 +91,7 @@ function operateCommands(object, prefix = "") {
     }
 
     if(object.getCommands) {
-        for(let command of object.getCommands()) {
+        for(let command of object.getCommands(object)) {
             operateCommand(command, object, prefix)
         }
     }

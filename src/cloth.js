@@ -2,10 +2,11 @@ import {Item} from "./item.js"
 import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
 import {currentContainer} from "./main.js"
+import {toString} from "./functions.js"
 
 export class Cloth extends Item {
-    getCommands() {
-        const commands = super.getCommands()
+    getCommands(cloth) {
+        const commands = super.getCommands(cloth)
         commands.push({
             text: () => loc("putOn"),
             condition: (item) => !player.wears(item),
@@ -16,7 +17,8 @@ export class Cloth extends Item {
         })
 
         function addDropCommand(container) {
-            if(container === this || !container.put) return
+            if(container === cloth) return
+            if(!container.put) return
             commands.push({
                 text: () => loc("putOff") + "/" + tran(container.put),
                 condition: (item) => player.wears(item),

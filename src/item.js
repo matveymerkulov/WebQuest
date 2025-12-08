@@ -5,7 +5,7 @@ import {currentContainer, declineName} from "./main.js"
 import {isClosed, toString} from "./functions.js"
 
 export class Item extends Obj {
-    getCommands() {
+    getCommands(cloth) {
         const commands = []
         commands.push({
             text: () => loc("take") + "/в руки",
@@ -17,7 +17,7 @@ export class Item extends Obj {
         })
 
         function addTakeCommand(container) {
-            if(container === this) return
+            if(container === cloth) return
             if(container.put && !isClosed(container)) {
                 commands.push({
                     text: () => loc("take") + "/" + tran(container.put),
@@ -38,11 +38,11 @@ export class Item extends Obj {
         addTakeCommand(player.inventory)
         addTakeCommand(player.clothes)
 
-        console.clear()
+        //console.clear()
 
         function addDropCommand(container, checkContainers = true) {
             //console.log(declineName(container))
-            if(container === this) return
+            if(container === cloth) return
             if(container.put && !isClosed(container)) {
                 commands.push({
                     text: () => loc("drop") + "/" + tran(container.put),
