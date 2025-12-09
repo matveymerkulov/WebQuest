@@ -7,7 +7,7 @@ import {isClosed, toString} from "./functions.js"
 export class Item extends Obj {
     getCommands() {
         const commands = []
-        const cloth = this
+        const thisItem = this
         commands.push({
             text: () => loc("take") + "/в руки",
             condition: (item) => !player.has(item),
@@ -18,7 +18,7 @@ export class Item extends Obj {
         })
 
         function addTakeCommand(container) {
-            if(container === cloth) return
+            if(container === thisItem) return
             if(container.put && !isClosed(container)) {
                 commands.push({
                     text: () => loc("take") + "/" + tran(container.put),
@@ -43,13 +43,18 @@ export class Item extends Obj {
 
         function addDropCommand(container, checkContainers = true) {
             //console.log(declineName(container))
-            if(container === cloth) return
+            if(container === thisItem) return
             if(container.put && !isClosed(container)) {
-                commands.push({
-                    text: () => loc("drop") + "/" + tran(container.put),
-                    condition: (item) => player.has(item),
-                    execution: (item) => player.drop(item, container)
-                })
+                if(!container.hanger || thisItem.canBeHung) {
+                    commands.push({
+                        text: function() {
+                            const verb = (container.putVerb ? tran(container.putVerb) : loc("drop"))
+                            return verb + "/" + tran(container.put)
+                        },
+                        condition: (item) => player.has(item),
+                        execution: (item) => player.drop(item, container)
+                    })
+                }
             }
             const objects = container.objects === undefined ? container : container.objects
             for(const object of objects) {

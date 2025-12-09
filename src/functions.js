@@ -50,12 +50,20 @@ export function isClosed(object) {
     return toValue(object.isClosed, object)
 }
 
+
+
 export function removeFromArray(array, element) {
     const index = array.indexOf(element, 0);
     if (index > -1) {
         array.splice(index, 1);
     }
 }
+
+
+export function rnd(from, to) {
+    return Math.random() * (to - from) + to
+}
+
 
 export function error(text) {
     console.error(text)

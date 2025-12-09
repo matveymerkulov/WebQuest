@@ -1,16 +1,23 @@
 import {combine} from "../../src/functions.js"
 import {Container} from "../../src/container.js"
 import {Item} from "../../src/item.js"
+import {yes} from "../../src/main.js"
 
 new Item("ноутбук")
 
 new Item(["подушка", "подушку"])
 
-new Item(["простыня", "простыню"])
+combine(new Item(["простыня", "простыню"]), {
+    canBeHung: yes,
+})
 
-new Item("одеяло")
+combine(new Item("одеяло"), {
+    canBeHung: yes,
+})
 
-new Item("ключи")
+combine(new Item("ключи"), {
+    canBeHung: yes,
+})
 
 new Item("дезодорант")
 
@@ -20,8 +27,12 @@ new Item(["зубная щётка", "зубную щётку"])
 
 new Item(["расческа", "расческу"])
 
-new Item("полотенце")
+combine(new Item("полотенце"), {
+    canBeHung: yes,
+})
 
-new Item(["мочалка", "мочалку"])
+combine(new Item(["мочалка", "мочалку"]), {
+    canBeHung: yes,
+})
 
 new Item(["туалетная бумага", "туалетную бумагу"])

@@ -262,6 +262,8 @@ combine(new Obj("зеркало [в ванной]"), {
 combine(new Obj(["вешалка [в ванной]", "вешалку"]), {
     inside: "на вешалке",
     put: "на вешалку",
+    hanger: yes,
+    putVerb: "повесить",
     objects: "полотенце",
     inspectable: yes,
 })
@@ -270,6 +272,8 @@ combine(new Obj(["вешалка [в ванной]", "вешалку"]), {
 combine(new Obj(["вешалка [в ванной 2]", "вешалку"]), {
     inside: "на вешалке",
     put: "на вешалку",
+    hanger: yes,
+    putVerb: "повесить",
     objects: "мочалка",
     inspectable: yes,
 })

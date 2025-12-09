@@ -1,4 +1,4 @@
-import {combine} from "../../src/functions.js"
+import {combine, rnd} from "../../src/functions.js"
 import {Item} from "../../src/item.js"
 
 
@@ -10,46 +10,46 @@ combine(new Item("стакан [в ванной]"), {
     containerVolume: 200,
 })
 
-combine(new Item("банка соли для ванн"), {
+combine(new Item(["банка соли для ванн", "банку соли для ванн"]), {
     containerVolume: 1800,
     substance: "соль",
-    substanceVolume: 1100,
+    substanceVolume: rnd(100, 1800),
 })
 
 combine(new Item(["тюбик зубной пасты"]), {
     containerVolume: 140,
     substance: "зубная паста",
-    substanceVolume: 80,
+    substanceVolume: rnd(40, 140),
 })
 
 combine(new Item(["флакон геля для душа"]), {
     containerVolume: 250,
     substance: "гель для душа",
-    substanceVolume: 230,
+    substanceVolume: rnd(50, 250),
 })
 
 combine(new Item("флакон шампуня"), {
     containerVolume: 800,
     substance: "шампунь",
-    substanceVolume: 90,
+    substanceVolume: rnd(50, 800),
 })
 
-combine(new Item("бутылка средства для мытья сантехники"), {
+combine(new Item(["бутылка средства для мытья сантехники", "бутылку средства для мытья сантехники"]), {
     containerVolume: 500,
     substance: "средство для мытья сантехники",
-    substanceVolume: 300,
+    substanceVolume: rnd(50, 500),
 })
 
-combine(new Item("бутылка средства для мытья унитазов"), {
+combine(new Item(["бутылка средства для мытья унитазов", "бутылку средства для мытья унитазов"]), {
     containerVolume: 500,
     substance: "средство для мытья унитазов",
-    substanceVolume: 300,
+    substanceVolume: rnd(50, 500),
 })
 
 combine(new Item("пакет стирального порошка"), {
     containerVolume: 1500,
     substance: "стиральный порошок",
-    substanceVolume: 600,
+    substanceVolume: rnd(50, 1500),
 })
 
 combine(new Item("стаканчик"), {
