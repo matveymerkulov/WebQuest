@@ -1,5 +1,7 @@
 import "./cloth.js"
 import "./items.js"
+import "./containers.js"
+import "./substances.js"
 import "./objects.js"
 import "./locations.js"
 import "./doors.js"

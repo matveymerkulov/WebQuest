@@ -5,8 +5,9 @@ import {currentContainer, declineName} from "./main.js"
 import {isClosed, toString} from "./functions.js"
 
 export class Item extends Obj {
-    getCommands(cloth) {
+    getCommands() {
         const commands = []
+        const cloth = this
         commands.push({
             text: () => loc("take") + "/в руки",
             condition: (item) => !player.has(item),

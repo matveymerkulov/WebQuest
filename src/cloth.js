@@ -5,8 +5,9 @@ import {currentContainer} from "./main.js"
 import {toString} from "./functions.js"
 
 export class Cloth extends Item {
-    getCommands(cloth) {
-        const commands = super.getCommands(cloth)
+    getCommands() {
+        const cloth = this
+        const commands = super.getCommands()
         commands.push({
             text: () => loc("putOn"),
             condition: (item) => !player.wears(item),
