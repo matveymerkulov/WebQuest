@@ -8,21 +8,21 @@ export class Cloth extends Item {
     getCommands() {
         const cloth = this
         const commands = super.getCommands()
-        commands.push({
-            text: () => loc("putOn"),
-            condition: (item) => !player.wears(item),
-            execution: (item) => {
-                player.drop(item, currentContainer())
-                player.putOn(item)
-            }
-        })
+        if(!player.wears(cloth)) {
+            commands.push({
+                text: () => loc("putOn"),
+                execution: (item) => {
+                    player.putOn(item)
+                }
+            })
+        }
 
         function addDropCommand(container) {
             if(container === cloth) return
             if(!container.put) return
+            if(!player.wears(cloth)) return
             commands.push({
                 text: () => loc("putOff") + "/" + tran(container.put),
-                condition: (item) => player.wears(item),
                 execution: (item) => player.putOff(item, container)
             })
         }

@@ -49,6 +49,7 @@ export class Person extends Obj {
     }
 
     take(item, container = undefined){
+        removeFromArray(this.clothes, item)
         const max = this.maxItems
         if(max >= 0 && this.inventory.length >= max) {
             write("Вы не можете нести больше предметов.")
@@ -67,6 +68,7 @@ export class Person extends Obj {
     }
 
     putOn(item){
+        removeFromArray(this.inventory, item)
         addToPersonArray(this, this.clothes, item)
     }
 

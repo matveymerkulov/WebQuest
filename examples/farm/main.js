@@ -1,3 +1,5 @@
+import "../../src/person.js"
+import "../../src/object.js"
 import{no, setActionsBefore, yes} from "../../src/main.js"
 import "./items.js"
 import "./objects.js"

@@ -8,26 +8,24 @@ export class Item extends Obj {
     getCommands() {
         const commands = super.getCommands()
         const thisItem = this
-        commands.push({
-            text: () => loc("take") + "/в руки",
-            condition: (item) => !player.has(item),
-            execution: (item) => {
-                player.putOff(item, currentContainer())
-                player.take(item)
-            }
-        })
+        if(!player.has(thisItem)) {
+            commands.push({
+                text: () => loc("take"),
+                execution: (item) => player.take(item)
+            })
+        }
 
         function addTakeCommand(container) {
             if(container === thisItem) return
             if(container.put && !isClosed(container)) {
-                commands.push({
-                    text: () => loc("take") + "/" + tran(container.put),
-                    condition: (item) => !player.has(item),
-                    execution: (item) => {
-                        player.putOff(item, currentContainer())
-                        player.take(item, container)
-                    }
-                })
+                if(!player.has(thisItem)) {
+                    commands.push({
+                        text: () => loc("drop") + "/" + tran(container.put),
+                        execution: (item) => {
+                            player.take(item, container)
+                        }
+                    })
+                }
             }
 
             const objects = container.objects === undefined ? container : container.objects
@@ -46,14 +44,15 @@ export class Item extends Obj {
             if(container === thisItem) return
             if(container.put && !isClosed(container)) {
                 if(!container.hanger || thisItem.canBeHung) {
-                    commands.push({
-                        text: function() {
-                            const verb = (container.putVerb ? tran(container.putVerb) : loc("drop"))
-                            return verb + "/" + tran(container.put)
-                        },
-                        condition: (item) => player.has(item),
-                        execution: (item) => player.drop(item, container)
-                    })
+                    if(player.has(thisItem)) {
+                        commands.push({
+                            text: function() {
+                                const verb = (container.putVerb ? tran(container.putVerb) : loc("drop"))
+                                return verb + "/" + tran(container.put)
+                            },
+                            execution: (item) => player.drop(item, container)
+                        })
+                    }
                 }
             }
             const objects = container.objects === undefined ? container : container.objects

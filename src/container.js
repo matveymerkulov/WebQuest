@@ -31,24 +31,22 @@ export class Container extends BaseObject {
             return value === 0 || value === undefined
         }
 
-        if(isZero(thisContainer.substanceVolume)) return []
+        if(isZero(thisContainer.substanceVolume)) return commands
         const substance = thisContainer.substance
         
         function addMoveCommand(container, checkContainers = true) {
             if(container === thisContainer) return
             if(container.put && !isClosed(container)) {
                 if(container.volume !== undefined && isZero(container.substanceVolume)) {
-                    if(!player.has(thisContainer)) {
-                        commands.push({
-                            text: () => toString(substance.move) + "/" + container.put,
-                            execution: (item) => {
-                                container.substance = substance
-                                const volume = Math.min(item.substanceVolume, container.volume)
-                                container.substanceVolume = volume
-                                item.substanceVolume -= volume
-                            }
-                        })
-                    }
+                    commands.push({
+                        text: () => toString(substance.move) + "/" + container.put,
+                        execution: (item) => {
+                            container.substance = substance
+                            const volume = Math.min(item.substanceVolume, container.volume)
+                            container.substanceVolume = volume
+                            item.substanceVolume -= volume
+                        }
+                    })
                 }
             }
             const objects = container.objects === undefined ? container : container.objects
