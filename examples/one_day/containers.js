@@ -1,4 +1,4 @@
-import {combine, rnd} from "../../src/functions.js"
+import {combine, rndi} from "../../src/functions.js"
 import {Item} from "../../src/item.js"
 
 
@@ -7,51 +7,67 @@ combine(new Item("стакан [в ванной]"), {
     objects: ["зубная щётка"],
     inside: "в стакане",
     put: "в стакан",
-    containerVolume: 200,
+    volume: 200,
 })
 
 combine(new Item(["банка соли для ванн", "банку соли для ванн"]), {
-    containerVolume: 1800,
-    substance: "соль",
-    substanceVolume: rnd(100, 1800),
+    volume: 1800,
+    substance: "соль для ванн",
+    substanceVolume: rndi(100, 1800),
+    inside: "в банке соли для ванн",
+    put: "в банку соли для ванн",
 })
 
 combine(new Item(["тюбик зубной пасты"]), {
-    containerVolume: 140,
+    volume: 140,
     substance: "зубная паста",
-    substanceVolume: rnd(40, 140),
+    substanceVolume: rndi(40, 140),
+    inside: "в тюбике зубной пасты",
+    put: "в тюбик зубной пасты",
 })
 
 combine(new Item(["флакон геля для душа"]), {
-    containerVolume: 250,
+    volume: 250,
     substance: "гель для душа",
-    substanceVolume: rnd(50, 250),
+    substanceVolume: rndi(50, 250),
+    inside: "в флаконе геля для душа",
+    put: "в флакон геля для душа",
 })
 
 combine(new Item("флакон шампуня"), {
-    containerVolume: 800,
+    volume: 800,
     substance: "шампунь",
-    substanceVolume: rnd(50, 800),
+    substanceVolume: rndi(50, 800),
+    inside: "в флаконе шампуня",
+    put: "в флакон шампуня",
 })
 
 combine(new Item(["бутылка средства для мытья сантехники", "бутылку средства для мытья сантехники"]), {
-    containerVolume: 500,
+    volume: 500,
     substance: "средство для мытья сантехники",
-    substanceVolume: rnd(50, 500),
+    substanceVolume: rndi(50, 500),
+    inside: "в бутылке средства для мытья сантехники",
+    put: "в бутылку средства для мытья сантехники",
 })
 
 combine(new Item(["бутылка средства для мытья унитазов", "бутылку средства для мытья унитазов"]), {
-    containerVolume: 500,
+    volume: 500,
     substance: "средство для мытья унитазов",
-    substanceVolume: rnd(50, 500),
+    substanceVolume: rndi(50, 500),
+    inside: "в бутылке средства для мытья унитазов",
+    put: "в бутылку средства для мытья унитазов",
 })
 
 combine(new Item("пакет стирального порошка"), {
-    containerVolume: 1500,
+    volume: 1500,
     substance: "стиральный порошок",
-    substanceVolume: rnd(50, 1500),
+    substanceVolume: rndi(50, 1500),
+    inside: "в пакете стирального порошка",
+    put: "в пакет стирального порошка",
 })
 
 combine(new Item("стаканчик"), {
-    containerVolume: 100,
+    volume: 100,
+    inside: "в стаканчике",
+    put: "в стаканчик",
 })

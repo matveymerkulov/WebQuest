@@ -78,6 +78,8 @@ export function clearContainerStack() {
     containerStack = []
 }
 
+
+
 function operateCommands(object, prefix = "") {
     if(isHidden(object)) return
 
@@ -124,7 +126,7 @@ function operateCommands(object, prefix = "") {
 export function updateCommands() {
     actionsBefore()
 
-    //console.clear()
+    console.clear()
     menu = {}
 
     operateCommand({
@@ -201,6 +203,11 @@ export function parseText(text) {
 
 
 
+export function getSubstanceString(object) {
+    return object.substanceVolume > 0 ? " (" + object.substanceVolume + " мл " +
+        declineName(object.substance, Pad.rod) + " внутри)" : ""
+}
+
 export function objectsText(object) {
     if(object.objects === undefined) return ""
     let text = ""
@@ -211,8 +218,9 @@ export function objectsText(object) {
             let container = childObject.container
             let inside = container?.inside
             if(isContainer(container)) inside = container.name
-            inside = inside === undefined ? "" : ` (${tran(inside)})`
-            text += `, <span class="link" objId="${childObject.id}">${declineName(childObject, Pad.vin)}</span>${inside}`
+            inside = inside === undefined ? "" : " (" + tran(inside) + ")"
+            text += ", <span class='link' objId='" + childObject.id + "'>" + declineName(childObject, Pad.vin) +
+                "</span>" + getSubstanceString(childObject) + inside
         }
         if(childObject.inspectable) continue
         text += objectsText(childObject)
@@ -225,7 +233,8 @@ export function objectsText(object) {
 export function personInfoText(array, prefix, pad = Pad.imen) {
     let text = ""
     for(let object of array) {
-        text += `${text === "" ? "" : ", "}<span class="link" objId="${object.id}">${declineName(object, pad)}</span>`
+        text += `${text === "" ? "" : ", "}<span class="link" objId="${object.id}">${declineName(object, pad)}</span>` +
+            getSubstanceString(object)
     }
     return text === "" ? "" : prefix + text + "."
 }

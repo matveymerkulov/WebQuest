@@ -18,6 +18,10 @@ export class BaseObject {
         this.initialName = this.name
     }
 
+    getCommands() {
+        return []
+    }
+
     init() {
     }
 }

@@ -1,3 +1,5 @@
+import "../../src/person.js"
+import "../../src/object.js"
 import "./cloth.js"
 import "./items.js"
 import "./containers.js"

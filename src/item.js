@@ -6,7 +6,7 @@ import {isClosed, toString} from "./functions.js"
 
 export class Item extends Obj {
     getCommands() {
-        const commands = []
+        const commands = super.getCommands()
         const thisItem = this
         commands.push({
             text: () => loc("take") + "/в руки",

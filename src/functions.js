@@ -60,8 +60,8 @@ export function removeFromArray(array, element) {
 }
 
 
-export function rnd(from, to) {
-    return Math.random() * (to - from) + to
+export function rndi(from, to) {
+    return Math.floor(Math.random() * (to - from) + from)
 }
 
 
