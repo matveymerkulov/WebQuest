@@ -36,15 +36,18 @@ export class Container extends BaseObject {
         
         function addMoveCommand(container, checkContainers = true) {
             if(container === thisContainer) return
-            if(container.put && !isClosed(container)) {
-                if(container.volume !== undefined && isZero(container.substanceVolume)) {
+            if(container.put && !isClosed(container) && (container.substanceVolume ?? 0) < container.volume) {
+                const equalSubstances = substance === container.substance
+                if(container.volume !== undefined && (isZero(container.substanceVolume) || equalSubstances)) {
                     commands.push({
                         text: () => toString(substance.move) + "/" + container.put,
-                        execution: (item) => {
+                        execution: () => {
                             container.substance = substance
-                            const volume = Math.min(item.substanceVolume, container.volume)
-                            container.substanceVolume = volume
-                            item.substanceVolume -= volume
+                            if(container.substanceVolume === undefined) container.substanceVolume = 0
+                            const volume = Math.min(thisContainer.substanceVolume, container.volume -
+                                container.substanceVolume)
+                            container.substanceVolume += volume
+                            thisContainer.substanceVolume -= volume
                         }
                     })
                 }
