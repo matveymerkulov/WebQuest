@@ -40,7 +40,8 @@ export class Container extends BaseObject {
                 const equalSubstances = substance === container.substance
                 if(container.volume !== undefined && (isZero(container.substanceVolume) || equalSubstances)) {
                     commands.push({
-                        text: () => toString(substance.move) + "/" + container.put,
+                        text: () => (substance.liquid ? "залить" : "засыпать") +
+                            "/" + container.put,
                         execution: () => {
                             container.substance = substance
                             if(container.substanceVolume === undefined) container.substanceVolume = 0
