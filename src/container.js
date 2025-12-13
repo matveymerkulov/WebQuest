@@ -1,6 +1,6 @@
 import {allObjects, BaseObject} from "./base.js"
 import {error, isClosed, toArray, toString} from "./functions.js"
-import {loc} from "./localization.js"
+import {loc, tran} from "./localization.js"
 import {player} from "./person.js"
 import {currentContainer, declineName} from "./main.js"
 
@@ -33,37 +33,25 @@ export class Container extends BaseObject {
 
         if(isZero(thisContainer.substanceVolume)) return commands
         const substance = thisContainer.substance
-        
-        function addMoveCommand(container, checkContainers = true) {
-            if(container === thisContainer) return
-            if(container.put && !isClosed(container) && (container.substanceVolume ?? 0) < container.volume) {
-                const equalSubstances = substance === container.substance
-                if(container.volume !== undefined && (isZero(container.substanceVolume) || equalSubstances)) {
-                    commands.push({
-                        text: () => (substance.liquid ? "залить" : "засыпать") +
-                            "/" + container.put,
-                        execution: () => {
-                            container.substance = substance
-                            if(container.substanceVolume === undefined) container.substanceVolume = 0
-                            const volume = Math.min(thisContainer.substanceVolume, container.volume -
-                                container.substanceVolume)
-                            container.substanceVolume += volume
-                            thisContainer.substanceVolume -= volume
-                        }
-                    })
-                }
-            }
-            const objects = container.objects === undefined ? container : container.objects
-            for(const object of objects) {
-                if(!checkContainers && object.inspectable) continue
-                if(isClosed(container) && !object.outside) continue
-                addMoveCommand(object)
-            }
-        }
 
-        addMoveCommand(currentContainer(), false)
-        addMoveCommand(player.inventory)
-        addMoveCommand(player.clothes)
+        processContainers(this, commands, true, (thisContainer, container) => {
+            if(!container.put || isClosed(container)) return
+            if((container.substanceVolume ?? 0) >= container.volume) return
+            const equalSubstances = substance === container.substance
+            if(container.volume === undefined || (!isZero(container.substanceVolume) && !equalSubstances)) return
+            commands.push({
+                text: () => (substance.liquid ? "залить" : "засыпать") +
+                    "/" + container.put,
+                execution: () => {
+                    container.substance = substance
+                    if(container.substanceVolume === undefined) container.substanceVolume = 0
+                    const volume = Math.min(thisContainer.substanceVolume, container.volume -
+                        container.substanceVolume)
+                    container.substanceVolume += volume
+                    thisContainer.substanceVolume -= volume
+                }
+            })
+        })
 
         return commands
     }
@@ -79,4 +67,26 @@ export class Container extends BaseObject {
     remove(...object) {
         this.objects.remove(...object)
     }
+}
+
+
+export function processContainers(thisItem, commands, checkOutside = true, code) {
+    function addCommand(container, checkContainers = true) {
+        //console.log(declineName(container))
+        if(container === thisItem) return
+        code(thisItem, container)
+
+        const objects = container.objects === undefined ? container : container.objects
+        for(const object of objects) {
+            if(!checkContainers && object.inspectable) continue
+            if(isClosed(container) && !object.outside) continue
+            addCommand(object)
+        }
+    }
+
+    if(checkOutside) addCommand(currentContainer(), false)
+    addCommand(player.inventory)
+    addCommand(player.clothes)
+
+    return commands
 }

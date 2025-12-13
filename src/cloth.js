@@ -3,12 +3,12 @@ import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
 import {currentContainer} from "./main.js"
 import {toString} from "./functions.js"
+import {processContainers} from "./container.js"
 
 export class Cloth extends Item {
     getCommands() {
-        const cloth = this
         const commands = super.getCommands()
-        if(!player.wears(cloth)) {
+        if(!player.wears(this)) {
             commands.push({
                 text: () => loc("putOn"),
                 execution: (item) => {
@@ -17,20 +17,14 @@ export class Cloth extends Item {
             })
         }
 
-        function addDropCommand(container) {
-            if(container === cloth) return
+        processContainers(this, commands, true, (cloth, container) => {
             if(!container.put) return
             if(!player.wears(cloth)) return
             commands.push({
                 text: () => loc("putOff") + "/" + tran(container.put),
                 execution: (item) => player.putOff(item, container)
             })
-        }
-
-        addDropCommand(currentContainer())
-        for(const object of currentContainer().objects) {
-            addDropCommand(object)
-        }
+        })
 
         return commands
     }

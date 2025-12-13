@@ -3,69 +3,43 @@ import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
 import {currentContainer, declineName} from "./main.js"
 import {isClosed, toString} from "./functions.js"
+import {processContainers} from "./container.js"
 
 export class Item extends Obj {
     getCommands() {
         const commands = super.getCommands()
-        const thisItem = this
-        if(!player.has(thisItem)) {
+        if(!player.has(this)) {
             commands.push({
                 text: () => loc("take"),
                 execution: (item) => player.take(item)
             })
         }
 
-        function addTakeCommand(container) {
-            if(container === thisItem) return
-            if(container.put && !isClosed(container)) {
-                if(!player.has(thisItem)) {
-                    commands.push({
-                        text: () => loc("drop") + "/" + tran(container.put),
-                        execution: (item) => {
-                            player.take(item, container)
-                        }
-                    })
+        processContainers(this, commands, false, (thisItem, container) => {
+            if(!container.put || isClosed(container)) return
+            if(player.has(thisItem)) return
+            commands.push({
+                text: () => loc("drop") + "/" + tran(container.put),
+                execution: (item) => {
+                    player.take(item, container)
                 }
-            }
-
-            const objects = container.objects === undefined ? container : container.objects
-            for(const object of objects) {
-                addTakeCommand(object)
-            }
-        }
-
-        addTakeCommand(player.inventory)
-        addTakeCommand(player.clothes)
+            })
+        })
 
         //console.clear()
 
-        function addDropCommand(container, checkContainers = true) {
-            //console.log(declineName(container))
-            if(container === thisItem) return
-            if(container.put && !isClosed(container)) {
-                if(!container.hanger || thisItem.canBeHung) {
-                    if(player.has(thisItem)) {
-                        commands.push({
-                            text: function() {
-                                const verb = (container.putVerb ? tran(container.putVerb) : loc("drop"))
-                                return verb + "/" + tran(container.put)
-                            },
-                            execution: (item) => player.drop(item, container)
-                        })
-                    }
-                }
-            }
-            const objects = container.objects === undefined ? container : container.objects
-            for(const object of objects) {
-                if(!checkContainers && object.inspectable) continue
-                if(isClosed(container) && !object.outside) continue
-                addDropCommand(object)
-            }
-        }
-
-        addDropCommand(currentContainer(), false)
-        addDropCommand(player.inventory)
-        addDropCommand(player.clothes)
+        processContainers(this, commands, true, (thisItem, container) => {
+            if(!container.put || isClosed(container)) return
+            if(container.hanger && !thisItem.canBeHung) return
+            if(!player.has(thisItem)) return
+            commands.push({
+                text: function() {
+                    const verb = (container.putVerb ? tran(container.putVerb) : loc("drop"))
+                    return verb + "/" + tran(container.put)
+                },
+                execution: (item) => player.drop(item, container)
+            })
+        })
 
         return commands
     }
