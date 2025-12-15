@@ -1,8 +1,8 @@
 import {Obj} from "./object.js"
 import {player} from "./person.js"
 import {loc, tran} from "./localization.js"
-import {currentContainer, declineName} from "./main.js"
-import {isClosed, toString} from "./functions.js"
+import {currentContainer, declineName, Pad} from "./main.js"
+import {isClosed, removeFromArray, toString} from "./functions.js"
 import {processContainers} from "./container.js"
 
 export class Item extends Obj {
@@ -46,12 +46,17 @@ export class Item extends Obj {
 
     moveTo(container) {
         if(this.container === container) return
-        if(this.container) this.container.objects.remove(this)
+        if(this.container) removeFromArray(this.container.objects, this)
         container.objects.push(this)
         this.container = container
     }
 
     isIn(container) {
         return this.container === container
+    }
+
+    destroy() {
+        if(this.container) removeFromArray(this.container.objects, this)
+        removeFromArray(player.inventory, this)
     }
 }

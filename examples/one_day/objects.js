@@ -177,6 +177,8 @@ function createSink(where) {
 
     return combine(new Obj("раковина" + where), {
         name: ["раковина", "раковину"],
+        volume: 18000,
+        plugType: 0,
         objects: [tap, coldValve, hotValve, inside, on],
         inspectable: yes,
     })
@@ -212,6 +214,7 @@ function createShelf(where) {
 
 
 combine(new Obj("унитаз"), {
+    volume: 25000,
 })
 
 
@@ -222,11 +225,19 @@ combine(new Container("на бачке"), {
 })
 
 combine(new Container("в бачке"), {
-    put: "в бачок"
+    put: "в бачок",
+})
+
+combine(new Obj(["ручка смыва", "ручку смыва"]), {
+    outside: yes,
 })
 
 combine(new Obj("бачок"), {
-    objects: ["на бачке", "в бачке"]
+    objects: ["ручка смыва", "на бачке", "в бачке"],
+    inspectable: yes,
+    volume: 6000,
+    substance: "вода",
+    substanceVolume: 6000,
 }, openable())
 
 
@@ -242,11 +253,13 @@ combine(new Container("в ванне"), {
 
 combine(new Container("на ванне"), {
     put: "на ванну",
-    objects: ["флакон геля для душа", "флакон шампуня"],
+    objects: ["флакон геля для душа", "флакон шампуня", "затычка"],
 })
 
 combine(new Obj(["ванна", "ванну"]), {
     objects: ["в ванне", "на ванне"],
+    volume: 150000,
+    plugType: 0,
     inspectable: yes,
 })
 

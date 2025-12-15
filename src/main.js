@@ -204,8 +204,8 @@ export function parseText(text) {
 
 
 export function getSubstanceString(object) {
-    return object.substanceVolume > 0 ? " (" + object.substanceVolume + " мл " +
-        declineName(object.substance, Pad.rod) + " внутри)" : ""
+    return object.substanceVolume > 0 ? ", " + object.substanceVolume + " мл " +
+        declineName(object.substance, Pad.rod) + " внутри" : ""
 }
 
 export function objectsText(object) {
@@ -218,9 +218,12 @@ export function objectsText(object) {
             let container = childObject.container
             let inside = container?.inside
             if(isContainer(container)) inside = container.name
-            inside = inside === undefined ? "" : " (" + tran(inside) + ")"
+            inside = inside === undefined ? "" : ", " + tran(inside)
+            const plugged = childObject.plug === undefined ? "" : ", заткнута"
+            let properties = plugged + inside + getSubstanceString(childObject)
+            if(properties !== "") properties = " (" + properties.substring(2) + ")"
             text += ", <span class='link' objId='" + childObject.id + "'>" + declineName(childObject, Pad.vin) +
-                "</span>" + getSubstanceString(childObject) + inside
+                "</span>" + properties
         }
         if(childObject.inspectable) continue
         text += objectsText(childObject)
@@ -233,8 +236,9 @@ export function objectsText(object) {
 export function personInfoText(array, prefix, pad = Pad.imen) {
     let text = ""
     for(let object of array) {
+        const substanceString = getSubstanceString(object)
         text += `${text === "" ? "" : ", "}<span class="link" objId="${object.id}">${declineName(object, pad)}</span>` +
-            getSubstanceString(object)
+        (substanceString === "" ? "" : " (" + substanceString + ")")
     }
     return text === "" ? "" : prefix + text + "."
 }

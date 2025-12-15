@@ -2,7 +2,7 @@ import {allObjects, BaseObject} from "./base.js"
 import {error, isClosed, toArray, toString} from "./functions.js"
 import {loc, tran} from "./localization.js"
 import {player} from "./person.js"
-import {currentContainer, declineName} from "./main.js"
+import {currentContainer, declineName, Pad} from "./main.js"
 
 export class Container extends BaseObject {
     objects = []
@@ -31,27 +31,56 @@ export class Container extends BaseObject {
             return value === 0 || value === undefined
         }
 
-        if(isZero(thisContainer.substanceVolume)) return commands
-        const substance = thisContainer.substance
+        if(!isZero(thisContainer.substanceVolume)) {
+            const substance = thisContainer.substance
 
-        processContainers(this, commands, true, (thisContainer, container) => {
-            if(!container.put || isClosed(container)) return
-            if((container.substanceVolume ?? 0) >= container.volume) return
-            const equalSubstances = substance === container.substance
-            if(container.volume === undefined || (!isZero(container.substanceVolume) && !equalSubstances)) return
+            processContainers(this, commands, true, (thisContainer, container) => {
+                if(!container.put || isClosed(container)) return
+                if((container.substanceVolume ?? 0) >= container.volume) return
+                const equalSubstances = substance === container.substance
+                if(container.volume === undefined || (!isZero(container.substanceVolume) && !equalSubstances)) return
+                commands.push({
+                    text: () => (substance.liquid ? "залить" : "засыпать") +
+                        "/" + container.put,
+                    execution: () => {
+                        container.substance = substance
+                        if(container.substanceVolume === undefined) container.substanceVolume = 0
+                        const volume = Math.min(thisContainer.substanceVolume, container.volume -
+                            container.substanceVolume)
+                        container.substanceVolume += volume
+                        thisContainer.substanceVolume -= volume
+                    }
+                })
+            })
+        }
+
+        if(this.plugType !== undefined) {
+            processContainers(this, commands, true, (thisContainer, plug) => {
+                if(plug.plugType !== thisContainer.plugType || !plug.isPlug) return
+                commands.push({
+                    text: function() {
+                        return "заткнуть/" + declineName(plug, Pad.tvor)
+                    },
+                    execution: () => {
+                        plug.destroy()
+                        thisContainer.plug = plug
+                    }
+                })
+            })
+        }
+
+        if(this.plug !== undefined) {
+            const plug = this.plug
             commands.push({
-                text: () => (substance.liquid ? "залить" : "засыпать") +
-                    "/" + container.put,
+                text: function() {
+                    return "вытащить " + declineName(plug, Pad.vin)
+                },
                 execution: () => {
-                    container.substance = substance
-                    if(container.substanceVolume === undefined) container.substanceVolume = 0
-                    const volume = Math.min(thisContainer.substanceVolume, container.volume -
-                        container.substanceVolume)
-                    container.substanceVolume += volume
-                    thisContainer.substanceVolume -= volume
+                    player.take(plug)
+                    thisContainer.plug = undefined
                 }
             })
-        })
+        }
 
         return commands
     }
