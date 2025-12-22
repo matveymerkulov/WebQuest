@@ -237,8 +237,8 @@ export function personInfoText(array, prefix, pad = Pad.imen) {
     let text = ""
     for(let object of array) {
         const substanceString = getSubstanceString(object)
-        text += `${text === "" ? "" : ", "}<span class="link" objId="${object.id}">${declineName(object, pad)}</span>` +
-        (substanceString === "" ? "" : " (" + substanceString + ")")
+        text += (text === "" ? "" : ", ") + "<span class='link' objId='" + object.id + "'>" + declineName(object, pad) +
+            "</span>" + (substanceString === "" ? "" : " (" + substanceString.substring(2) + ")")
     }
     return text === "" ? "" : prefix + text + "."
 }
