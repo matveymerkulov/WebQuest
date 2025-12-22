@@ -2,6 +2,12 @@ import {Substance} from "../../src/substance.js"
 import {combine} from "../../src/functions.js"
 import {yes} from "../../src/main.js"
 
+export const temperature = {
+    cold: 0,
+    warm: 1,
+    hot: 2,
+}
+
 combine(new Substance(["вода", "воды", ""]), {
     liquid: yes,
 })

@@ -2,8 +2,8 @@ import {combine, isClosed} from "../../src/functions.js"
 import {Obj} from "../../src/object.js"
 import {Container} from "../../src/container.js"
 import {decline, declineName, genus, no, Pad, yes} from "../../src/main.js"
-import {write} from "../../src/gui.js"
 import {allObjects} from "../../src/base.js"
+import {temperature} from "./substances.js"
 
 
 function openable(gen = genus.masculine) {
@@ -156,27 +156,55 @@ combine(new Obj("зеркало [в прихожей]"), {
 // РАКОВИНА
 
 
-function createSink(where) {
-    where = " [" + where + "]"
+function createReservoir(imenName, datName, vinName, where, volume) {
+    where = where === "" ? "" : " [" + where + "]"
 
-    const inside = "в раковине" + where
+    const inside = "в " + datName + where
     combine(new Container(inside), {
-        put: "в раковину"
+        put: "в " + vinName
     })
-    const on = "на раковине" + where
+    const on = "на " + datName + where
     combine(new Container(on), {
-        put: "на раковину"
+        put: "на " + vinName
     })
+
+    const coldValve = "вентиль холодной воды" + where
+    const coldValveObject = combine(new Obj(coldValve), openable())
+    const hotValve = "вентиль горячей воды" + where
+    const hotValveObject = combine(new Obj(hotValve), openable())
 
     const tap = "кран" + where
-    new Obj(tap)
-    const coldValve = "вентиль холодной воды" + where
-    new Obj(coldValve)
-    const hotValve = "вентиль горячей воды" + where
-    new Obj(hotValve)
+    combine(new Obj(tap), {
+        coldValve: coldValveObject,
+        hotValveObject: hotValveObject,
+        name: function() {
+            let text = ""
+            switch(this.getTemperature()) {
+                case temperature.cold:
+                    text = "холодная"
+                    break
+                case temperature.warm:
+                    text = "тёплая"
+                    break
+                case temperature.hot:
+                    text = "горячая"
+                    break
+            }
+            return "кран" + (text === "" ? "" : " (течёт " + text + " вода)")
+        },
+        getTemperature: function() {
+            if(coldValveObject.isClosed) {
+                if(!hotValveObject.isClosed) return temperature.hot
+            } else {
+                if(hotValveObject.isClosed) return temperature.cold
+                return temperature.warm
+            }
+            return undefined
+        }
+    })
 
-    return combine(new Obj("раковина" + where), {
-        name: ["раковина", "раковину"],
+    return combine(new Obj(imenName + where), {
+        name: [imenName, vinName],
         volume: 18000,
         plugType: 0,
         objects: [tap, coldValve, hotValve, inside, on],
@@ -256,15 +284,15 @@ combine(new Container("на ванне"), {
     objects: ["флакон геля для душа", "флакон шампуня", "затычка"],
 })
 
-combine(new Obj(["ванна", "ванну"]), {
-    objects: ["в ванне", "на ванне"],
-    volume: 150000,
-    plugType: 0,
+
+
+combine(createReservoir("ванна", "ванне", "ванну", "", 150000), {
     inspectable: yes,
 })
+allObjects.get("ванна").objects.push("флакон геля для душа", "флакон шампуня", "затычка")
 
 
-createSink("в ванной")
+createReservoir("раковина", "раковине", "раковину", "в ванной", 18000)
 allObjects.get("на раковине [в ванной]").objects.push("стакан [в ванной]", "мыло", "тюбик зубной пасты", "расческа")
 
 
@@ -330,7 +358,7 @@ combine(new Obj("буфет"), {
 }, openable())
 
 
-createSink("на кухне")
+createReservoir("раковина", "раковине", "раковину", "на кухне", 18000)
 
 
 combine(new Obj("стол [на кухне]"), {
