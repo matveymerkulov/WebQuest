@@ -3,7 +3,7 @@ import {Obj} from "../../src/object.js"
 import {Container} from "../../src/container.js"
 import {decline, declineName, genus, no, Pad, yes} from "../../src/main.js"
 import {allObjects} from "../../src/base.js"
-import {temperature} from "./substances.js"
+import {temperature, water} from "./substances.js"
 
 
 function openable(gen = genus.masculine) {
@@ -177,7 +177,8 @@ function createReservoir(imenName, datName, vinName, where, volume) {
     combine(new Obj(tap), {
         coldValve: coldValveObject,
         hotValveObject: hotValveObject,
-        name: function() {
+        substance: "вода",
+        waterText: function() {
             let text = ""
             switch(this.getTemperature()) {
                 case temperature.cold:
@@ -190,7 +191,7 @@ function createReservoir(imenName, datName, vinName, where, volume) {
                     text = "горячая"
                     break
             }
-            return "кран" + (text === "" ? "" : " (течёт " + text + " вода)")
+            return text === "" ? "" : "течёт " + text + " вода"
         },
         getTemperature: function() {
             if(coldValveObject.isClosed) {
@@ -200,7 +201,7 @@ function createReservoir(imenName, datName, vinName, where, volume) {
                 return temperature.warm
             }
             return undefined
-        }
+        },
     })
 
     return combine(new Obj(imenName + where), {

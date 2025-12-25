@@ -31,17 +31,15 @@ export class Container extends BaseObject {
             return value === 0 || value === undefined
         }
 
+        const substance = thisContainer.substance
         if(!isZero(thisContainer.substanceVolume)) {
-            const substance = thisContainer.substance
-
             processContainers(this, commands, true, (thisContainer, container) => {
                 if(!container.put || isClosed(container)) return
                 if((container.substanceVolume ?? 0) >= container.volume) return
                 const equalSubstances = substance === container.substance
                 if(container.volume === undefined || (!isZero(container.substanceVolume) && !equalSubstances)) return
                 commands.push({
-                    text: () => (substance.liquid ? "залить" : "засыпать") +
-                        "/" + container.put,
+                    text: () => (substance.liquid ? "залить" : "засыпать") + "/" + container.put,
                     execution: () => {
                         container.substance = substance
                         if(container.substanceVolume === undefined) container.substanceVolume = 0
@@ -49,6 +47,22 @@ export class Container extends BaseObject {
                             container.substanceVolume)
                         container.substanceVolume += volume
                         thisContainer.substanceVolume -= volume
+                    }
+                })
+            })
+        }
+
+        if(thisContainer.waterText !== undefined && thisContainer.getTemperature() !== undefined) {
+            processContainers(this, commands, true, (thisContainer, container) => {
+                if(!container.put || isClosed(container)) return
+                if((container.substanceVolume ?? 0) >= container.volume) return
+                const equalSubstances = substance === container.substance
+                if(container.volume === undefined || (!isZero(container.substanceVolume) && !equalSubstances)) return
+                commands.push({
+                    text: () => "наполнить водой/" + declineName(container, Pad.vin),
+                    execution: () => {
+                        container.substance = substance
+                        container.substanceVolume = container.volume
                     }
                 })
             })

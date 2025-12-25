@@ -8,7 +8,7 @@ export const temperature = {
     hot: 2,
 }
 
-combine(new Substance(["вода", "воды", ""]), {
+export const water = combine(new Substance(["вода", "воды", ""]), {
     liquid: yes,
 })
 combine(new Substance(["соль для ванн", "соли для ванн", ""]), {

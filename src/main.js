@@ -216,11 +216,17 @@ export function objectsText(object) {
         if(isClosed(object) && !childObject.outside) continue
         if(childObject.constructor !== Container) {
             let container = childObject.container
+
             let inside = container?.inside
             if(isContainer(container)) inside = container.name
             inside = inside === undefined ? "" : ", " + tran(inside)
+
             const plugged = childObject.plug === undefined ? "" : ", заткнута"
-            let properties = plugged + inside + getSubstanceString(childObject)
+
+            let water = childObject.waterText === undefined ? "" : childObject.waterText()
+            if(water !== "") water = ", " + water
+
+                let properties = water + plugged + inside + getSubstanceString(childObject)
             if(properties !== "") properties = " (" + properties.substring(2) + ")"
             text += ", <span class='link' objId='" + childObject.id + "'>" + declineName(childObject, Pad.vin) +
                 "</span>" + properties

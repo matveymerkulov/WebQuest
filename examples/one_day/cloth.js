@@ -25,7 +25,6 @@ function createTrousers(postfix) {
         put: "в карман брюк",
         inside: "в кармане брюк",
     })
-
 }
 
 createTrousers("1")
