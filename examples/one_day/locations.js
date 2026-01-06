@@ -1,57 +1,80 @@
 import {combine} from "../../src/functions.js"
 import {Container} from "../../src/container.js"
 import {Location} from "../../src/location.js"
-import {Passage} from "../../src/passage.js"
+import {bathroomHanger, bathroomHanger2, bathroomMirror, bathroomShelf, bathroomSink, hallwayHanger, hallwayMirror, kitchenSink, kitchenTable, livingRoomTable, toiletShelf} from "./objects.js"
 
-combine(new Container("на полу [в гостиной]"), {
-    put: "на пол",
-})
 
 combine(new Location("гостиная"), {
     description: "Это жилая комната.",
-    objects: ["шкаф", "кровать", "стол [в гостиной]", "на полу [в гостиной]"]
+    objects: [
+        "шкаф",
+        "кровать",
+        livingRoomTable.id,
+        combine(new Container("на полу"), {
+            put: "на пол",
+        }).id,
+    ]
 })
 
 
-combine(new Container("на полу [в прихожей]"), {
-    put: "на пол",
-})
 
 combine(new Location("прихожая"), {
     description: "Вы находитесь в прихожей.",
-    objects: ["дверь в подъезд", "шкафчик для обуви", "коврик для ног", "зеркало [в прихожей]", "вешалка [в прихожей]",
-        "полка для шапок", "на полу [в прихожей]"]
+    objects: [
+        "дверь в подъезд",
+        "шкафчик для обуви",
+        "коврик для ног",
+        hallwayMirror.id,
+        hallwayHanger.id,
+        "полка для шапок",
+        combine(new Container("на полу"), {
+            put: "на пол",
+        }).id,
+    ]
 })
 
 
-combine(new Container("на полу [в туалете]"), {
-    put: "на пол",
-})
 
 combine(new Location("туалет"), {
     description: "Вы находитесь в туалете.",
-    objects: ["унитаз", "бачок", "шкафчик [в туалете]", "на полу [в туалете]"]
+    objects: [
+        "унитаз",
+        "бачок",
+        toiletShelf.id,
+        combine(new Container("на полу"), {
+            put: "на пол",
+        }).id,
+    ]
 })
 
-
-combine(new Container("на полу [в ванной]"), {
-    put: "на пол",
-})
 
 combine(new Location("ванная"), {
     description: "Вы зашли в ванную комнату.",
-    objects: ["ванна", "раковина [в ванной]", "шкафчик [в ванной]", "вешалка [в ванной]", "зеркало [в ванной]",
-        "стиральная машина", "вешалка [в ванной 2]", "на полу [в ванной]"]
+    objects: ["ванна",
+        bathroomSink.id,
+        bathroomShelf.id,
+        bathroomHanger.id,
+        bathroomMirror.id,
+        "стиральная машина",
+        bathroomHanger2.id,
+        combine(new Container("на полу"), {
+            put: "на пол",
+        }).id,
+    ]
 })
 
-
-combine(new Container("на полу [на кухне]"), {
-    put: "на пол",
-})
 
 combine(new Location("кухня"), {
     description: "Вы находитесь на небольшой кухне.",
-    objects: ["буфет", "раковина [на кухне]", "стол [на кухне]", "холодильник", "на полу [на кухне]"]
+    objects: [
+        "буфет",
+        kitchenSink.id,
+        kitchenTable.id,
+        "холодильник",
+        combine(new Container("на полу"), {
+            put: "на пол",
+        }).id,
+    ]
 })
 
 

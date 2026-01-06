@@ -23,6 +23,14 @@ export class Container extends BaseObject {
         }
     }
 
+    getObject(name) {
+        if(this.objects === undefined) error("Object \"" + this.name + "\" has no objects.")
+        for(const object of this.objects) {
+            if(object.name === name) return object
+        }
+        error("Object \"" + this.name + "\" has no object \"" + name + "\".")
+    }
+
     getCommands() {
         const thisContainer = this
         const commands = []
@@ -105,10 +113,12 @@ export class Container extends BaseObject {
 
     add(...object) {
         this.objects.push(...object)
+        return this
     }
 
     remove(...object) {
         this.objects.remove(...object)
+        return this
     }
 }
 

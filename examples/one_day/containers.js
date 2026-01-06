@@ -2,7 +2,7 @@ import {combine, rndi} from "../../src/functions.js"
 import {Item} from "../../src/item.js"
 
 
-combine(new Item("стакан [в ванной]"), {
+combine(new Item("стакан"), {
     inspectable: true,
     objects: ["зубная щётка"],
     inside: "в стакане",

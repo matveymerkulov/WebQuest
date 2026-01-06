@@ -4,6 +4,7 @@ import {Container} from "../../src/container.js"
 import {decline, declineName, genus, no, Pad, yes} from "../../src/main.js"
 import {allObjects} from "../../src/base.js"
 import {temperature, water} from "./substances.js"
+import {trousers2ID, trousersID} from "./cloth.js"
 
 
 function openable(gen = genus.masculine) {
@@ -35,27 +36,27 @@ function openable(gen = genus.masculine) {
 // ГОСТИНАЯ
 
 
-combine(new Container("в шкафу"), {
-    objects: ["пиджак", "брюки [1]", "рубашка"],
-    put: "в шкаф",
-})
-
-combine(new Container("на полке"), {
-    put: "на полку",
-})
-
-combine(new Container("на шкафу"), {
-    put: "на шкаф",
-    outside: yes,
-})
-
-combine(new Container("под шкафом"), {
-    put: "под шкаф",
-    outside: yes,
-})
-
 combine(new Obj("шкаф"), {
-    objects: ["в шкафу", "на полке", "на шкафу", "под шкафом"],
+    objects: [
+        combine(new Container("в шкафу"), {
+            objects: ["пиджак", trousersID, "рубашка"],
+            put: "в шкаф",
+        }).id,
+
+        combine(new Container("на полке"), {
+            put: "на полку",
+        }).id,
+
+        combine(new Container("на шкафу"), {
+            put: "на шкаф",
+            outside: yes,
+        }).id,
+
+        combine(new Container("под шкафом"), {
+            put: "под шкаф",
+            outside: yes,
+        }).id,
+    ],
     inspectable: yes,
 
     description: "Это деревянный платяной шкаф, покрашенный коричневой краской."
@@ -63,35 +64,35 @@ combine(new Obj("шкаф"), {
 
 
 
-combine(new Container("на столе"), {
-    objects: "ноутбук",
-    put: "на стол",
-})
+export const livingRoomTable = combine(new Obj("стол"), {
+    objects: [
+        combine(new Container("на столе"), {
+            objects: "ноутбук",
+            put: "на стол",
+        }).id,
 
-combine(new Container("под столом"), {
-    put: "под стол",
-})
-
-combine(new Obj("стол [в гостиной]"), {
-    objects: ["на столе", "под столом"],
+        combine(new Container("под столом"), {
+            put: "под стол",
+        }).id,
+    ],
     inspectable: yes,
     description: "Это обычный письменный стол."
 })
 
 
 
-combine(new Container("на кровати"), {
-    objects: ["простыня", "одеяло", "подушка"],
-    put: "на кровать",
-})
-
-combine(new Container("под кроватью"), {
-    objects: ["носки", "тапочки"],
-    put: "под кровать",
-})
-
 combine(new Obj("кровать"), {
-    objects: ["на кровати", "под кроватью"],
+    objects: [
+        combine(new Container("на кровати"), {
+            objects: ["простыня", "одеяло", "подушка"],
+            put: "на кровать",
+        }).id,
+
+        combine(new Container("под кроватью"), {
+            objects: ["носки", "тапочки"],
+            put: "под кровать",
+        }).id,
+    ],
     inspectable: yes,
     description: "Кровать из ДСП."
 })
@@ -105,36 +106,37 @@ combine(new Obj("дверь в подъезд"), {
 })
 
 
-combine(new Container("на нижней полке [шкафчика для обуви]"), {
-    objects: "ботинки",
-    put: "на нижнюю полку"
-})
-
-combine(new Container("на верхней полке [шкафчика для обуви]"), {
-    put: "на верхнюю полку"
-})
-
-combine(new Container("на шкафчике [для обуви]"), {
-    put: "на шкафчик"
-})
 
 combine(new Obj("шкафчик для обуви"), {
-    objects: ["на нижней полке [шкафчика для обуви]", "на верхней полке [шкафчика для обуви]"
-        , "на шкафчике [для обуви]"],
+    objects: [
+        combine(new Container("на нижней полке"), {
+            objects: "ботинки",
+            put: "на нижнюю полку"
+        }).id,
+
+        combine(new Container("на верхней полке"), {
+            put: "на верхнюю полку"
+        }).id,
+
+        combine(new Container("на шкафчике"), {
+            put: "на шкафчик"
+        }).id,
+    ],
     inspectable: yes,
 })
 
 
-combine(new Container("на коврике"), {
-    put: "на коврик"
-})
 
 combine(new Obj("коврик для ног"), {
-    objects: "на коврике"
+    objects: [
+        combine(new Container("на коврике"), {
+            put: "на коврик"
+        }).id
+    ]
 })
 
 
-combine(new Obj(["вешалка [в прихожей]", "вешалку"]), {
+export const hallwayHanger = combine(new Obj(["вешалка", "вешалку"]), {
     objects: "куртка",
     inspectable: yes,
     put: "на вешалку"
@@ -148,35 +150,18 @@ combine(new Obj(["полка для шапок", "полку для шапок"]
 })
 
 
-combine(new Obj("зеркало [в прихожей]"), {
-
-})
+export const hallwayMirror = combine(new Obj("зеркало"), {})
 
 
 // РАКОВИНА
 
 
-function createReservoir(imenName, datName, vinName, where, volume) {
-    where = where === "" ? "" : " [" + where + "]"
-
-    const inside = "в " + datName + where
-    combine(new Container(inside), {
-        put: "в " + vinName
-    })
-    const on = "на " + datName + where
-    combine(new Container(on), {
-        put: "на " + vinName
-    })
-
-    const coldValve = "вентиль холодной воды" + where
-    const coldValveObject = combine(new Obj(coldValve), openable())
-    const hotValve = "вентиль горячей воды" + where
-    const hotValveObject = combine(new Obj(hotValve), openable())
-
-    const tap = "кран" + where
-    combine(new Obj(tap), {
-        coldValve: coldValveObject,
-        hotValveObject: hotValveObject,
+function createReservoir(imenName, datName, vinName, volume, inside = undefined, on = undefined) {
+    const coldValve = combine(new Obj("вентиль холодной воды"), openable())
+    const hotValve = combine(new Obj("вентиль горячей воды"), openable())
+    const tap = combine(new Obj("кран"), {
+        coldValve: coldValve,
+        hotValveObject: hotValve,
         substance: "вода",
         waterText: function() {
             let text = ""
@@ -194,21 +179,33 @@ function createReservoir(imenName, datName, vinName, where, volume) {
             return text === "" ? "" : "течёт " + text + " вода"
         },
         getTemperature: function() {
-            if(coldValveObject.isClosed) {
-                if(!hotValveObject.isClosed) return temperature.hot
+            if(coldValve.isClosed) {
+                if(!hotValve.isClosed) return temperature.hot
             } else {
-                if(hotValveObject.isClosed) return temperature.cold
+                if(hotValve.isClosed) return temperature.cold
                 return temperature.warm
             }
             return undefined
         },
     })
 
-    return combine(new Obj(imenName + where), {
+    return combine(new Obj(imenName), {
         name: [imenName, vinName],
-        volume: 18000,
+        volume: volume,
         plugType: 0,
-        objects: [tap, coldValve, hotValve, inside, on],
+        objects: [
+            tap.id,
+            coldValve.id,
+            hotValve.id,
+            combine(new Container("в " + datName), {
+                put: "в " + vinName,
+                objects: inside,
+            }).id,
+            combine(new Container("на " + datName), {
+                put: "на " + vinName,
+                objects: on,
+            }).id,
+        ],
         inspectable: yes,
     })
 }
@@ -217,23 +214,23 @@ function createReservoir(imenName, datName, vinName, where, volume) {
 // ШКАФЧИКИ
 
 
-function createShelf(where) {
-    const bottomShelf = "на нижней полке [шкафчика " + where + "]"
-    combine(new Container(bottomShelf), {
-        put: "на нижнюю полку"
-    })
-    const topShelf = "на верхней полке [шкафчика " + where + "]"
-    combine(new Container(topShelf), {
-        put: "на верхнюю полку"
-    })
-    const onShelf = "на шкафчике [" + where + "]"
-    combine(new Container(onShelf), {
-        put: "на шкафчик",
-        outside: yes,
-    })
-
-    return combine(new Obj("шкафчик [" + where + "]"), {
-        objects: [bottomShelf, topShelf, onShelf],
+function createShelf(bottomShelf = undefined, topShelf = undefined, top = undefined) {
+    return combine(new Obj("шкафчик"), {
+        objects: [
+            combine(new Container("на нижней полке"), {
+                put: "на нижнюю полку",
+                objects: bottomShelf,
+            }).id,
+            combine(new Container("на верхней полке"), {
+                put: "на верхнюю полку",
+                objects: topShelf,
+            }).id,
+            combine(new Container("на шкафчике"), {
+                put: "на шкафчик",
+                outside: yes,
+                objects: top,
+            }).id,
+        ],
         inspectable: yes,
     }, openable())
 }
@@ -247,61 +244,49 @@ combine(new Obj("унитаз"), {
 })
 
 
-combine(new Container("на бачке"), {
-    put: "на бачок",
-    outside: yes,
-    objects: ["туалетная бумага"],
-})
-
-combine(new Container("в бачке"), {
-    put: "в бачок",
-})
-
-combine(new Obj(["ручка смыва", "ручку смыва"]), {
-    outside: yes,
-})
-
 combine(new Obj("бачок"), {
-    objects: ["ручка смыва", "на бачке", "в бачке"],
+    objects: [
+        combine(new Container("на бачке"), {
+            put: "на бачок",
+            outside: yes,
+            objects: ["туалетная бумага"],
+        }).id,
+
+        combine(new Container("в бачке"), {
+            put: "в бачок",
+        }).id,
+
+        combine(new Obj(["ручка смыва", "ручку смыва"]), {
+            outside: yes,
+        }).id,
+    ],
     inspectable: yes,
     volume: 6000,
     substance: "вода",
     substanceVolume: 6000,
 }, openable())
 
-
-createShelf("в туалете")
+export const toiletShelf = createShelf()
 
 
 // ВАННАЯ
 
 
-combine(new Container("в ванне"), {
-    put: "в ванну"
-})
-
-combine(new Container("на ванне"), {
-    put: "на ванну",
-    objects: ["флакон геля для душа", "флакон шампуня", "затычка"],
-})
-
-
-
-combine(createReservoir("ванна", "ванне", "ванну", "", 150000), {
+combine(createReservoir("ванна", "ванне", "ванну",150000,
+    undefined, ["флакон геля для душа", "флакон шампуня", "затычка"]), {
     inspectable: yes,
 })
-allObjects.get("ванна").objects.push("флакон геля для душа", "флакон шампуня", "затычка")
 
 
-createReservoir("раковина", "раковине", "раковину", "в ванной", 18000)
-allObjects.get("на раковине [в ванной]").objects.push("стакан [в ванной]", "мыло", "тюбик зубной пасты", "расческа")
+export const bathroomSink = createReservoir("раковина", "раковине", "раковину", 18000
+    , undefined,["стакан", "мыло", "тюбик зубной пасты", "расческа"])
 
 
-combine(new Obj("зеркало [в ванной]"), {
+export const bathroomMirror = combine(new Obj("зеркало"), {
 })
 
 
-combine(new Obj(["вешалка [в ванной]", "вешалку"]), {
+export const bathroomHanger = combine(new Obj(["вешалка", "вешалку"]), {
     inside: "на вешалке",
     put: "на вешалку",
     hanger: yes,
@@ -311,7 +296,7 @@ combine(new Obj(["вешалка [в ванной]", "вешалку"]), {
 })
 
 
-combine(new Obj(["вешалка [в ванной 2]", "вешалку"]), {
+export const bathroomHanger2 = combine(new Obj(["вешалка", "вешалку"]), {
     inside: "на вешалке",
     put: "на вешалку",
     hanger: yes,
@@ -321,33 +306,28 @@ combine(new Obj(["вешалка [в ванной 2]", "вешалку"]), {
 })
 
 
-createShelf("в ванной")
+export const bathroomShelf = createShelf(["банка соли для ванн"],
+    ["пульверизатор для мытья сантехники", "пульверизатор для мытья унитазов"])
 
-
-allObjects.get("на верхней полке [шкафчика в ванной]").objects.push("банка соли для ванн")
-
-allObjects.get("на нижней полке [шкафчика в ванной]").objects.push("пульверизатор для мытья сантехники",
-    "пульверизатор для мытья унитазов")
-
-
-combine(new Container("на стиральной машине"), {
-    put: "на стиральную машину",
-    outside: yes,
-    objects: ["пакет стирального порошка", "стаканчик"],
-})
-
-combine(new Container("в стиральной машине"), {
-    put: "в стиральную машину",
-    objects: "брюки [2]",
-})
-
-combine(new Container("в лотке стиральной машины"), {
-    put: "в лоток стиральной машины",
-})
 
 combine(new Obj(["стиральная машина", "стиральную машину"]), {
     inspectable: yes,
-    objects: ["на стиральной машине", "в стиральной машине", "в лотке стиральной машины"],
+    objects: [
+        combine(new Container("на стиральной машине"), {
+            put: "на стиральную машину",
+            outside: yes,
+            objects: ["пакет стирального порошка", "стаканчик"],
+        }).id,
+
+        combine(new Container("в стиральной машине"), {
+            put: "в стиральную машину",
+            objects: trousers2ID,
+        }).id,
+
+        combine(new Container("в лотке стиральной машины"), {
+            put: "в лоток стиральной машины",
+        }).id,
+    ],
 }, openable(genus.feminine))
 
 
@@ -359,10 +339,10 @@ combine(new Obj("буфет"), {
 }, openable())
 
 
-createReservoir("раковина", "раковине", "раковину", "на кухне", 18000)
+export const kitchenSink = createReservoir("раковина", "раковине", "раковину", 18000)
 
 
-combine(new Obj("стол [на кухне]"), {
+export const kitchenTable = combine(new Obj("стол"), {
     inspectable: yes,
 })
 

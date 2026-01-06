@@ -18,18 +18,16 @@ combine(new Cloth("пиджак"), {
 combine(new Cloth(["рубашка", "рубашку"]), {
 })
 
-function createTrousers(postfix) {
-    postfix = " [" + postfix + "]"
-    return combine(new Cloth("брюки" + postfix), {
+function createTrousers() {
+    return combine(new Cloth("брюки"), {
         inspectable: true,
         put: "в карман брюк",
         inside: "в кармане брюк",
     })
 }
 
-createTrousers("1")
-
-createTrousers("2").objects.push("ключи")
+export const trousersID = createTrousers().id
+export const trousers2ID = createTrousers().add("ключи").id
 
 combine(new Cloth(["куртка", "куртку"]), {
 })

@@ -32,11 +32,16 @@ export function toValue(object, parent = undefined) {
 export function combine(...parts) {
     const object = Object.assign(...parts)
     const commands = []
+    const objects = []
+
     for(let i = 1; i < parts.length; i++){
         const part = parts[i]
-        if(!isArray(part.commands)) continue
-        commands.push(...part.commands)
+
+        if(isArray(part.commands)) commands.push(...part.commands)
+        if(isArray(part.objects)) objects.push(...part.objects)
     }
+
+    object.objects = objects
     object.commands = commands
     return object
 }
